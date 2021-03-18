@@ -6,7 +6,7 @@ import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, T
 
 import './App.css';
 
-class App extends React.Component {
+class BoardSelection extends React.Component {
     constructor(props) {
         super(props);
         this.handleOpenDialog=this.handleOpenDialog.bind(this);
@@ -120,7 +120,7 @@ class App extends React.Component {
               <Typography variant='h5' style={{marginLeft: '20px', marginTop: '20px', fontFamily: 'Monospace', display: 'block'}}>
                 {this.printBoardsAsLinks()}
               </Typography>
-              
+
               </div>
               <Button style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.handleOpenDialog}>
                 Make New Board
@@ -131,4 +131,4 @@ class App extends React.Component {
         );
     }
 }
-export default App;
+export default BoardSelection;
