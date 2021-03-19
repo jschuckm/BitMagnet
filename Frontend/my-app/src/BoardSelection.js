@@ -17,18 +17,16 @@ class BoardSelection extends React.Component {
         this.printBoardsAsLinks=this.printBoardsAsLinks.bind(this);
 
         this.state = {
+          newBoard : '',
           //TODO: userName : access DB
           //TODO: get user's boards from DB and make array, dummy here:
           memberBoards : [
             {
-            boardName : "BoardA",
-            boardAddress: "/board"
+            boardName : "B"
             }, {
-            boardName : "BoardB",
-            boardAddress: "/board"
+            boardName : "BoardA"
             }, {
-            boardName : "BoardC",
-            boardAddress: "/board"}
+            boardName : "BoardD"}
           ]
         };
         this.updateBoardList(); //will build memberBoards dynamically
@@ -44,9 +42,10 @@ class BoardSelection extends React.Component {
 
     registerNewBoard(){
       //TODO: Send board name to DB
-      this.updateBoardList();
-      this.printBoardsAsList();
-      return 0;
+      //closing, push new board to memberBoards
+      this.state.memberBoards.push({boardName:this.state.newBoard});
+      this.printBoardsAsLinks();
+      this.setState({openDialog:false});
     }
 
     updateBoardList() {
@@ -56,16 +55,11 @@ class BoardSelection extends React.Component {
     printBoardsAsLinks() {
       return this.state.memberBoards.map((board) => {
           return (
-            <Typography variant='h6' style={{fontFamily: 'Monospace'}}>
-            <Link to={board.boardAddress}>{board.boardName}</Link>
+            <Typography variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
+            <Link to={"/board"}>{board.boardName}</Link>
             </Typography>
           )
         });
-      var memberBoards;
-      this.setState( state => {
-      memberBoards = this.state.memberBoards;
-      return(memberBoards);
-      });
     }
 
     render() {
@@ -94,7 +88,7 @@ class BoardSelection extends React.Component {
                   <TextField onChange={(event) => this.setState({newBoard: event.target.value})} label={"Board Name"}/><br></br>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={this.createNewBoard} style={{marginRight: '55px'}}>
+                  <Button onClick={this.registerNewBoard} style={{marginRight: '55px'}}>
                     Create Board
                   </Button>
                   <Button onClick={this.handleCloseDialog}>
@@ -102,7 +96,7 @@ class BoardSelection extends React.Component {
                   </Button>
                 </DialogActions>
               </Dialog>
-              <Typography variant='h3' style={{marginRight: '260px', marginTop: '60px', fontFamily: 'Monospace'}}>
+              <Typography variant='h3' style={{marginRight: '236px', marginTop: '60px', fontFamily: 'Monospace'}}>
                 <em><b>Boards</b></em>
               </Typography>
               <div style={{
@@ -117,11 +111,15 @@ class BoardSelection extends React.Component {
                 borderTop: '1px solid black',
                 borderBottom: '1px solid black'
               }}>
+              <div style = {{
+                paddingTop: 10,
+                marginLeft: 40,
+                textAlign: 'left'
+              }}>
 
-              <Typography variant='h5' style={{marginLeft: '20px', marginTop: '20px', fontFamily: 'Monospace', display: 'block'}}>
-                {this.printBoardsAsLinks()}
-              </Typography>
+               {this.printBoardsAsLinks()}
 
+              </div>
               </div>
               <Button style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.handleOpenDialog}>
                 Make New Board
