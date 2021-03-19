@@ -13,7 +13,7 @@ class BoardSelection extends React.Component {
         this.handleOpenDialog=this.handleOpenDialog.bind(this);
         this.handleCloseDialog=this.handleCloseDialog.bind(this);
         this.registerNewBoard=this.registerNewBoard.bind(this);
-        this.updateBoardList=this.updateBoardList.bind(this);
+        this.buildBoardList=this.buildBoardList.bind(this);
         this.printBoardsAsLinks=this.printBoardsAsLinks.bind(this);
 
         this.state = {
@@ -29,7 +29,7 @@ class BoardSelection extends React.Component {
             boardName : "BoardD"}
           ]
         };
-        this.updateBoardList(); //will build memberBoards dynamically
+        this.buildBoardList(); //will build memberBoards dynamically
     }
 
     handleOpenDialog(){
@@ -42,13 +42,13 @@ class BoardSelection extends React.Component {
 
     registerNewBoard(){
       //TODO: Send board name to DB
-      //closing, push new board to memberBoards
+      //new call to buildBoardList?
       this.state.memberBoards.push({boardName:this.state.newBoard});
       this.printBoardsAsLinks();
       this.setState({openDialog:false});
     }
 
-    updateBoardList() {
+    buildBoardList() {
       //TODO: reads boards from DB and builds array for state var memberBoards
     }
 
