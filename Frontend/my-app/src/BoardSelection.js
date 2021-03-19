@@ -3,6 +3,7 @@ import React from 'react';
 import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
 import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
+import {Link} from 'react-router-dom';
 
 import './App.css';
 
@@ -21,13 +22,13 @@ class BoardSelection extends React.Component {
           memberBoards : [
             {
             boardName : "BoardA",
-            boardAddress: "http://google.com"
+            boardAddress: "/board"
             }, {
             boardName : "BoardB",
-            boardAddress: "http://google.com"
+            boardAddress: "/board"
             }, {
             boardName : "BoardC",
-            boardAddress: "http://google.com"}
+            boardAddress: "/board"}
           ]
         };
         this.updateBoardList(); //will build memberBoards dynamically
@@ -56,7 +57,7 @@ class BoardSelection extends React.Component {
       return this.state.memberBoards.map((board) => {
           return (
             <Typography variant='h6' style={{fontFamily: 'Monospace'}}>
-            <a href ={board.boardAddress}>{board.boardName}</a>
+            <Link to={board.boardAddress}>{board.boardName}</Link>
             </Typography>
           )
         });
