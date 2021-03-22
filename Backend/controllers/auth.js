@@ -17,8 +17,6 @@ exports.register = (request, respond) => {
     const firstName = request.body.FirstName;
     const lastName = request.body.LastName;
 
-    //const {users, password, FirstName, LastName} = request.body;
-
     db.query("select users from account where users = ?;", [users], async (error, result) => {
         
         if(error) {
@@ -26,22 +24,18 @@ exports.register = (request, respond) => {
         } 
 
         if(result.length > 0) {
-            return respond.render('register', {
-                message: "That user is already in use"
-            });
+            console.log("That user is already in use");
+            respond.json({"insertID": false})
         } 
-
         let hashedPassword = await bcrypt.hash(password, 8);
-        //console.log(hashedPassword);
 
         db.query("insert into account (users, `password`, FirstName, LastName) values (?,?,?,?);", [users, hashedPassword, firstName, lastName], (error, result) =>{
             if(error) {
                 console.log(error)
             } else {
                 console.log(result);
-                return respond.render("register", {
-                    message: "User registered"
-                });
+                console.log("User registered")
+                respond.json({"insertID": true})
             }
         });
 
@@ -53,20 +47,19 @@ exports.login = async (request, respond) => {
         const { users, password } = request.body;
 
         if( !users || !password ) {
-            return request.status(400).render('login', {
-                message: "Please provide an users and passwrod"
-            })
+            respond.json({"loginStatus": false})
         }
 
         db.query("select * from account where users = ?;", [users], async (error, result) => {
-            console.log(result);
+            if( result.length == 0) {
+                console.log("wrong id");
+                respond.json({"loginStatus": false})
+            }
+
             if( !result || !(await bcrypt.compare(password, result[0].password))) {
-                respond.status(401).render("login", {
-                    message: "ID or Password is incorrect"
-                })
+                respond.json({"loginStatus": false})
             } else {
                 const users = result[0].users;
-
                 const token = jwt.sign({users: users}, process.env.JWT_SECRET, {
                     expiresIn: process.env.JWT_EXPIRES_IN
                 });
@@ -81,8 +74,8 @@ exports.login = async (request, respond) => {
                 }
 
                 respond.cookie("jwt", token, cookieOptions);
-                respond.status(200).redirect("/");
-
+                respond.json({"loginStatus": true});
+                //respond.status(200).redirect("/");  //reconnect main page or the user's main board page
             }
 
         });
