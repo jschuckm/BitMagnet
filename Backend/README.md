@@ -1,16 +1,4 @@
-<b>Access Database<b><br/>
-1. Access team server 
-    *  tema Server address: coms-319-g14.cs.iastate.edu
-    *  ID and PW are your net ID and PW
-2. type "mysql -u g14 -p" and then you can see "Enter password" 
-3. Enter password "bitMagnet"
-4. type "use Users;"
-5. type "select * from account;" <- you can see all user account. 
-6. To exit, presss "ctrl + z"
-
-<b>Register backend part<b><br/>
-*  Use POST method 
-*  port number: 8000
-*  endpoint address is /auth/register
-*  if it works well, it returns JSON format like below
-*  ![image](/uploads/bd5888e10fd894f763207fc6565ce43e/image.png)
+lzËjÖ›jÇ›n¿õÇ²Ë^jk®÷«µéšIêïz¶v·¬±Ê&³}}ƒ^²&¬µ«^yÛˆ©İ=f«{*.®w­ 6§tõ¶·*^›+*–è5â–§vØ^Ÿ*.q©ìyá'µêéjË0¢·w{^®–¬³
++u¸­1¨'zŞ-Ê—®±å,z»9·*^±é^r×ë¢fœr‹§·*.q©ìyæ¥–ë­§¢éíé:Æ+i­ë,±Ëk—ìÛEè"²×«m§$zwij»[n¿Ô±ãÎI9¶¦Šíé›z¿4ÓG§vš"Öv·¬²+?jëaş· ŠË^®'â·
++’Ì–X­­ën®{	Hã_¢¹š¶X¤y·¥£ëŠ{®Ò¶»™ë,j”±êëz¬µêŞt‡Ô±êÈv+.±ç[É©è¶«ºÇ«ŠÚŞ¶êç°”5ú+™«eŠG›zZ0n¸§±êí 7Ú–Ç¦zËäájÛ¬z²ŠÆ¥­æÊ)î±æË¢§m§$zwij»[n¿Ô±ãÎI9¶¦Šíé›z¿4ÓG§vš"Öv·¬²+?jëaşZ ŠrŠÜ(®K0zYb¶·­º¹ì%#~ŠæjÙb‘æŞ–Œ®Z Št­jÛ¬¶»™ë,j¥¢§²çzËºRºÇ«Šzn·
+è¢³Ú²Ì(­Ø­­ën®{	Hã_¢¹š¶X¤y·¥£ë–ˆ"+Z¶ëj[™ë,j°®‰à :+=«,ÂŠİ
