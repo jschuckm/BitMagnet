@@ -25,7 +25,10 @@ exports.register = (request, respond) => {
 
         if(result.length > 0) {
             console.log("That user is already in use");
-            respond.json({"insertID": false})
+            respond.json({
+                "insertID": false,
+                "message": "That user ID is already in use"
+            })
         } 
         let hashedPassword = await bcrypt.hash(password, 8);
 
@@ -35,7 +38,10 @@ exports.register = (request, respond) => {
             } else {
                 console.log(result);
                 console.log("User registered")
-                respond.json({"insertID": true})
+                respond.json({
+                    "insertID": true,
+                    "message" : "User registered"
+                })
             }
         });
 
@@ -53,11 +59,17 @@ exports.login = async (request, respond) => {
         db.query("select * from account where users = ?;", [users], async (error, result) => {
             if( result.length == 0) {
                 console.log("wrong id");
-                respond.json({"loginStatus": false})
+                respond.json({
+                    "loginStatus": false,
+                    "message": "wrong ID or Password"
+                })
             }
 
             if( !result || !(await bcrypt.compare(password, result[0].password))) {
-                respond.json({"loginStatus": false})
+                respond.json({
+                    "loginStatus": false,
+                    "message": "wrong ID or Password"
+                })
             } else {
                 const users = result[0].users;
                 const token = jwt.sign({users: users}, process.env.JWT_SECRET, {
@@ -74,7 +86,10 @@ exports.login = async (request, respond) => {
                 }
 
                 respond.cookie("jwt", token, cookieOptions);
-                respond.json({"loginStatus": true});
+                respond.json({
+                    "loginStatus": true,
+                    "message": "login successful"
+                });
                 //respond.status(200).redirect("/");  //reconnect main page or the user's main board page
             }
 
