@@ -5,3 +5,4 @@
 2. type "mysql -u g14 -p" and then you can see "Enter password" 
 3. Enter password "bitMagnet"
 4. type "select * from account;" <- you can see all user account. 
+5. To exit, presss "ctrl + z"
