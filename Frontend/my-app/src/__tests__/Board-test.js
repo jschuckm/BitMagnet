@@ -33,3 +33,23 @@ it('Pop up is visible after click add magnet button and not visible after back b
   })
   expect(document.querySelector('[data-testid="createPopup"]')).not.toBeVisible();
 });
+
+it('Delete Pop up is visible after click delete magnet button and not visible after back button click', () => {
+    act(()=>{
+      render(<Board/>,container);
+    });
+
+    expect(document.querySelector('[data-testid="deletePopup"]')).toBe(null);
+    const button = document.querySelector('[data-testid="deleteMagnetBtn"');
+    expect(document.querySelector('[data-testid="deleteMagnetBtn"')).toBeVisible();
+    act(()=>{
+      button.dispatchEvent(new MouseEvent("click",{bubbles:true}));
+    })
+    expect(document.querySelector('[data-testid="deletePopup"]')).toBeVisible();
+    const button1 = document.querySelector('[data-testid="closeDeletePopup"');
+    expect(document.querySelector('[data-testid="closeDeletePopup"')).toBeVisible();
+    act(()=>{
+      button1.dispatchEvent(new MouseEvent("click",{bubbles:true}));
+    })
+    expect(document.querySelector('[data-testid="deletePopup"]')).not.toBeVisible();
+  });

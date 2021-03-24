@@ -98,8 +98,8 @@ class Board extends React.Component {
                 </DialogActions>
               </Dialog>
 
-              <Dialog data-testid="deletePopup" open={this.state.openDialogDelete} onClose={this.handleCloseDialogDelete}>
-                <DialogTitle>Delete Magnet</DialogTitle>
+              <Dialog open={this.state.openDialogDelete} onClose={this.handleCloseDialogDelete}>
+                <DialogTitle data-testid="deletePopup">Delete Magnet</DialogTitle>
                 <DialogContent>
                   <TextField data-testid="deleteMagtxt" onChange={(event) => this.setState({deleteMagnet: event.target.value})} label={"Magnet Text"}/><br></br>
                 </DialogContent>
@@ -107,7 +107,7 @@ class Board extends React.Component {
                   <Button data-testid="deleteMagSubmitBtn" onClick={this.deleteMagnet} style={{marginRight: '55px'}}>
                     Delete Magnet
                   </Button>
-                  <Button onClick={this.handleCloseDialogDelete}>
+                  <Button data-testid="closeDeletePopup" onClick={this.handleCloseDialogDelete}>
                     Back
                   </Button>
                 </DialogActions>
