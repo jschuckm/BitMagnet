@@ -112,9 +112,8 @@ class Board extends React.Component {
                   </Button>
                 </DialogActions>
               </Dialog>
-
               <Typography variant='h3' style={{marginRight: '260px', marginTop: '60px', fontFamily: 'Monospace'}}>
-                <em><b>Board</b></em>
+                <em><b data-testid="title">Board</b></em>
               </Typography>
               
               <div style={{
