@@ -13,7 +13,7 @@ afterEach(()=>{
     container = null;
 });
 
-it('Pop up is visible after click add magnet button', () => {
+it('Pop up is visible after click add magnet button and not visible after back button click', () => {
   act(()=>{
     render(<Board/>,container);
   });
@@ -23,7 +23,13 @@ it('Pop up is visible after click add magnet button', () => {
   const button = document.querySelector('[data-testid="addMagnetBtn"');
   expect(document.querySelector('[data-testid="addMagnetBtn"')).toBeVisible();
   act(()=>{
-      button.dispatchEvent(new MouseEvent("click",{bubbles:true}));
+    button.dispatchEvent(new MouseEvent("click",{bubbles:true}));
   })
   expect(document.querySelector('[data-testid="createPopup"]')).toBeVisible();
+  const button1 = document.querySelector('[data-testid="closeCreatePopup"');
+  expect(document.querySelector('[data-testid="closeCreatePopup"')).toBeVisible();
+  act(()=>{
+    button1.dispatchEvent(new MouseEvent("click",{bubbles:true}));
+  })
+  expect(document.querySelector('[data-testid="createPopup"]')).not.toBeVisible();
 });

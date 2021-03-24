@@ -83,8 +83,8 @@ class Board extends React.Component {
               borderLeft: '1px solid black',
               borderRight: '1px solid black'
             }}>
-              <Dialog data-testid="createPopup" open={this.state.openDialog} onClose={this.handleCloseDialog}>
-                <DialogTitle>Add Magnet</DialogTitle>
+              <Dialog open={this.state.openDialog} onClose={this.handleCloseDialog}>
+                <DialogTitle data-testid="createPopup">Add Magnet</DialogTitle>
                 <DialogContent>
                   <TextField data-testid="createMagTxt"onChange={(event) => this.setState({newMagnet: event.target.value})} label={"Magnet Text"}/><br></br>
                 </DialogContent>
@@ -92,7 +92,7 @@ class Board extends React.Component {
                   <Button data-testid="createMagSubmitBtn" onClick={this.createMagnet} style={{marginRight: '55px'}}>
                     Create Magnet
                   </Button>
-                  <Button onClick={this.handleCloseDialog}>
+                  <Button data-testid="closeCreatePopup" onClick={this.handleCloseDialog}>
                     Back
                   </Button>
                 </DialogActions>
