@@ -36,7 +36,7 @@ class Login extends React.Component {
     registerAuthentication(){
       
       try{
-        fetch('/register', {
+        fetch('/auth/register', {
           method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -45,8 +45,8 @@ class Login extends React.Component {
             body: JSON.stringify({
               users: this.state.registeredUsername,
               password: this.state.registeredPassword,
-              firstName: this.state.registeredFirstName,
-              lastName: this.state.registeredLastName,
+              FirstName: this.state.registeredFirstName,
+              LastName: this.state.registeredLastName,
             }),
           });
 
@@ -60,7 +60,7 @@ class Login extends React.Component {
 
     loginAuthentication(){
       
-      fetch('/login', {
+      fetch('/auth/login', {
         method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -72,8 +72,7 @@ class Login extends React.Component {
           }),
       });
 
-      //authentication?
-      <Redirect to="/boardselection"></Redirect>
+      this.props.history.push('/boardselection');
     }
 
     render() {
