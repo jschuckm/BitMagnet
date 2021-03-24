@@ -1,9 +1,8 @@
 import React from 'react';
-
 import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
 import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
-import {Link, BrowserRouter} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 import './App.css';
 
@@ -72,7 +71,7 @@ class BoardSelection extends React.Component {
         var link = "/board";
           return (
             <Typography variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
-            <BrowserRouter><Link to={link}>{board.boardName}</Link></BrowserRouter>
+              <Link to={link}>{board.boardName}</Link>
             </Typography>
           )
         });
@@ -135,7 +134,7 @@ class BoardSelection extends React.Component {
                 textAlign: 'left'
               }}>
 
-               {this.printBoardsAsLinks()}
+                {this.printBoardsAsLinks()}
 
               </div>
               </div>
