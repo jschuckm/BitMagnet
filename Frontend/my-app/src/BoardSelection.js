@@ -3,7 +3,7 @@ import React from 'react';
 import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
 import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
-import {Link} from 'react-router-dom';
+import {Link, BrowserRouter} from 'react-router-dom';
 
 import './App.css';
 
@@ -22,11 +22,26 @@ class BoardSelection extends React.Component {
           //TODO: get user's boards from DB and make array, dummy here:
           memberBoards : [
             {
-            boardName : "B"
+            boardName : "Baseball Team"
             }, {
-            boardName : "BoardA"
+            boardName : "MOM"
             }, {
-            boardName : "BoardD"}
+            boardName : "Lunch Gang"
+            }, {
+            boardName : "Team chores"
+            }, {
+            boardName : "Garden Group"
+            }, {
+            boardName : "Fly fishing"
+            }, {
+            boardName : "A bunch of turtlez"
+            }, {
+            boardName : "Babies"
+            }, {
+            boardName : "Clouds"
+            }, {
+            boardName : "Peeps"
+            }
           ]
         };
         this.buildBoardList(); //will build memberBoards dynamically
@@ -54,9 +69,10 @@ class BoardSelection extends React.Component {
 
     printBoardsAsLinks() {
       return this.state.memberBoards.map((board) => {
+        var link = "/board";
           return (
             <Typography variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
-            <Link to={"/board"}>{board.boardName}</Link>
+            <BrowserRouter><Link to={link}>{board.boardName}</Link></BrowserRouter>
             </Typography>
           )
         });
@@ -104,6 +120,7 @@ class BoardSelection extends React.Component {
                 height: 350,
                 width: 400,
                 display: 'flex',
+                overflowY: 'scroll',
                 backgroundColor: blue[25],
                 flexDirection: 'column',
                 borderLeft: '1px solid black',
@@ -113,7 +130,8 @@ class BoardSelection extends React.Component {
               }}>
               <div style = {{
                 paddingTop: 10,
-                marginLeft: 40,
+                paddingBottom: 20,
+                marginLeft: 20,
                 textAlign: 'left'
               }}>
 
