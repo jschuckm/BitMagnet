@@ -1,12 +1,14 @@
 const express = require("express");
-const path = require("path");
 const mysql = require("mysql");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 
 dotenv.config({ path: './.env'})
-
+const path = __dirname + '/views/';
+console.log(__dirname);
 const app = express();
+app.use(express.static(path));
+
 
 const db = mysql.createConnection({
     host: process.env.DATABASE_HOST,
@@ -15,8 +17,10 @@ const db = mysql.createConnection({
     database: process.env.DATABASE
 });
 
-const publicDirectory = path.join(__dirname, './public'); //need to adjust
-app.use(express.static(publicDirectory));
+// const publicDirectory = path.join(__dirname, './public'); //need to adjust
+app.get("/", (req, res) => {
+  res.sendFile(path + "index.html");
+});
 
 // Parse URL-encoded bodies (as sent by HTML forms)
 app.use(express.urlencoded({extended: false}));
