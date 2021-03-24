@@ -13,10 +13,17 @@ afterEach(()=>{
     container = null;
 });
 
-it('Board adds element after add magnet and submit', () => {
+it('Pop up is visible after click add magnet button', () => {
   act(()=>{
     render(<Board/>,container);
   });
 
-  expect(container.querySelector('[data-testid="title"]').textContent).toBe("Board");
+  expect(document.querySelector('[data-testid="title"]').textContent).toBe("Board");
+  expect(document.querySelector('[data-testid="createPopup"]')).toBe(null);
+  const button = document.querySelector('[data-testid="addMagnetBtn"');
+  expect(document.querySelector('[data-testid="addMagnetBtn"')).toBeVisible();
+  act(()=>{
+      button.dispatchEvent(new MouseEvent("click",{bubbles:true}));
+  })
+  expect(document.querySelector('[data-testid="createPopup"]')).toBeVisible();
 });

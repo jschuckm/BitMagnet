@@ -15,7 +15,8 @@
     "@babel/plugin-proposal-class-properties": "*",
     "@babel/preset-env": "*",
     "@babel/preset-react": "*",
-    "@testing-library/react": "*",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
     "babel-jest": "*",
     "jest": "*"
   },
@@ -44,7 +45,7 @@
     ]
   },
   "jest": {
-    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/src/setupTests.js"],
     "moduleNameMapper": {
       "^.+\\.(css|less)$": "<rootDir>/config/CSSStub.js"
     }

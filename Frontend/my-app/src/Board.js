@@ -83,13 +83,13 @@ class Board extends React.Component {
               borderLeft: '1px solid black',
               borderRight: '1px solid black'
             }}>
-              <Dialog open={this.state.openDialog} onClose={this.handleCloseDialog}>
+              <Dialog data-testid="createPopup" open={this.state.openDialog} onClose={this.handleCloseDialog}>
                 <DialogTitle>Add Magnet</DialogTitle>
                 <DialogContent>
-                  <TextField onChange={(event) => this.setState({newMagnet: event.target.value})} label={"Magnet Text"}/><br></br>
+                  <TextField data-testid="createMagTxt"onChange={(event) => this.setState({newMagnet: event.target.value})} label={"Magnet Text"}/><br></br>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={this.createMagnet} style={{marginRight: '55px'}}>
+                  <Button data-testid="createMagSubmitBtn" onClick={this.createMagnet} style={{marginRight: '55px'}}>
                     Create Magnet
                   </Button>
                   <Button onClick={this.handleCloseDialog}>
@@ -98,13 +98,13 @@ class Board extends React.Component {
                 </DialogActions>
               </Dialog>
 
-              <Dialog open={this.state.openDialogDelete} onClose={this.handleCloseDialogDelete}>
+              <Dialog data-testid="deletePopup" open={this.state.openDialogDelete} onClose={this.handleCloseDialogDelete}>
                 <DialogTitle>Delete Magnet</DialogTitle>
                 <DialogContent>
-                  <TextField onChange={(event) => this.setState({deleteMagnet: event.target.value})} label={"Magnet Text"}/><br></br>
+                  <TextField data-testid="deleteMagtxt" onChange={(event) => this.setState({deleteMagnet: event.target.value})} label={"Magnet Text"}/><br></br>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={this.deleteMagnet} style={{marginRight: '55px'}}>
+                  <Button data-testid="deleteMagSubmitBtn" onClick={this.deleteMagnet} style={{marginRight: '55px'}}>
                     Delete Magnet
                   </Button>
                   <Button onClick={this.handleCloseDialogDelete}>
@@ -133,10 +133,10 @@ class Board extends React.Component {
                   </Typography>
               </div>
 
-              <Button style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.handleOpenDialog}>
+              <Button data-testid="addMagnetBtn" style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.handleOpenDialog}>
                 Add magnet
               </Button>
-              <Button style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.handleOpenDialogDelete}>
+              <Button data-testid="deleteMagnetBtn" style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.handleOpenDialogDelete}>
                 Delete magnet
               </Button>
             </div>
