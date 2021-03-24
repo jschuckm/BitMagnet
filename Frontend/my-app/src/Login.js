@@ -3,6 +3,7 @@ import React from 'react';
 import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
 import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
+import { Redirect } from "react-router-dom";
 
 import './App.css';
 
@@ -33,13 +34,45 @@ class Login extends React.Component {
     }
 
     registerAuthentication(){
-      //TODO: registering functionality
-      return 0;
+      
+      try{
+        fetch('/auth/register', {
+          method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              users: this.state.registeredUsername,
+              password: this.state.registeredPassword,
+              FirstName: this.state.registeredFirstName,
+              LastName: this.state.registeredLastName,
+            }),
+          });
+
+          this.setState({openDialog: false});
+      }
+      catch(e){
+        console.log(e);
+      }
+      
     }
 
     loginAuthentication(){
-      //TODO: login functionality
-       return 0;
+      
+      fetch('/auth/login', {
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            users: this.state.username,
+            password: this.state.password,
+          }),
+      });
+
+      this.props.history.push('/boardselection');
     }
 
     render() {
@@ -69,7 +102,7 @@ class Login extends React.Component {
                   <TextField onChange={(event) => this.setState({registeredFirstName: event.target.value})} label={"First Name"}/><br></br>
                   <TextField onChange={(event) => this.setState({registeredLastName: event.target.value})} label={"Last Name"}/><br></br>
                   <TextField onChange={(event) => this.setState({registeredUsername: event.target.value})} label={"Username"}/><br></br>
-                  <TextField onChange={(event) => this.setState({registeredPassword: event.target.value})} label={"Password"}/>
+                  <TextField onChange={(event) => this.setState({registeredPassword: event.target.value})} label={"Password"} inputProps={{type: 'password'}}/>
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={this.registerAuthentication} style={{marginRight: '55px'}}>

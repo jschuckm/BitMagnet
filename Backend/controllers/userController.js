@@ -27,7 +27,7 @@ exports.register = (request, respond) => {
             console.log("That user is already in use");
             respond.json({
                 "insertID": false,
-                "message": "That user ID is already in use"
+                message: "That user ID is already in use"
             })
         } 
         let hashedPassword = await bcrypt.hash(password, 8);
@@ -40,7 +40,7 @@ exports.register = (request, respond) => {
                 console.log("User registered")
                 respond.json({
                     "insertID": true,
-                    "message" : "User registered"
+                    message : "User registered"
                 })
             }
         });
@@ -61,14 +61,14 @@ exports.login = async (request, respond) => {
                 console.log("wrong id");
                 respond.json({
                     "loginStatus": false,
-                    "message": "wrong ID or Password"
+                    message: "wrong ID or Password"
                 })
             }
 
             if( !result || !(await bcrypt.compare(password, result[0].password))) {
                 respond.json({
                     "loginStatus": false,
-                    "message": "wrong ID or Password"
+                    message: "wrong ID or Password"
                 })
             } else {
                 const users = result[0].users;
@@ -88,7 +88,7 @@ exports.login = async (request, respond) => {
                 respond.cookie("jwt", token, cookieOptions);
                 respond.json({
                     "loginStatus": true,
-                    "message": "login successful"
+                    message: "login successful"
                 });
                 //respond.status(200).redirect("/");  //reconnect main page or the user's main board page
             }
