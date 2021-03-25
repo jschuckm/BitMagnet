@@ -60,7 +60,7 @@ class Login extends React.Component {
 
     loginAuthentication(){
       
-      fetch('/auth/login', {
+      fetch('auth/login', {
         method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -70,9 +70,20 @@ class Login extends React.Component {
             users: this.state.username,
             password: this.state.password,
           }),
+      }).then(async response => {
+        const data = await response.json();
+        console.log(data);
+        console.log(data.loginStatus);
+        if(data.loginStatus == true) {
+          console.log("successful")
+          this.props.history.push('/boardselection');
+        } else if(data.loginStatus == false) {
+          console.log("fail login");
+          alert("Wrong ID or Password");
+        }
       });
 
-      this.props.history.push('/boardselection');
+      
     }
 
     render() {
