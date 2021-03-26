@@ -26,20 +26,20 @@ class BoardSelection extends React.Component {
             boardName : "MOM"
             }, {
             boardName : "Lunch Gang"
-            }, {
-            boardName : "Team chores"
-            }, {
-            boardName : "Garden Group"
-            }, {
-            boardName : "Fly fishing"
-            }, {
-            boardName : "A bunch of turtlez"
-            }, {
-            boardName : "Babies"
-            }, {
-            boardName : "Clouds"
-            }, {
-            boardName : "Peeps"
+            //}, {
+            //boardName : "Team chores"
+            //}, {
+            //boardName : "Garden Group"
+            //}, {
+            //boardName : "Fly fishing"
+            //}, {
+            //boardName : "A bunch of turtlez"
+            //}, {
+            //boardName : "Babies"
+            //}, {
+            //boardName : "Clouds"
+            //}, {
+            //boardName : "Peeps"
             }
           ]
         };
@@ -70,7 +70,7 @@ class BoardSelection extends React.Component {
       return this.state.memberBoards.map((board) => {
         var link = "/board";
           return (
-            <Typography variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
+            <Typography data-testid="boardlinks" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
               <Link to={link}>{board.boardName}</Link>
             </Typography>
           )
@@ -98,21 +98,21 @@ class BoardSelection extends React.Component {
               borderRight: '1px solid black'
             }}>
               <Dialog open={this.state.openDialog} onClose={this.handleCloseDialog}>
-                <DialogTitle>Make Board</DialogTitle>
+                <DialogTitle data-testid="boardAddPopup">Make Board</DialogTitle>
                 <DialogContent>
-                  <TextField onChange={(event) => this.setState({newBoard: event.target.value})} label={"Board Name"}/><br></br>
+                  <TextField data-testid="boardAddText" onChange={(event) => this.setState({newBoard: event.target.value})} label={"Board Name"}/><br></br>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={this.registerNewBoard} style={{marginRight: '55px'}}>
+                  <Button data-testid="boardAddSubmit" onClick={this.registerNewBoard} style={{marginRight: '55px'}}>
                     Create Board
                   </Button>
-                  <Button onClick={this.handleCloseDialog}>
+                  <Button data-testid="boardAddCancel" onClick={this.handleCloseDialog}>
                     Back
                   </Button>
                 </DialogActions>
               </Dialog>
               <Typography variant='h3' style={{marginRight: '236px', marginTop: '60px', fontFamily: 'Monospace'}}>
-                <em><b>Boards</b></em>
+                <em><b data-testid="title">Boards</b></em>
               </Typography>
               <div style={{
                 marginTop: 10,
@@ -127,7 +127,7 @@ class BoardSelection extends React.Component {
                 borderTop: '1px solid black',
                 borderBottom: '1px solid black'
               }}>
-              <div style = {{
+              <span style = {{
                 paddingTop: 10,
                 paddingBottom: 20,
                 marginLeft: 20,
@@ -136,9 +136,9 @@ class BoardSelection extends React.Component {
 
                 {this.printBoardsAsLinks()}
 
+              </span>
               </div>
-              </div>
-              <Button style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.handleOpenDialog}>
+              <Button data-testid="addBoardBtn" style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.handleOpenDialog}>
                 Make New Board
               </Button>
             </div>
