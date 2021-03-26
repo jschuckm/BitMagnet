@@ -41,3 +41,5 @@ app.use('/auth', require('./routes/auth'));
 app.listen(8000, () => {
     console.log("Server started on Port 8000");
 })
+
+module.exports = app
