@@ -2,9 +2,10 @@ const express = require("express");
 const mysql = require("mysql");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
-const { response } = require("express");
 const app = express();
+
 dotenv.config({ path: './.env'})
+
 
 //db setting
 const db = mysql.createConnection({
@@ -42,4 +43,5 @@ app.listen(8000, () => {
     console.log("Server started on Port 8000");
 })
 
+//test
 module.exports = app
