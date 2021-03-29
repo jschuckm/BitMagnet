@@ -8,7 +8,7 @@ describe("POST/", ()=> {
         request(app)
             .post('/auth/register')
             .send({
-                users: "jestTest",
+                users: "jestTest2",
                 password: "1234",
                 FirstName: "fn",
                 LastName: 'ln'
@@ -23,7 +23,7 @@ describe("POST/", ()=> {
         request(app)
             .post('/auth/login')
             .send({
-                users: "jestTest",
+                users: "jestTest2",
                 password: "1234"
             })
             .set('Accept', 'application/json')
