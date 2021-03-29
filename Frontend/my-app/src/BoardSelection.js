@@ -2,6 +2,7 @@ import React from 'react';
 import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
 import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
+import { People } from '@material-ui/icons';
 import {Link} from 'react-router-dom';
 
 import './App.css';
@@ -120,7 +121,7 @@ class BoardSelection extends React.Component {
                 width: 400,
                 display: 'flex',
                 overflowY: 'scroll',
-                backgroundColor: blue[25],
+                backgroundColor: grey[50],
                 flexDirection: 'column',
                 borderLeft: '1px solid black',
                 borderRight: '1px solid black',
