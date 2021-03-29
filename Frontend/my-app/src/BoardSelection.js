@@ -1,7 +1,7 @@
 import React from 'react';
 import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
-import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
+import { TextField, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
 import { People } from '@material-ui/icons';
 import {Link} from 'react-router-dom';
 
@@ -71,9 +71,9 @@ class BoardSelection extends React.Component {
       return this.state.memberBoards.map((board) => {
         var link = "/board";
           return (
-            <Typography data-testid="boardlinks" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
-              <Link to={link}>{board.boardName}</Link>
-            </Typography>
+              <Typography data-testid="boardlinks" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
+                <Link to={link}>{board.boardName}</Link><IconButton color='inherit'><People /></IconButton>
+              </Typography>
           )
         });
     }
