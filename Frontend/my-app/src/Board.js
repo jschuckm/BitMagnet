@@ -14,8 +14,8 @@ class Board extends React.Component {
         this.handleCloseDialog=this.handleCloseDialog.bind(this);
         this.handleOpenDialogDelete=this.handleOpenDialogDelete.bind(this);
 
-        this.handleOpenTextDialog=this.handleOpenTextDialog(this);
-        this.handleCloseTextDialog=this.handleCloseTextDialog(this);
+        this.handleOpenTextDialog=this.handleOpenTextDialog.bind(this);
+        this.handleCloseTextDialog=this.handleCloseTextDialog.bind(this);
 
         this.handleCloseDialogDelete=this.handleCloseDialogDelete.bind(this);
         this.createMagnet=this.createMagnet.bind(this);
@@ -46,11 +46,11 @@ class Board extends React.Component {
     }
 
     handleCloseTextDialog() {
-      this.setState({openTextDialog:false});
+      this.setState({openTextDialog: false});
     }
   
     handleCloseDialogDelete(){
-        this.setState({openDialogDelete: false});
+      this.setState({openDialogDelete: false});
     }
 
     createMagnet(){
@@ -58,7 +58,6 @@ class Board extends React.Component {
         //console.log(this.state.newMagnet);
         //this.state.magnets.push({title:this.state.newMagnetTitle, content: ''}); **PUSH OCCURS AFTER CONTENT IS OBTAINED
         //console.log(this.state.magnets);
-        this.setState({openNewDialog:false});
         this.setState({openTextDialog:true});
     }
 
@@ -67,6 +66,7 @@ class Board extends React.Component {
       console.log(this.state.newMagnetText);
       this.state.magnets.push({title:this.state.newMagnetTitle, content: this.state.newMagnetText});
       console.log(this.state.magnets);
+      this.setState({openNewDialog:false});
       this.setState({openTextDialog:false});
     }
 
@@ -115,16 +115,23 @@ class Board extends React.Component {
                   <TextField data-testid="createMagTxt"onChange={(event) => this.setState({newMagnetTitle: event.target.value})} label={"Magnet Title"}/><br></br>
                 </DialogContent>
                 <DialogActions>
-                  <Button data-testid="createMagSubmitBtn" onClick={this.createMagnet} style={{marginRight: '55px'}}>
-                    Create Magnet
+                  <Button data-testid="createMagSubmitBtn" onClick={this.createMagnet} style={{marginRight: '10px'}}>
+                    Create Text Magnet
                   </Button>
+                  
+                  {/* This button has no handlers ++ Test id's will need to be narrowed*/}
+                  <Button data-testid="createMagSubmitBtn" onClick={this.createMagnet} style={{marginRight: '10px'}}>
+                    Create Photo Magnet
+                  </Button>
+                  
                   <Button data-testid="closeCreatePopup" onClick={this.handleCloseDialog}>
                     Back
                   </Button>
                 </DialogActions>
               </Dialog>
 
-              <Dialog open={this.state.openTextDialog} onClose={this.handleCloseDialog}>
+              {/*Dialog for text content*/}
+              <Dialog open={this.state.openTextDialog} onClose={this.handleCloseTextDialog}>
                 <DialogTitle data-testid="createTextPopup">Enter Text</DialogTitle>
                 <DialogContent>
                   <TextField data-testid="createMagTxtContent"onChange={(event) => this.setState({newMagnetText: event.target.value})} label={"Magnet Text"}/><br></br>
@@ -159,7 +166,7 @@ class Board extends React.Component {
               
               <div style={{
                 marginTop: 10,
-                height: 350,
+                height: 550,
                 width: 400,
                 display: 'flex',
                 backgroundColor: blue[25],
