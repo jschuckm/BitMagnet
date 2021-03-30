@@ -10,14 +10,20 @@ const db = mysql.createConnection({
 
 exports.getAllBoard = (request, respond) => {
 
-    
     const userId = request.params.id;
-    // if(test) {
-    //     console.log("Hello this is board main: " + id);
-    // } else {
-    //     console.log("error");
-    // }
-    
+    var boardList = [];
+    db.query("select b.boardName from account a, boardSelection b, userBoardRelationship ub where a.users = ub.userID and b.boardID = ub.boardID and ub.userID = ?;", [userId], (error, result) => {
+        if(error) {
+            console.log(error);
+        } else {            
+            for(var i=0; i<result.length; i++) {
+                boardList.push({bordName: result[i].boardName});
+            }
+            console.log("Return list of board");
+            respond.json(boardList);
+        }
+    })
+
 };
 
 exports.addBoard = (request, respond) => {
@@ -49,4 +55,16 @@ exports.addBoard = (request, respond) => {
 
 exports.deleteBoard = (request, respond) => {
 
+    const boardName = request.body.boardName;
+
+    db.query("delete from boardSelection where boardName = ?;", [boardName], (error, result) => {
+        if(error) {
+            console.log(error);
+        } else {
+            console.log("Delete board");
+            respond.json({
+                message: "Delete that board"
+            })
+        }
+    })
 }
