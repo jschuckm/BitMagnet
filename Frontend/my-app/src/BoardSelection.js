@@ -1,8 +1,7 @@
 import React from 'react';
 import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
-import { TextField, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
-import { People } from '@material-ui/icons';
+import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
 import {Link} from 'react-router-dom';
 
 import './App.css';
@@ -12,12 +11,15 @@ class BoardSelection extends React.Component {
         super(props);
         this.handleOpenDialog=this.handleOpenDialog.bind(this);
         this.handleCloseDialog=this.handleCloseDialog.bind(this);
+        this.handleOpenDialogFriends=this.handleOpenDialogFriends.bind(this);
+        this.handleCloseDialogFriends=this.handleCloseDialogFriends.bind(this);
         this.registerNewBoard=this.registerNewBoard.bind(this);
         this.buildBoardList=this.buildBoardList.bind(this);
         this.printBoardsAsLinks=this.printBoardsAsLinks.bind(this);
 
         this.state = {
           newBoard : '',
+          openDialogFriends: false,
           //TODO: userName : access DB
           //TODO: get user's boards from DB and make array, dummy here:
           memberBoards : [
@@ -55,6 +57,14 @@ class BoardSelection extends React.Component {
       this.setState({openDialog: false});
     }
 
+    handleOpenDialogFriends(){
+      this.setState({openDialogFriends: true});
+    }
+
+    handleCloseDialogFriends(){
+      this.setState({openDialogFriends: false});
+    }
+
     registerNewBoard(){
       //TODO: Send board name to DB
       //new call to buildBoardList?
@@ -72,7 +82,7 @@ class BoardSelection extends React.Component {
         var link = "/board";
           return (
               <Typography data-testid="boardlinks" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
-                <Link to={link}>{board.boardName}</Link><IconButton color='inherit'><People /></IconButton>
+                <Link to={link}>{board.boardName}</Link>
               </Typography>
           )
         });
@@ -112,6 +122,16 @@ class BoardSelection extends React.Component {
                   </Button>
                 </DialogActions>
               </Dialog>
+              <Dialog open={this.state.openDialogFriends} onClose={this.handleCloseDialogFriends}>
+                <DialogTitle>Friends List</DialogTitle>
+                <DialogContent>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={this.handleCloseDialogFriends}>
+                    Back
+                  </Button>
+                </DialogActions>
+              </Dialog>
               <Typography variant='h3' style={{marginRight: '236px', marginTop: '60px', fontFamily: 'Monospace'}}>
                 <em><b data-testid="title">Boards</b></em>
               </Typography>
@@ -139,9 +159,16 @@ class BoardSelection extends React.Component {
 
               </span>
               </div>
-              <Button data-testid="addBoardBtn" style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.handleOpenDialog}>
-                Make New Board
-              </Button>
+              <div style={{
+              display: 'flex'
+              }}>
+                <Button style={{marginRight: '175px'}} onClick={this.handleOpenDialogFriends}>
+                  Friends
+                </Button>
+                <Button data-testid="addBoardBtn" onClick={this.handleOpenDialog}>
+                  Make New Board
+                </Button>
+              </div>
             </div>
 
           </div>

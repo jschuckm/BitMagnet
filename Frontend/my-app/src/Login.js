@@ -106,7 +106,6 @@ class Login extends React.Component {
               borderLeft: '1px solid black',
               borderRight: '1px solid black'
             }}>
-              {/* About me */}
               <Dialog open={this.state.openDialog} onClose={this.handleCloseDialog}>
                 <DialogTitle>Register Account</DialogTitle>
                 <DialogContent>
