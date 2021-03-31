@@ -4,6 +4,8 @@ import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
 import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
 import {Link} from 'react-router-dom';
+import {Rnd} from 'react-rnd';
+import {Draggable} from 'react-draggable';
 
 import './App.css';
 
@@ -68,6 +70,8 @@ class Board extends React.Component {
       console.log(this.state.magnets);
       this.setState({openNewDialog:false});
       this.setState({openTextDialog:false});
+      this.state.newMagnetTitle="";
+      this.state.newMagnetText="";
     }
 
     deleteMagnet(){
@@ -82,9 +86,20 @@ class Board extends React.Component {
         return this.state.magnets.map((magnet) => {
             console.log(magnet.title);
             return (
-              <Typography variant='h6' style={{fontFamily: 'Monospace'}}>
-              <p>{magnet.title}:{magnet.content}</p>
-              </Typography>
+              <Rnd
+              //size = {300}
+              minWidth = {50}
+              maxWidth = {200}
+              bounds = {"parent"}
+              enableResizing = 
+                {{top:false, right:false, bottom:false, left:false, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false}}
+              >
+                <div style = {{backgroundColor: grey[50]}}>
+                  <Typography variant='h5' style={{fontFamily: 'Monospace'}}>
+                    {magnet.title}:{magnet.content}
+                  </Typography>
+                </div>
+              </Rnd>
             )
           });
       }
@@ -160,13 +175,12 @@ class Board extends React.Component {
                   </Button>
                 </DialogActions>
               </Dialog>
-              <Typography variant='h3' style={{marginRight: '260px', marginTop: '60px', fontFamily: 'Monospace'}}>
+              <Typography variant='h3' style={{marginRight: '260px', marginTop: '60px', paddingBottom: '10px', fontFamily: 'Monospace'}}>
                 <em><b data-testid="title">Board</b></em>
               </Typography>
               
               <div style={{
-                marginTop: 10,
-                height: 550,
+                height: 500,
                 width: 400,
                 display: 'flex',
                 backgroundColor: blue[25],
@@ -174,11 +188,15 @@ class Board extends React.Component {
                 borderLeft: '1px solid black',
                 borderRight: '1px solid black',
                 borderTop: '1px solid black',
-                borderBottom: '1px solid black'
+                borderBottom: '1px solid black',
               }}>
-                  <span style={{marginLeft: '20px', marginTop: '20px', fontFamily: 'Monospace', display: 'block'}}>
+                <div style={{
+                height: 500,
+                
+                display: 'flex',
+                flexDirection: 'column'}}>
                     {this.printMagnets()}
-                  </span>
+                </div>
               </div>
 
               <Button data-testid="addMagnetBtn" style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.handleOpenNewDialog}>
