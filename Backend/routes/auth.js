@@ -25,10 +25,10 @@ router.post("/:id/deleteBoard", boardController.deleteBoard);
 router.get("/:id/getFriends", friendController.getFriends);
 
             //auth/:id/addFriend
-router.post("/:id/addBoard", friendController.addFriend);
+router.post("/:id/addFriend", friendController.addFriend);
 
             //auth/:id/deleteFriend
-router.post("/:id/deleteBoard", friendController.deleteFriend);
+router.post("/:id/deleteFriend", friendController.deleteFriend);
 
             //auth/:boardName/addMagnet
 router.post("/:boardName/addMagnet", magnetController.addMagnet);
