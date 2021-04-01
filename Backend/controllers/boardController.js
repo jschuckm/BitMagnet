@@ -17,7 +17,7 @@ exports.getAllBoard = (request, respond) => {
             console.log(error);
         } else {            
             for(var i=0; i<result.length; i++) {
-                boardList.push({bordName: result[i].boardName});
+                boardList.push({boardName: result[i].boardName});
             }
             console.log("Return list of board");
             respond.json(boardList);

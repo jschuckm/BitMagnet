@@ -2,6 +2,7 @@ const express = require("express");
 const authController = require("../controllers/userController");
 const boardController = require("../controllers/boardController");
 const friendController = require("../controllers/friendController");
+const magnetController = require("../controllers/magnetController");
 
 const router = express.Router();
 
@@ -28,5 +29,14 @@ router.post("/:id/addBoard", friendController.addFriend);
 
             //auth/:id/deleteFriend
 router.post("/:id/deleteBoard", friendController.deleteFriend);
+
+            //auth/:boardName/addMagnet
+router.post("/:boardName/addMagnet", magnetController.addMagnet);
+
+            //auth/:boardName/deleteMagnet
+router.post("/:boardName/deleteMagnet", magnetController.deleteMagnet);
+
+            //auth/:boardName/getAllMagnet
+router.get("/:boardName/getAllMagnet", magnetController.getAllMagnet);
 
 module.exports = router;
