@@ -10,14 +10,14 @@ const db = mysql.createConnection({
 
 exports.getFriends = (request, respond) => {
 
-    const userId = request.params.id;
+    const userID = request.params.id;
     var friendList = [];
-    db.query("select * from friends where userId = ?;", [userId], (error, result) => {
+    db.query("select * from friendslist where userID = ?;", [userID], (error, result) => {
         if(error) {
             console.log(error);
         } else {            
             for(var i=0; i<result.length; i++) {
-                friendList.push({friend: result[i].friend});
+                friendList.push({friendID: result[i].friendID});
             }
             console.log("Return list of friends");
             respond.json(friendList);
@@ -28,26 +28,21 @@ exports.getFriends = (request, respond) => {
 
 exports.addFriend = (request, respond) => {
 
-    const userId = request.params.id;
-    const friend = request.body.friend;
+    const userID = request.params.id;
+    const friendID = request.body.friendID;
 
-    db.query("insert into friends(friend) values (?);", [friend], (error, result) => {
+    db.query("insert into friendslist(userID, friendID) values(?, ?);", [userID, friendID], (error, result) =>{
         if(error) {
             console.log(error);
         } else {
-            console.log("Insert new Friend");
-            respond.json({
-                message: "Insert new Friend"
-            })
+            console.log("Friend relationship");
         }
     })
 };
 
 exports.deleteFriend = (request, respond) => {
 
-    const friend = request.body.friend;
-
-    db.query("delete from friends where friend = ?;", [friend], (error, result) => {
+    db.query("delete from friendslist where friendID = ?;", [friendID], (error, result) => {
         if(error) {
             console.log(error);
         } else {
