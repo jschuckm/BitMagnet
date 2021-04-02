@@ -3,6 +3,9 @@ const authController = require("../controllers/userController");
 const boardController = require("../controllers/boardController");
 const friendController = require("../controllers/friendController");
 const magnetController = require("../controllers/magnetController");
+const imageController = require("../controllers/imageController");
+const multer = require('multer');
+const fs = require('fs');
 
 const router = express.Router();
 
@@ -38,5 +41,25 @@ router.post("/:boardName/deleteMagnet", magnetController.deleteMagnet);
 
             //auth/:boardName/getAllMagnet
 router.get("/:boardName/getAllMagnet", magnetController.getAllMagnet);
+
+
+//upload image file
+const upload = multer({
+    storage: multer.diskStorage({
+        destination: (req, file, cb) => {
+            if(file.mimetype == "image/jpeg" || file.mimetype == "image/jpg" || file.mimetype == "image/png") {
+                cb(null, '../Backend/image')
+            } else {
+                console.log("wrong image format.Please check image format (jpeg, jpg, or png)")
+            }
+        }, 
+        filename: (req, file, cb) => {
+            cb(null, Date.now() + "-" + file.originalname);
+        },
+    }),
+});
+            //auth/:boardName/uploadImage
+router.post("/:boardName/uploadImage", upload.single('img'), imageController.uploadImage); //upload image 
+router.get("/:boardName/:ImageName/getImage", imageController.getImage); //get image path
 
 module.exports = router;
