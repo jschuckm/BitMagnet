@@ -9,8 +9,8 @@ const db = mysql.createConnection({
 });
 
 exports.getFriends = (request, respond) => {
-
-    const userID = request.params.id;
+    const userID = request.body.userID;
+    console.log(userID);
     var friendList = [];
     db.query("select * from friendslist where userID = ?;", [userID], (error, result) => {
         if(error) {
@@ -20,36 +20,63 @@ exports.getFriends = (request, respond) => {
                 friendList.push({friendID: result[i].friendID});
             }
             console.log("Return list of friends");
+            console.log(friendList);
             respond.json(friendList);
         }
     })
 
-};
+}
 
 exports.addFriend = (request, respond) => {
+    
+    try{
+        const userID = request.body.userID;
+        const friendID = request.body.friendID;
 
-    const userID = request.params.id;
-    const friendID = request.body.friendID;
+        db.query("insert into friendslist(userID, friendID) values(?, ?);", [userID, friendID], (error, result) =>{
 
-    db.query("insert into friendslist(userID, friendID) values(?, ?);", [userID, friendID], (error, result) =>{
-        if(error) {
-            console.log(error);
-        } else {
-            console.log("Friend relationship");
-        }
-    })
-};
+            //TO-DO
+            //ADDING AUTHENTICATION (CHECKING IF RESULT IS AN ACTUAL USERNAME)
+
+            if(error) {
+                console.log(error);
+            } else {
+                console.log("Friend relationship 1");
+            }
+        })
+    
+        db.query("insert into friendslist(userID, friendID) values(?, ?);", [friendID, userID], (error, result) =>{
+            if(error) {
+                console.log(error);
+            } else {
+                console.log("Friend relationship 2");
+            }
+        })
+    }
+    catch(error){
+        console.log(error);
+    }
+}
 
 exports.deleteFriend = (request, respond) => {
 
-    db.query("delete from friendslist where friendID = ?;", [friendID], (error, result) => {
-        if(error) {
-            console.log(error);
-        } else {
-            console.log("Delete friend");
-            respond.json({
-                message: "Delete that friend"
-            })
-        }
-    })
-};
+    try{
+        const friendID= request.body.friendID;
+
+        db.query("delete from friendslist where friendID = ?;", [friendID], (error, result) => {
+
+            //TO-DO
+            //DELETE AUTHENTICATION (CHECKING IF RESULT IS AN ACTUAL USERNAME)
+            
+
+            if(error) {
+                console.log(error);
+            } else {
+                console.log("Delete friend");
+            }
+        })
+    }
+    catch(error){
+        console.log(error);
+    }
+}

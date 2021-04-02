@@ -19,15 +19,22 @@ class BoardSelection extends React.Component {
 
         this.getFriendsList=this.getFriendsList.bind(this);
         this.printFriendsList=this.printFriendsList.bind(this);
+
         this.handleOpenDialogAddFriend=this.handleOpenDialogAddFriend.bind(this);
         this.handleCloseDialogAddFriend=this.handleCloseDialogAddFriend.bind(this);
         this.addFriend=this.addFriend.bind(this);
 
+        this.handleOpenDialogDeleteFriend=this.handleOpenDialogDeleteFriend.bind(this);
+        this.handleCloseDialogDeleteFriend=this.handleCloseDialogDeleteFriend.bind(this);
+        this.deleteFriend=this.deleteFriend.bind(this);
+
         this.state = {
           newBoard : '',
           newFriend : '',
+          deletingFriend: '',
           openDialogFriends: false,
           openDialogAddFriend: false,
+          openDialogDeleteFriend: false,
 
           //TO-FIX, temporary user for testing
           concrete_userID: 't',
@@ -64,7 +71,7 @@ class BoardSelection extends React.Component {
     }
 
     componentDidMount(){
-      this.getFriendsList(this.state.concrete_userID);
+      this.getFriendsList();
     }
 
     handleOpenDialog(){
@@ -89,6 +96,14 @@ class BoardSelection extends React.Component {
 
     handleCloseDialogAddFriend(){
       this.setState({openDialogAddFriend: false});
+    }
+
+    handleOpenDialogDeleteFriend(){
+      this.setState({openDialogDeleteFriend: true});
+    }
+
+    handleCloseDialogDeleteFriend(){
+      this.setState({openDialogDeleteFriend: false});
     }
 
     registerNewBoard(){
@@ -117,31 +132,38 @@ class BoardSelection extends React.Component {
     printFriendsList() {
       return this.state.friendsList.map((friend) => {
           return (
-              <Typography style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
-                {friend}
+              <Typography style={{fontFamily: 'Monospace', marginTop: '10px', marginBottom: '10px', align: 'left'}}>
+                {friend.friendID}
               </Typography>
           )
         });
     }
 
-    getFriendsList(userID){
-      fetch('auth/:id/getFriends', {
-        method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        }).then((response) => response.json())
-        .then((json) => {
-          var friend = [];
-          json.forEach((newfriend) => {
-            friend.push({
-              friendID: newfriend.friendID,
-            });
+    getFriendsList(){
+      console.log("flag");
+      try{
+        fetch('auth/:id/getFriends', {
+          method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userID: this.state.concrete_userID
+            }),
+        }).then(async response => {
+            const data = await response.json();
+            var tempFriendsList = [];
+            console.log(data);
+            for(var i=0; i<data.length; i++){
+              tempFriendsList.push(data[i]);
+            }
+            this.setState({friendsList: tempFriendsList});
           });
-          console.log(friend);
-          this.setState({friendsList: friend});
-        });
+      }
+      catch(err){
+        console.log(err);
+      }
     }
 
     addFriend(){
@@ -155,7 +177,26 @@ class BoardSelection extends React.Component {
             userID: this.state.concrete_userID,
             friendID: this.state.newFriend
           }),
-        }).then(() => this.state.friendsList.push({friend:this.state.newFriend}),this.getFriendsList(this.state.concrete_userID),this.setState({openDialogAddFriend:false}), this.setState({newFriend: ''}));
+        })
+        this.getFriendsList();
+        this.setState({openDialogAddFriend:false});
+        this.setState({newFriend: ''});
+    }
+
+    deleteFriend(){
+      fetch('auth/:id/deleteFriend', {
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            friendID: this.state.deletingFriend
+          }),
+        });
+        this.getFriendsList();
+        this.setState({openDialogDeleteFriend:false});
+        this.setState({deleteFriend: ''});
     }
 
     render() {
@@ -196,12 +237,15 @@ class BoardSelection extends React.Component {
               {/* Friend Dialog */}
               <Dialog open={this.state.openDialogFriends} onClose={this.handleCloseDialogFriends}>
                 <DialogTitle>Friends List</DialogTitle>
-                <DialogContent>
+                <DialogContent style={{overflowY: 'scroll', width: 300, height: 350}}>
                   {this.printFriendsList()}
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={this.handleOpenDialogAddFriend}>
                     Add Friend
+                  </Button>
+                  <Button onClick={this.handleOpenDialogDeleteFriend}>
+                    Delete Friend
                   </Button>
                   <Button onClick={this.handleCloseDialogFriends}>
                     Back
@@ -210,7 +254,7 @@ class BoardSelection extends React.Component {
               </Dialog>
               {/* Add Friend Dialog */}
               <Dialog open={this.state.openDialogAddFriend} onClose={this.handleCloseDialogAddFriend}>
-                <DialogTitle>Friends List</DialogTitle>
+                <DialogTitle>Add Friend</DialogTitle>
                 <DialogContent>
                   <TextField onChange={(event) => this.setState({newFriend: event.target.value})} label={"Friend Username"}/><br></br>
                 </DialogContent>
@@ -219,6 +263,21 @@ class BoardSelection extends React.Component {
                     Add
                   </Button>
                   <Button onClick={this.handleCloseDialogAddFriend}>
+                    Back
+                  </Button>
+                </DialogActions>
+              </Dialog>
+              {/* Delete Friend Dialog */}
+              <Dialog open={this.state.openDialogDeleteFriend} onClose={this.handleCloseDialogDeleteFriend}>
+                <DialogTitle>Delete Friend</DialogTitle>
+                <DialogContent>
+                  <TextField onChange={(event) => this.setState({deletingFriend: event.target.value})} label={"Username to Delete"}/><br></br>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={this.deleteFriend} style={{marginRight: '55px'}}>
+                    Delete
+                  </Button>
+                  <Button onClick={this.handleCloseDialogDeleteFriend}>
                     Back
                   </Button>
                 </DialogActions>
