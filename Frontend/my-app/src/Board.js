@@ -82,24 +82,28 @@ class Board extends React.Component {
             }
         }
     }
+
     printMagnets() {
+      var leftSpot = 50;
+      var topSpot = 50;
+      {var leftSpot = Math.random() * 350}; //how to get magnet size for safe placement?
+      {var topSpot = Math.random() * 300};
         return this.state.magnets.map((magnet) => {
-            console.log(magnet.title);
-            return (
+            return ( //ideally this will have a hover on mouse until click for placement. doing random for now.
               <Rnd
-              //size = {300}
+              default = {{ x: leftSpot, y: topSpot}}
               minWidth = {50}
-              maxWidth = {200}
+              maxWidth = {250}
+              minHeight = {30}
               bounds = {"parent"}
-              enableResizing = 
-                {{top:false, right:false, bottom:false, left:false, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false}}
+              enableResizing = {false}
               >
-                <div style = {{backgroundColor: grey[50]}}>
+                <div style = {{backgroundColor: grey[50]}} id = "dragMag">
                   <Typography variant='h5' style={{fontFamily: 'Monospace'}}>
                     {magnet.title}:{magnet.content}
                   </Typography>
                 </div>
-              </Rnd>
+              </Rnd> 
             )
           });
       }
@@ -192,13 +196,14 @@ class Board extends React.Component {
               }}>
                 <div style={{
                 height: 500,
-                
                 display: 'flex',
-                flexDirection: 'column'}}>
+                flexDirection: 'column'}}
+                id = {"mainBoard"}
+                >
                     {this.printMagnets()}
+                    
                 </div>
               </div>
-
               <Button data-testid="addMagnetBtn" style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.handleOpenNewDialog}>
                 Add magnet
               </Button>

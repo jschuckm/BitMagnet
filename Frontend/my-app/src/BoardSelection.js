@@ -20,8 +20,6 @@ class BoardSelection extends React.Component {
         this.state = {
           newBoard : '',
           openDialogFriends: false,
-          //TODO: userName : access DB
-          //TODO: get user's boards from DB and make array, dummy here:
           memberBoards : [
             {
             boardName : "Baseball Team"
@@ -29,20 +27,6 @@ class BoardSelection extends React.Component {
             boardName : "MOM"
             }, {
             boardName : "Lunch Gang"
-            //}, {
-            //boardName : "Team chores"
-            //}, {
-            //boardName : "Garden Group"
-            //}, {
-            //boardName : "Fly fishing"
-            //}, {
-            //boardName : "A bunch of turtlez"
-            //}, {
-            //boardName : "Babies"
-            //}, {
-            //boardName : "Clouds"
-            //}, {
-            //boardName : "Peeps"
             }
           ]
         };
@@ -66,15 +50,47 @@ class BoardSelection extends React.Component {
     }
 
     registerNewBoard(){
-      //TODO: Send board name to DB
-      //new call to buildBoardList?
-      this.state.memberBoards.push({boardName:this.state.newBoard});
+      try{
+        fetch('/auth/:id/addBoard', {
+          method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              boardName:this.state.newBoard
+            }),
+          });
+          console.log("trying to add to board");
+          this.setState({openDialog: false});
+      }
+      catch(e){
+        console.log(e);
+      }
+      this.state.memberBoards.push({boardName:this.state.newBoard}); //will this be redundant after board is added to db?
       this.printBoardsAsLinks();
-      this.setState({openDialog:false});
     }
 
     buildBoardList() {
-      //TODO: reads boards from DB and builds array for state var memberBoards
+      //reads boards from DB for state var memberBoards
+      fetch('auth/:id/main', {
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({}),
+        }).then(async response => {
+          const boardList = await response.json();
+          console.log(boardList);
+          if (boardList != null) {
+            console.log("we have something");
+            this.state.memberBoards = boardList;
+          }
+          else {
+            console.log("we don't have something");
+          }
+          });
     }
 
     printBoardsAsLinks() {
