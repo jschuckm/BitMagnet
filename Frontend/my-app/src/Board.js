@@ -5,7 +5,6 @@ import grey from '@material-ui/core/colors/grey';
 import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
 import {Link} from 'react-router-dom';
 import {Rnd} from 'react-rnd';
-import {Draggable} from 'react-draggable';
 
 import './App.css';
 
@@ -37,6 +36,7 @@ class Board extends React.Component {
 
     handleCloseDialog(){
       this.setState({openNewDialog: false});
+      this.state.newMagnetTitle="";
     }
 
     handleOpenDialogDelete(){

@@ -13,7 +13,7 @@ router.post("/register", authController.register);
 router.post("/login", authController.login);
 
             //auth/:id/main
-router.get("/:id/main", boardController.getAllBoard);
+router.post("/:id/main", boardController.getAllBoard);
 
             //auth/:id/addBoard
 router.post("/:id/addBoard", boardController.addBoard);
