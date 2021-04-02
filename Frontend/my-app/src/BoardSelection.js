@@ -37,21 +37,13 @@ class BoardSelection extends React.Component {
           openDialogDeleteFriend: false,
 
           //TO-FIX, temporary user for testing
-          concrete_userID: 't',
+          concrete_userID: 'b',
 
           friendsList: [],
 
           //TODO: userName : access DB
           //TODO: get user's boards from DB and make array, dummy here:
-          memberBoards : [
-            {
-            boardName : "Baseball Team"
-            }, {
-            boardName : "MOM"
-            }, {
-            boardName : "Lunch Gang"
-            }
-          ]
+          memberBoards : []
         };
         this.buildBoardList(); //will build memberBoards dynamically
     }
@@ -101,17 +93,21 @@ class BoardSelection extends React.Component {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
+              userID: this.state.concrete_userID,
               boardName:this.state.newBoard
             }),
           });
           console.log("trying to add to board");
-          this.setState({openDialog: false});
       }
       catch(e){
         console.log(e);
       }
-      this.state.memberBoards.push({boardName:this.state.newBoard}); //will this be redundant after board is added to db?
-      this.printBoardsAsLinks();
+      //this.state.memberBoards.push({boardName:this.state.newBoard}); //will this be redundant after board is added to db?
+      //this.printBoardsAsLinks();
+      //call buildBoardList() instead of ^^
+      this.buildBoardList();
+      this.setState({openDialog: false});
+      this.setState({newBoard: ''});
     }
 
     buildBoardList() {
@@ -122,13 +118,18 @@ class BoardSelection extends React.Component {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({}),
+          body: JSON.stringify({
+            userID: this.state.concrete_userID
+          }),
         }).then(async response => {
-          const boardList = await response.json();
-          console.log(boardList);
-          if (boardList != null) {
-            console.log("we have something");
-            this.state.memberBoards = boardList;
+          var tempBoardList = [];
+          const data = await response.json();
+          if (data != null) {
+            for (var i = 0; i < data.length; i++) {
+              tempBoardList.push(data[i]);
+            }
+            console.log("we have something", tempBoardList);
+            this.setState({memberBoards: tempBoardList});
           }
           else {
             console.log("we don't have something");
