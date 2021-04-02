@@ -28,13 +28,19 @@ class BoardSelection extends React.Component {
         this.handleCloseDialogDeleteFriend=this.handleCloseDialogDeleteFriend.bind(this);
         this.deleteFriend=this.deleteFriend.bind(this);
 
+        this.handleOpenDialogDeleteBoard = this.handleOpenDialogDeleteBoard.bind(this);
+        this.handleCloseDialogDeleteBoard = this.handleCloseDialogDeleteBoard.bind(this);
+        this.deleteBoard = this.deleteBoard.bind(this);
+
         this.state = {
           newBoard : '',
+          removeBoard : '',
           newFriend : '',
           deletingFriend: '',
           openDialogFriends: false,
           openDialogAddFriend: false,
           openDialogDeleteFriend: false,
+          openDialogDeleteBoard: false,
 
           //TO-FIX, temporary user for testing
           concrete_userID: 'b',
@@ -84,6 +90,15 @@ class BoardSelection extends React.Component {
       this.setState({openDialogDeleteFriend: false});
     }
 
+    handleOpenDialogDeleteBoard() {
+      console.log("in delete brd open");
+      this.setState({openDialogDeleteBoard: true});
+    }
+
+    handleCloseDialogDeleteBoard() {
+      this.setState({openDialogDeleteBoard: false});
+    }
+
     registerNewBoard(){
       try{
         fetch('/auth/:id/addBoard', {
@@ -102,12 +117,32 @@ class BoardSelection extends React.Component {
       catch(e){
         console.log(e);
       }
-      //this.state.memberBoards.push({boardName:this.state.newBoard}); //will this be redundant after board is added to db?
-      //this.printBoardsAsLinks();
-      //call buildBoardList() instead of ^^
       this.buildBoardList();
       this.setState({openDialog: false});
       this.setState({newBoard: ''});
+    }
+
+    deleteBoard(){
+      try{
+        fetch('/auth/:id/deleteBoard', {
+          method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userID: this.state.concrete_userID,
+              boardName:this.state.removeBoard
+            }),
+          });
+          console.log("trying to break relationship with board and user");
+      }
+      catch(e){
+        console.log(e);
+      }
+      this.buildBoardList();
+      this.setState({openDialogDeleteBoard: false});
+      this.setState({removeBoard: ''});
     }
 
     buildBoardList() {
@@ -253,6 +288,23 @@ class BoardSelection extends React.Component {
                   </Button>
                 </DialogActions>
               </Dialog>
+
+              {/*delete board dialog*/}
+              <Dialog open={this.state.openDialogDeleteBoard} onClose={this.handleCloseDialogDeleteBoard}>
+                <DialogTitle data-testid="deleteBoardPopup">Quit Board</DialogTitle>
+                <DialogContent>
+                  <TextField data-testid="boardDeleteText" onChange={(event) => this.setState({removeBoard: event.target.value})} label={"Board Name"}/><br></br>
+                </DialogContent>
+                <DialogActions>
+                  <Button data-testid="boardDeleteSubmit" onClick={this.deleteBoard} style={{marginRight: '55px'}}>
+                    Quit
+                  </Button>
+                  <Button data-testid="boardDeleteCancel" onClick={this.handleCloseDialogDeleteBoard}>
+                    Back
+                  </Button>
+                </DialogActions>
+              </Dialog>
+
               {/* Friend Dialog */}
               <Dialog open={this.state.openDialogFriends} onClose={this.handleCloseDialogFriends}>
                 <DialogTitle>Friends List</DialogTitle>
@@ -335,7 +387,10 @@ class BoardSelection extends React.Component {
                   Friends
                 </Button>
                 <Button data-testid="addBoardBtn" onClick={this.handleOpenDialog}>
-                  Make New Board
+                  Start Board
+                </Button>
+                <Button style ={{}} data-testid="quitBoardBtn" onClick={this.handleOpenDialogDeleteBoard}>
+                  Quit Board
                 </Button>
               </div>
             </div>
