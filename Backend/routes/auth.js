@@ -5,7 +5,6 @@ const friendController = require("../controllers/friendController");
 const magnetController = require("../controllers/magnetController");
 const imageController = require("../controllers/imageController");
 const multer = require('multer');
-const fs = require('fs');
 
 const router = express.Router();
 
