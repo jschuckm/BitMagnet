@@ -39,9 +39,20 @@ app.get('/', function (req,res) {
 //app.use('/', require('./routes/pages'));
 app.use('/auth', require('./routes/auth'));
 
-app.listen(8000, () => {
-    console.log("Server started on Port 8000");
+
+
+
+//for team server
+const http = require("http");
+const hostname = "coms-319-g14.cs.iastate.edu"
+const port = 8000;
+
+http.createServer(app).listen(port, function(){
+  console.log("Server started on Port 8000");
 })
 
-//test1111
+// app.listen(8000, () => {
+//     console.log("Server started on Port 8000");
+// })
+
 module.exports = app
