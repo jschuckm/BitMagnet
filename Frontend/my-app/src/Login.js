@@ -76,7 +76,11 @@ class Login extends React.Component {
         console.log(data.loginStatus);
         if(data.loginStatus == true) {
           console.log("successful")
-          this.props.history.push('/boardselection');
+          //this.props.history.push('/boardselection');
+          this.props.history.push({
+            pathname: '/boardselection',
+            state: { detail: this.state.username }
+          });
         } else if(data.loginStatus == false) {
           console.log("fail login");
           alert("Wrong ID or Password");

@@ -9,10 +9,10 @@ const db = mysql.createConnection({
 });
 
 exports.getFriends = (request, respond) => {
-    const userID = request.body.userID;
+    const userID = request.params.id;
     console.log(userID);
     var friendList = [];
-    db.query("select * from friendslist where userID = ?;", [userID], (error, result) => {
+    db.query("select friendID from friendslist where userID = ?;", [userID], (error, result) => {
         if(error) {
             console.log(error);
         } else {            

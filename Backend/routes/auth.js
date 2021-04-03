@@ -22,7 +22,7 @@ router.post("/:id/addBoard", boardController.addBoard);
 router.post("/:id/deleteBoard", boardController.deleteBoard);
 
             //auth/:id/getFriends
-router.post("/:id/getFriends", friendController.getFriends);
+router.get("/:id/getFriends", friendController.getFriends);
 
             //auth/:id/addFriend
 router.post("/:id/addFriend", friendController.addFriend);
