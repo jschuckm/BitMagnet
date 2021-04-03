@@ -25,8 +25,12 @@ class Board extends React.Component {
 
         this.deleteMagnet=this.deleteMagnet.bind(this);
         this.printMagnets=this.printMagnets.bind(this);
+
+        this.saveBoard=this.saveBoard.bind(this);
+
         this.state = {
-            magnets: [] //will have title and content
+          newMagnetTitle : '', newMagnetText : '', deleteMagnet : '',
+          magnets: [] //will have title, content, type?, position{x: y: }
         };
     }
 
@@ -56,17 +60,23 @@ class Board extends React.Component {
     }
 
     createMagnet(){
-        //console.log(this.state.magnets);
-        //console.log(this.state.newMagnet);
         //this.state.magnets.push({title:this.state.newMagnetTitle, content: ''}); **PUSH OCCURS AFTER CONTENT IS OBTAINED
-        //console.log(this.state.magnets);
         this.setState({openTextDialog:true});
+    }
+
+    saveBoard(){
+      const magState = this.state.magnets;
+      this.setState({magnets:magState});
+      console.log("saving");
+      console.log(this.magnets);
     }
 
     createMagnetText() {
       console.log(this.state.magnets);
       console.log(this.state.newMagnetText);
-      this.state.magnets.push({title:this.state.newMagnetTitle, content: this.state.newMagnetText});
+      var leftSpot = Math.random() * 350; //how to get magnet size for safer placement?
+      var topSpot = Math.random() * 300;
+      this.state.magnets.push({title:this.state.newMagnetTitle, content: this.state.newMagnetText, position: {x : leftSpot, y: topSpot}});
       console.log(this.state.magnets);
       this.setState({openNewDialog:false});
       this.setState({openTextDialog:false});
@@ -84,31 +94,28 @@ class Board extends React.Component {
     }
 
     printMagnets() {
-      var leftSpot = 50;
-      var topSpot = 50;
-      {var leftSpot = Math.random() * 350}; //how to get magnet size for safe placement?
-      {var topSpot = Math.random() * 300};
         return this.state.magnets.map((magnet) => {
             return ( //ideally this will have a hover on mouse until click for placement. doing random for now.
               <Rnd
-              default = {{ x: leftSpot, y: topSpot}}
+              default = {{ x: magnet.position.x, y: magnet.position.y}}
               minWidth = {50}
               maxWidth = {250}
-              minHeight = {30}
               bounds = {"parent"}
               enableResizing = {false}
+              onDragStop={ (d) => {magnet.position = {x : d.x, y : d.y} } }
               >
                 <div style = {{backgroundColor: grey[50]}} id = "dragMag">
                   <Typography variant='h5' style={{fontFamily: 'Monospace'}}>
-                    {magnet.title}:{magnet.content}
+                    {magnet.title}: </Typography><Typography variant='h6' style={{fontFamily: 'Monospace'}}>{magnet.content}
                   </Typography>
                 </div>
-              </Rnd> 
+              </Rnd>
             )
           });
       }
 
     render() {
+      console.log(this.state);
         return (
           <div style={{
             height: window.innerHeight,
@@ -153,7 +160,7 @@ class Board extends React.Component {
               <Dialog open={this.state.openTextDialog} onClose={this.handleCloseTextDialog}>
                 <DialogTitle data-testid="createTextPopup">Enter Text</DialogTitle>
                 <DialogContent>
-                  <TextField data-testid="createMagTxtContent"onChange={(event) => this.setState({newMagnetText: event.target.value})} label={"Magnet Text"}/><br></br>
+                  <TextField style={{overflowY: 'scroll', width: 300, height: 200}} data-testid="createMagTxtContent"onChange={(event) => this.setState({newMagnetText: event.target.value})} label={"Magnet Text"}/><br></br>
                 </DialogContent>
                 <DialogActions>
                   <Button data-testid="createMagTextSubmitBtn" onClick={this.createMagnetText} style={{marginRight: '55px'}}>
@@ -209,6 +216,9 @@ class Board extends React.Component {
               </Button>
               <Button data-testid="deleteMagnetBtn" style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.handleOpenDialogDelete}>
                 Delete magnet
+              </Button>
+              <Button data-testid="saveMagnetBtn" style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.saveBoard}>
+                Save board
               </Button>
             </div>
 
