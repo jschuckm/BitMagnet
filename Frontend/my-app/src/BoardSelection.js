@@ -195,7 +195,7 @@ class BoardSelection extends React.Component {
 
     getFriendsList(){
       var tempFriendsList = [];
-      console.log("test!!!!!!!!!: " + this.props.location.state.detail);
+      console.log("test get ID: " + this.props.location.state.detail);
       var tempURL = 'auth/' + this.props.location.state.detail + '/getFriends'
       try{
         // fetch('auth/t/getFriends')
@@ -216,14 +216,14 @@ class BoardSelection extends React.Component {
     }
 
     addFriend(){
-      fetch('auth/:id/addFriend', {
+      var tempURL = 'auth/' + this.props.location.state.detail + '/addFriend'
+      fetch(tempURL, {
         method: 'POST',
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            userID: this.state.concrete_userID,
             friendID: this.state.newFriend
           }),
         })
@@ -233,7 +233,8 @@ class BoardSelection extends React.Component {
     }
 
     deleteFriend(){
-      fetch('auth/:id/deleteFriend', {
+      var tempURL = 'auth/' + this.props.location.state.detail + '/deleteFriend'
+      fetch(tempURL, {
         method: 'POST',
           headers: {
             Accept: 'application/json',
