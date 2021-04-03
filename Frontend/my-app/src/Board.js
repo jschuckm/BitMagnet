@@ -68,13 +68,13 @@ class Board extends React.Component {
       const magState = this.state.magnets;
       this.setState({magnets:magState});
       console.log("saving");
-      console.log(this.magnets);
+      console.log(this.state.magnets);
     }
 
     createMagnetText() {
       console.log(this.state.magnets);
       console.log(this.state.newMagnetText);
-      var leftSpot = Math.random() * 350; //how to get magnet size for safer placement?
+      var leftSpot = Math.random() * 250; //how to get magnet size for safer placement?
       var topSpot = Math.random() * 300;
       this.state.magnets.push({title:this.state.newMagnetTitle, content: this.state.newMagnetText, position: {x : leftSpot, y: topSpot}});
       console.log(this.state.magnets);
@@ -142,12 +142,12 @@ class Board extends React.Component {
                 </DialogContent>
                 <DialogActions>
                   <Button data-testid="createMagSubmitBtn" onClick={this.createMagnet} style={{marginRight: '10px'}}>
-                    Create Text Magnet
+                    Text
                   </Button>
                   
                   {/* This button has no handlers ++ Test id's will need to be narrowed*/}
                   <Button data-testid="createMagSubmitBtn" onClick={this.createMagnet} style={{marginRight: '10px'}}>
-                    Create Photo Magnet
+                    Photo
                   </Button>
                   
                   <Button data-testid="closeCreatePopup" onClick={this.handleCloseDialog}>
@@ -160,10 +160,10 @@ class Board extends React.Component {
               <Dialog open={this.state.openTextDialog} onClose={this.handleCloseTextDialog}>
                 <DialogTitle data-testid="createTextPopup">Enter Text</DialogTitle>
                 <DialogContent>
-                  <TextField style={{overflowY: 'scroll', width: 300, height: 200}} data-testid="createMagTxtContent"onChange={(event) => this.setState({newMagnetText: event.target.value})} label={"Magnet Text"}/><br></br>
+                  <TextField multiline rows={4} data-testid="createMagTxtContent"onChange={(event) => this.setState({newMagnetText: event.target.value})} label={"Magnet Text"}/><br></br>
                 </DialogContent>
                 <DialogActions>
-                  <Button data-testid="createMagTextSubmitBtn" onClick={this.createMagnetText} style={{marginRight: '55px'}}>
+                  <Button data-testid="createMagTextSubmitBtn" onClick={this.createMagnetText} style={{marginRight: '0px'}}>
                     Post Text
                   </Button>
                   <Button data-testid="closeCreateTextPopup" onClick={this.handleCloseTextDialog}>
@@ -211,16 +211,21 @@ class Board extends React.Component {
                     
                 </div>
               </div>
-              <Button data-testid="addMagnetBtn" style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.handleOpenNewDialog}>
+              <div style={{
+              width: 400,
+              display: 'flex',
+              marginRight: 50
+              }}>
+              <Button data-testid="addMagnetBtn" style={{marginLeft: '45px', marginTop: '10px'}} onClick={this.handleOpenNewDialog}>
                 Add magnet
               </Button>
-              <Button data-testid="deleteMagnetBtn" style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.handleOpenDialogDelete}>
+              <Button data-testid="deleteMagnetBtn" style={{marginLeft: '45px', marginTop: '10px'}} onClick={this.handleOpenDialogDelete}>
                 Delete magnet
               </Button>
-              <Button data-testid="saveMagnetBtn" style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.saveBoard}>
+              <Button data-testid="saveMagnetBtn" style={{marginLeft: '45px', marginTop: '10px'}} onClick={this.saveBoard}>
                 Save board
               </Button>
-            </div>
+            </div></div>
 
           </div>
         );
