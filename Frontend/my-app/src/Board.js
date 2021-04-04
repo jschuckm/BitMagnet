@@ -19,7 +19,6 @@ class Board extends React.Component {
         this.handleCloseTextDialog=this.handleCloseTextDialog.bind(this);
 
         this.handleCloseDialogDelete=this.handleCloseDialogDelete.bind(this);
-        this.createMagnet=this.createMagnet.bind(this);
         this.createPhotoMagnet = this.createPhotoMagnet.bind(this);
 
         this.createMagnetText=this.createMagnetText.bind(this);
@@ -73,7 +72,7 @@ class Board extends React.Component {
     }
 
     loadBoard(){
-      fetch('auth/pizza_team/getAllMagnet')
+      fetch('auth/'+this.state.tempBoardName+'/getAllMagnet')
         .then(async response => {
           var tempMagList = [];
           const data = await response.json();
@@ -98,6 +97,7 @@ class Board extends React.Component {
 
     createMagnet(){
         //this.state.magnets.push({title:this.state.newMagnetTitle, content: ''}); **PUSH OCCURS AFTER CONTENT IS OBTAINED
+        //unnecessary function, just use openTextDialog()
         this.setState({openTextDialog:true});    
     }
 
@@ -123,7 +123,7 @@ class Board extends React.Component {
       this.setState({openNewDialog:false});
       this.setState({openTextDialog:false});
       try{
-        fetch('/auth/pizza_team/addMagnet', {
+        fetch('/auth/'+this.state.tempBoardName+'/addMagnet', {
           method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -153,7 +153,7 @@ class Board extends React.Component {
         }
         //removing from db
         try{
-          fetch('/auth/pizza_team/deleteMagnet', {
+          fetch('/auth/'+this.state.tempBoardName+'/deleteMagnet', {
             method: 'POST',
               headers: {
                 Accept: 'application/json',
@@ -239,7 +239,7 @@ class Board extends React.Component {
                   <TextField data-testid="createMagTxt"onChange={(event) => this.setState({newMagnetTitle: event.target.value})} label={"Magnet Title"}/><br></br>
                 </DialogContent>
                 <DialogActions>
-                  <Button data-testid="createMagSubmitBtn" onClick={this.createMagnet} style={{marginRight: '10px'}}>
+                  <Button data-testid="createMagSubmitBtn" onClick={this.handleOpenTextDialog} style={{marginRight: '10px'}}>
                     Text
                   </Button>
                   
