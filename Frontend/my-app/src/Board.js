@@ -35,9 +35,9 @@ class Board extends React.Component {
         this.uploadMagnetPhoto = this.uploadMagnetPhoto.bind(this);
 
         var { boardName } = props.match.params; //get boardName from URL 
-        console.log("!!!!!!!" + boardName);
 
         this.state = {
+          tempBoardName: boardName,
           newMagnetTitle : '', newMagnetText : '', deleteMagnet : '',
           imageFile: '',
           imagePreviewURL: '',
@@ -87,6 +87,7 @@ class Board extends React.Component {
     }
 
     createMagnetText() {
+      console.log(this.state.tempBoardName);
       console.log(this.state.magnets);
       console.log(this.state.newMagnetText);
       var leftSpot = Math.random() * 350; //how to get magnet size for safer placement?
