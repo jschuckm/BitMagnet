@@ -72,7 +72,7 @@ class Board extends React.Component {
     }
 
     loadBoard(){
-      fetch('auth/'+this.state.tempBoardName+'/getAllMagnet')
+      fetch(this.state.tempBoardName+'/getAllMagnet')
         .then(async response => {
           var tempMagList = [];
           const data = await response.json();
@@ -123,7 +123,7 @@ class Board extends React.Component {
       this.setState({openNewDialog:false});
       this.setState({openTextDialog:false});
       try{
-        fetch('/auth/'+this.state.tempBoardName+'/addMagnet', {
+        fetch(this.state.tempBoardName+'/addMagnet', {
           method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -153,7 +153,7 @@ class Board extends React.Component {
         }
         //removing from db
         try{
-          fetch('/auth/'+this.state.tempBoardName+'/deleteMagnet', {
+          fetch(this.state.tempBoardName+'/deleteMagnet', {
             method: 'POST',
               headers: {
                 Accept: 'application/json',
