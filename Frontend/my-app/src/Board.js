@@ -3,7 +3,7 @@ import React from 'react';
 import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
 import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
-import {Link} from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import {Rnd} from 'react-rnd';
 
 import './App.css';
@@ -20,6 +20,7 @@ class Board extends React.Component {
 
         this.handleCloseDialogDelete=this.handleCloseDialogDelete.bind(this);
         this.createMagnet=this.createMagnet.bind(this);
+        this.createPhotoMagnet = this.createPhotoMagnet.bind(this);
 
         this.createMagnetText=this.createMagnetText.bind(this);
 
@@ -28,8 +29,18 @@ class Board extends React.Component {
 
         this.saveBoard=this.saveBoard.bind(this);
 
+        //photo part
+        this.handleOpenPhotoDialog = this.handleOpenPhotoDialog.bind(this);
+        this.handleClosePhotoDialog = this.handleClosePhotoDialog.bind(this);
+        this.uploadMagnetPhoto = this.uploadMagnetPhoto.bind(this);
+
+        var { boardName } = props.match.params; //get boardName from URL 
+        console.log("!!!!!!!" + boardName);
+
         this.state = {
           newMagnetTitle : '', newMagnetText : '', deleteMagnet : '',
+          imageFile: '',
+          imagePreviewURL: '',
           magnets: [] //will have title, content, type?, position{x: y: }
         };
     }
@@ -61,7 +72,11 @@ class Board extends React.Component {
 
     createMagnet(){
         //this.state.magnets.push({title:this.state.newMagnetTitle, content: ''}); **PUSH OCCURS AFTER CONTENT IS OBTAINED
-        this.setState({openTextDialog:true});
+        this.setState({openTextDialog:true});    
+    }
+
+    createPhotoMagnet() {
+      this.setState({openPhotoDialog:true})
     }
 
     saveBoard(){
@@ -111,8 +126,28 @@ class Board extends React.Component {
                 </div>
               </Rnd>
             )
-          });
-      }
+        });
+    }
+
+    //photo part
+    handleOpenPhotoDialog() {
+      this.setState({openPhotoDialog: true});
+    }
+
+    handleClosePhotoDialog() {
+      this.setState({openPhotoDialog: false});
+    }
+
+    uploadMagnetPhoto(e) {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('img', this.state.file);
+      fetch("/auth/a/uploadImage", {
+        method: 'POST',
+        body: formData,
+      })
+      .then(console.log("Uploading ... "))
+    }
 
     render() {
       console.log(this.state);
@@ -146,7 +181,8 @@ class Board extends React.Component {
                   </Button>
                   
                   {/* This button has no handlers ++ Test id's will need to be narrowed*/}
-                  <Button data-testid="createMagSubmitBtn" onClick={this.createMagnet} style={{marginRight: '10px'}}>
+                  {/* For photo */}
+                  <Button data-testid="createMagSubmitBtn" onClick={this.createPhotoMagnet} style={{marginRight: '10px'}}>
                     Create Photo Magnet
                   </Button>
                   
@@ -167,6 +203,25 @@ class Board extends React.Component {
                     Post Text
                   </Button>
                   <Button data-testid="closeCreateTextPopup" onClick={this.handleCloseTextDialog}>
+                    Back
+                  </Button>
+                </DialogActions>
+              </Dialog>
+
+              {/* Dialog for photo */}
+              <Dialog open={this.state.openPhotoDialog} onClose={this.handleCloseTextDialog}>
+                <DialogTitle data-testid="createPhotoPopup">Upload Photo</DialogTitle>
+                <DialogContent>
+                  <form onSubmit={this.uploadMagnetPhoto}>
+                    <input type="file" name="UploadingPhoto" onChange={this.onChange}/>
+                    <button type = "submit">Upload</button>
+                  </form>
+                </DialogContent>
+                <DialogActions>
+                  {/* <Button data-testid="createMagPhotoSubmitBtn" onClick={this.uploadMagnetPhoto} style={{marginRight: '55px'}}>
+                    Upload
+                  </Button> */}
+                  <Button data-testid="closeCreatePhotoPopup" onClick={this.handleClosePhotoDialog}>
                     Back
                   </Button>
                 </DialogActions>

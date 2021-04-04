@@ -100,8 +100,9 @@ class BoardSelection extends React.Component {
     }
 
     registerNewBoard(){
+      var tempURL = 'auth/' + this.props.location.state.detail + '/addBoard'
       try{
-        fetch('/auth/:id/addBoard', {
+        fetch(tempURL, {
           method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -123,8 +124,9 @@ class BoardSelection extends React.Component {
     }
 
     deleteBoard(){
+      var tempURL = 'auth/' + this.props.location.state.detail + '/deleteBoard'
       try{
-        fetch('/auth/:id/deleteBoard', {
+        fetch(tempURL, {
           method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -147,37 +149,29 @@ class BoardSelection extends React.Component {
 
     buildBoardList() {
       //reads boards from DB for state var memberBoards
-      fetch('auth/:id/main', {
-        method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userID: this.state.concrete_userID
-          }),
-        }).then(async response => {
-          var tempBoardList = [];
-          const data = await response.json();
-          if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-              tempBoardList.push(data[i]);
-            }
-            console.log("we have something", tempBoardList);
-            this.setState({memberBoards: tempBoardList});
+      var tempURL = 'auth/' + this.props.location.state.detail + '/main'
+      fetch(tempURL)
+      .then(async response => {
+        var tempBoardList = [];
+        const data = await response.json();
+        if (data != null) {
+          for (var i = 0; i < data.length; i++) {
+            tempBoardList.push(data[i]);
           }
-          else {
-            console.log("we don't have something");
-          }
-          });
+          console.log("we have something", tempBoardList);
+          this.setState({memberBoards: tempBoardList});
+        }
+        else {
+          console.log("we don't have something");
+        }
+      });
     }
 
     printBoardsAsLinks() {
       return this.state.memberBoards.map((board) => {
-        var link = "/board";
           return (
               <Typography data-testid="boardlinks" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
-                <Link to={link}>{board.boardName}</Link>
+                <Link to={`/board/${board.boardName}`}>{board.boardName}</Link>
               </Typography>
           )
         });
