@@ -26,6 +26,7 @@ class Board extends React.Component {
 
         this.deleteMagnet=this.deleteMagnet.bind(this);
         this.printMagnets=this.printMagnets.bind(this);
+        this.loadBoard=this.loadBoard.bind(this);
 
         this.saveBoard=this.saveBoard.bind(this);
 
@@ -43,6 +44,7 @@ class Board extends React.Component {
           imagePreviewURL: '',
           magnets: [] //will have title, content, type?, position{x: y: }
         };
+        this.loadBoard();
     }
 
     handleOpenNewDialog(){
@@ -70,6 +72,30 @@ class Board extends React.Component {
       this.setState({openDialogDelete: false});
     }
 
+    loadBoard(){
+      fetch('auth/pizza_team/getAllMagnet')
+        .then(async response => {
+          var tempMagList = [];
+          const data = await response.json();
+          if (data != null) {
+            for (var i = 0; i < data.length; i++) {
+              let posX = Math.random() * 250; //how to get magnet size for safer placement?
+              let posY = Math.random() * 300;
+              let tempMagnet = {title: "", content: "", position: ""};
+              tempMagnet.title = data[i].magnetName;
+              tempMagnet.content = data[i].textMagnet;
+              tempMagnet.position = {x: posX, y: posY};
+              tempMagList.push(tempMagnet);
+            }
+            console.log("we have something", tempMagList);
+            this.setState({magnets: tempMagList});
+          }
+          else {
+            console.log("we don't have something");
+          }
+          });
+    }
+
     createMagnet(){
         //this.state.magnets.push({title:this.state.newMagnetTitle, content: ''}); **PUSH OCCURS AFTER CONTENT IS OBTAINED
         this.setState({openTextDialog:true});    
@@ -83,19 +109,37 @@ class Board extends React.Component {
       const magState = this.state.magnets;
       this.setState({magnets:magState});
       console.log("saving");
-      console.log(this.magnets);
+      console.log(this.state.magnets);
     }
 
     createMagnetText() {
       console.log(this.state.tempBoardName);
       console.log(this.state.magnets);
       console.log(this.state.newMagnetText);
-      var leftSpot = Math.random() * 350; //how to get magnet size for safer placement?
+      var leftSpot = Math.random() * 250; //how to get magnet size for safer placement?
       var topSpot = Math.random() * 300;
       this.state.magnets.push({title:this.state.newMagnetTitle, content: this.state.newMagnetText, position: {x : leftSpot, y: topSpot}});
       console.log(this.state.magnets);
       this.setState({openNewDialog:false});
       this.setState({openTextDialog:false});
+      try{
+        fetch('/auth/pizza_team/addMagnet', {
+          method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              boardName: this.state.concrete_boardID,
+              magnetName: this.state.newMagnetTitle,
+              textMagnet: this.state.newMagnetText
+            }),
+          });
+          console.log("saving magnet frontend");
+      }
+      catch(e){
+        console.log(e);
+      }
       this.state.newMagnetTitle="";
       this.state.newMagnetText="";
     }
@@ -107,18 +151,36 @@ class Board extends React.Component {
                 this.state.magnets.splice(i,1);
             }
         }
+        //removing from db
+        try{
+          fetch('/auth/pizza_team/deleteMagnet', {
+            method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                boardName: this.state.concrete_boardID,
+                magnetName: this.state.deleteMagnet
+              }),
+            });
+            console.log("delete magnet frontend");
+        }
+        catch(e){
+          console.log(e);
+        }
     }
 
     printMagnets() {
         return this.state.magnets.map((magnet) => {
             return ( //ideally this will have a hover on mouse until click for placement. doing random for now.
               <Rnd
-              default = {{ x: magnet.position.x, y: magnet.position.y}}
+              default = {{ x: magnet.position.x, y: magnet.position.y}} //sets initial position, first assigned and stored in create-magnet-text
               minWidth = {50}
               maxWidth = {250}
               bounds = {"parent"}
               enableResizing = {false}
-              onDragStop={ (d) => {magnet.position = {x : d.x, y : d.y} } }
+              onDragStop={ (d) => {magnet.position = {x : d.x, y : d.y} } } //after every move, magnet coords reassigned. state isn't set in magnet (i think?) until save button is clicked.
               >
                 <div style = {{backgroundColor: grey[50]}} id = "dragMag">
                   <Typography variant='h5' style={{fontFamily: 'Monospace'}}>
@@ -178,7 +240,7 @@ class Board extends React.Component {
                 </DialogContent>
                 <DialogActions>
                   <Button data-testid="createMagSubmitBtn" onClick={this.createMagnet} style={{marginRight: '10px'}}>
-                    Create Text Magnet
+                    Text
                   </Button>
                   
                   {/* This button has no handlers ++ Test id's will need to be narrowed*/}
@@ -197,10 +259,10 @@ class Board extends React.Component {
               <Dialog open={this.state.openTextDialog} onClose={this.handleCloseTextDialog}>
                 <DialogTitle data-testid="createTextPopup">Enter Text</DialogTitle>
                 <DialogContent>
-                  <TextField style={{overflowY: 'scroll', width: 300, height: 200}} data-testid="createMagTxtContent"onChange={(event) => this.setState({newMagnetText: event.target.value})} label={"Magnet Text"}/><br></br>
+                  <TextField multiline rows={4} data-testid="createMagTxtContent"onChange={(event) => this.setState({newMagnetText: event.target.value})} label={"Magnet Text"}/><br></br>
                 </DialogContent>
                 <DialogActions>
-                  <Button data-testid="createMagTextSubmitBtn" onClick={this.createMagnetText} style={{marginRight: '55px'}}>
+                  <Button data-testid="createMagTextSubmitBtn" onClick={this.createMagnetText} style={{marginRight: '0px'}}>
                     Post Text
                   </Button>
                   <Button data-testid="closeCreateTextPopup" onClick={this.handleCloseTextDialog}>
@@ -267,16 +329,21 @@ class Board extends React.Component {
                     
                 </div>
               </div>
-              <Button data-testid="addMagnetBtn" style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.handleOpenNewDialog}>
+              <div style={{
+              width: 400,
+              display: 'flex',
+              marginRight: 50
+              }}>
+              <Button data-testid="addMagnetBtn" style={{marginLeft: '45px', marginTop: '10px'}} onClick={this.handleOpenNewDialog}>
                 Add magnet
               </Button>
-              <Button data-testid="deleteMagnetBtn" style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.handleOpenDialogDelete}>
+              <Button data-testid="deleteMagnetBtn" style={{marginLeft: '45px', marginTop: '10px'}} onClick={this.handleOpenDialogDelete}>
                 Delete magnet
               </Button>
-              <Button data-testid="saveMagnetBtn" style={{marginLeft: '265px', marginTop: '10px'}} onClick={this.saveBoard}>
+              <Button data-testid="saveMagnetBtn" style={{marginLeft: '45px', marginTop: '10px'}} onClick={this.saveBoard}>
                 Save board
               </Button>
-            </div>
+            </div></div>
 
           </div>
         );
