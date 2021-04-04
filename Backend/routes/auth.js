@@ -32,13 +32,13 @@ router.post("/:id/addFriend", friendController.addFriend);
             //auth/:id/deleteFriend
 router.post("/:id/deleteFriend", friendController.deleteFriend);
 
-            //auth/:boardName/addMagnet
+            //board/:boardName/addMagnet
 router.post("/:boardName/addMagnet", magnetController.addMagnet);
 
-            //auth/:boardName/deleteMagnet
+            //board/:boardName/deleteMagnet
 router.post("/:boardName/deleteMagnet", magnetController.deleteMagnet);
 
-            //auth/:boardName/getAllMagnet
+            //board/:boardName/getAllMagnet
 router.get("/:boardName/getAllMagnet", magnetController.getAllMagnet);
 
 
