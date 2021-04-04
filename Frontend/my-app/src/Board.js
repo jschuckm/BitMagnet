@@ -25,13 +25,16 @@ class Board extends React.Component {
 
         this.deleteMagnet=this.deleteMagnet.bind(this);
         this.printMagnets=this.printMagnets.bind(this);
+        this.loadBoard=this.loadBoard.bind(this);
 
         this.saveBoard=this.saveBoard.bind(this);
 
         this.state = {
+          concrete_boardID : "pizza_team",
           newMagnetTitle : '', newMagnetText : '', deleteMagnet : '',
           magnets: [] //will have title, content, type?, position{x: y: }
         };
+        this.loadBoard();
     }
 
     handleOpenNewDialog(){
@@ -59,8 +62,33 @@ class Board extends React.Component {
       this.setState({openDialogDelete: false});
     }
 
+    loadBoard(){
+      fetch('auth/pizza_team/getAllMagnet')
+        .then(async response => {
+          var tempMagList = [];
+          const data = await response.json();
+          if (data != null) {
+            for (var i = 0; i < data.length; i++) {
+              let posX = Math.random() * 250; //how to get magnet size for safer placement?
+              let posY = Math.random() * 300;
+              let tempMagnet = {title: "", content: "", position: ""};
+              tempMagnet.title = data[i].magnetName;
+              tempMagnet.content = data[i].textMagnet;
+              tempMagnet.position = {x: posX, y: posY};
+              tempMagList.push(tempMagnet);
+            }
+            console.log("we have something", tempMagList);
+            this.setState({magnets: tempMagList});
+          }
+          else {
+            console.log("we don't have something");
+          }
+          });
+    }
+
     createMagnet(){
         //this.state.magnets.push({title:this.state.newMagnetTitle, content: ''}); **PUSH OCCURS AFTER CONTENT IS OBTAINED
+        //can delete this function and just call openTextDialog
         this.setState({openTextDialog:true});
     }
 
@@ -80,6 +108,24 @@ class Board extends React.Component {
       console.log(this.state.magnets);
       this.setState({openNewDialog:false});
       this.setState({openTextDialog:false});
+      try{
+        fetch('/auth/pizza_team/addMagnet', {
+          method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              boardName: this.state.concrete_boardID,
+              magnetName: this.state.newMagnetTitle,
+              textMagnet: this.state.newMagnetText
+            }),
+          });
+          console.log("saving magnet frontend");
+      }
+      catch(e){
+        console.log(e);
+      }
       this.state.newMagnetTitle="";
       this.state.newMagnetText="";
     }
@@ -91,18 +137,36 @@ class Board extends React.Component {
                 this.state.magnets.splice(i,1);
             }
         }
+        //removing from db
+        try{
+          fetch('/auth/pizza_team/deleteMagnet', {
+            method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                boardName: this.state.concrete_boardID,
+                magnetName: this.state.deleteMagnet
+              }),
+            });
+            console.log("delete magnet frontend");
+        }
+        catch(e){
+          console.log(e);
+        }
     }
 
     printMagnets() {
         return this.state.magnets.map((magnet) => {
             return ( //ideally this will have a hover on mouse until click for placement. doing random for now.
               <Rnd
-              default = {{ x: magnet.position.x, y: magnet.position.y}}
+              default = {{ x: magnet.position.x, y: magnet.position.y}} //sets initial position, first assigned and stored in create-magnet-text
               minWidth = {50}
               maxWidth = {250}
               bounds = {"parent"}
               enableResizing = {false}
-              onDragStop={ (d) => {magnet.position = {x : d.x, y : d.y} } }
+              onDragStop={ (d) => {magnet.position = {x : d.x, y : d.y} } } //after every move, magnet coords reassigned. state isn't set in magnet (i think?) until save button is clicked.
               >
                 <div style = {{backgroundColor: grey[50]}} id = "dragMag">
                   <Typography variant='h5' style={{fontFamily: 'Monospace'}}>

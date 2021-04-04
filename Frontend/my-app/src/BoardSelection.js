@@ -91,7 +91,6 @@ class BoardSelection extends React.Component {
     }
 
     handleOpenDialogDeleteBoard() {
-      console.log("in delete brd open");
       this.setState({openDialogDeleteBoard: true});
     }
 
@@ -383,7 +382,7 @@ class BoardSelection extends React.Component {
               <div style={{
               display: 'flex'
               }}>
-                <Button style={{marginRight: '175px'}} onClick={this.handleOpenDialogFriends}>
+                <Button style={{marginRight: '100px'}} onClick={this.handleOpenDialogFriends}>
                   Friends
                 </Button>
                 <Button data-testid="addBoardBtn" onClick={this.handleOpenDialog}>
