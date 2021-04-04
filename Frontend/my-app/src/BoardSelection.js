@@ -99,8 +99,9 @@ class BoardSelection extends React.Component {
     }
 
     registerNewBoard(){
+      var tempURL = 'auth/' + this.props.location.state.detail + '/addBoard'
       try{
-        fetch('/auth/:id/addBoard', {
+        fetch(tempURL, {
           method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -122,8 +123,9 @@ class BoardSelection extends React.Component {
     }
 
     deleteBoard(){
+      var tempURL = 'auth/' + this.props.location.state.detail + '/deleteBoard'
       try{
-        fetch('/auth/:id/deleteBoard', {
+        fetch(tempURL, {
           method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -146,37 +148,29 @@ class BoardSelection extends React.Component {
 
     buildBoardList() {
       //reads boards from DB for state var memberBoards
-      fetch('auth/:id/main', {
-        method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userID: this.state.concrete_userID
-          }),
-        }).then(async response => {
-          var tempBoardList = [];
-          const data = await response.json();
-          if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-              tempBoardList.push(data[i]);
-            }
-            console.log("we have something", tempBoardList);
-            this.setState({memberBoards: tempBoardList});
+      var tempURL = 'auth/' + this.props.location.state.detail + '/main'
+      fetch(tempURL)
+      .then(async response => {
+        var tempBoardList = [];
+        const data = await response.json();
+        if (data != null) {
+          for (var i = 0; i < data.length; i++) {
+            tempBoardList.push(data[i]);
           }
-          else {
-            console.log("we don't have something");
-          }
-          });
+          console.log("we have something", tempBoardList);
+          this.setState({memberBoards: tempBoardList});
+        }
+        else {
+          console.log("we don't have something");
+        }
+      });
     }
 
     printBoardsAsLinks() {
       return this.state.memberBoards.map((board) => {
-        var link = "/board";
           return (
               <Typography data-testid="boardlinks" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
-                <Link to={link}>{board.boardName}</Link>
+                <Link to={`/board/${board.boardName}`}>{board.boardName}</Link>
               </Typography>
           )
         });
@@ -184,35 +178,30 @@ class BoardSelection extends React.Component {
 
     printFriendsList() {
       return this.state.friendsList.map((friend) => {
-          return (
-              <Typography style={{fontFamily: 'Monospace', marginTop: '10px', marginBottom: '10px', align: 'left'}}>
-                {friend.friendID}
-              </Typography>
-          )
-        });
+        return (
+          <Typography data-testid="boardlinks" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
+              {friend.friendID}
+          </Typography>
+        )
+      });
     }
 
     getFriendsList(){
-      console.log("flag");
+      var tempFriendsList = [];
+      console.log("test get ID: " + this.props.location.state.detail);
+      var tempURL = 'auth/' + this.props.location.state.detail + '/getFriends'
       try{
-        fetch('auth/:id/getFriends', {
-          method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              userID: this.state.concrete_userID
-            }),
-        }).then(async response => {
-            const data = await response.json();
-            var tempFriendsList = [];
-            console.log(data);
-            for(var i=0; i<data.length; i++){
-              tempFriendsList.push(data[i]);
-            }
-            this.setState({friendsList: tempFriendsList});
-          });
+        // fetch('auth/t/getFriends')
+        fetch(tempURL)
+        .then(console.log("hello"))
+        .then (response => response.json())
+        .then( data => {
+          console.log(data.length)
+          for(var i=0; i<data.length; i++) {
+            tempFriendsList.push(data[i])
+          }
+          this.setState({friendsList:tempFriendsList})
+        })
       }
       catch(err){
         console.log(err);
@@ -220,14 +209,14 @@ class BoardSelection extends React.Component {
     }
 
     addFriend(){
-      fetch('auth/:id/addFriend', {
+      var tempURL = 'auth/' + this.props.location.state.detail + '/addFriend'
+      fetch(tempURL, {
         method: 'POST',
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            userID: this.state.concrete_userID,
             friendID: this.state.newFriend
           }),
         })
@@ -237,7 +226,8 @@ class BoardSelection extends React.Component {
     }
 
     deleteFriend(){
-      fetch('auth/:id/deleteFriend', {
+      var tempURL = 'auth/' + this.props.location.state.detail + '/deleteFriend'
+      fetch(tempURL, {
         method: 'POST',
           headers: {
             Accept: 'application/json',

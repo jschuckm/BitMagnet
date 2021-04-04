@@ -1,4 +1,3 @@
-const { request, response } = require("express");
 const mysql = require("mysql");
 
 const db = mysql.createConnection({
@@ -9,8 +8,7 @@ const db = mysql.createConnection({
 });
 
 exports.getAllBoard = (request, respond) => {
-    //const userId = request.params.id;
-    const userID = request.body.userID;
+    const userID = request.params.id;
     console.log(userID);
     var boardList = [];
     db.query("select b.boardName from account a, boardSelection b, userBoardRelationship ub \
@@ -29,9 +27,7 @@ exports.getAllBoard = (request, respond) => {
 };
 
 exports.addBoard = (request, respond) => {
-
-    //const userId = request.params.id;
-    const userId =request.body.userID;
+    const userId = request.params.id;
     const boardName = request.body.boardName;
     console.log(userId);
     console.log(boardName);
@@ -48,7 +44,7 @@ exports.addBoard = (request, respond) => {
     } )
 
     //make relationship between new board and user and add it into userBoardRelationship table
-    db.query("insert into userBoardRelationship(userId, boardID) values (?, (select boardID from boardSelection where boardName = ?));", [userId, boardName], (error, result) =>{
+    db.query("insert into userBoardRelationship(userID, boardID) values (?, (select boardID from boardSelection where boardName = ?));", [userId, boardName], (error, result) =>{
         if(error) {
             console.log(error);
         } else {
