@@ -31,26 +31,21 @@ exports.addFriend = (request, respond) => {
     try{
         const userID = request.params.id;
         const friendID = request.body.friendID;
+
         db.query("insert into friendslist(userID, friendID) values(?, ?);", [userID, friendID], (error, result) =>{
 
-            //TO-DO
-            //ADDING AUTHENTICATION (CHECKING IF RESULT IS AN ACTUAL USERNAME)
-
-            if(error) {
-                console.log(error);
-            } else {
-                console.log("Friend relationship 1");
+            if(error){
+                respond.json({"usernameStatus": false})
+            }
+            else{
+                respond.json({
+                    "usernameStatus": true,
+                    message: "username successful"
+                });
             }
         })
         db.query("insert into friendslist(userID, friendID) values(?, ?);", [friendID, userID], (error, result) =>{
-            if(error) {
-                console.log(error);
-            } else {
-                console.log("Friend relationship 2");
-                respond.json({
-                    message: "add friend"
-                })
-            }
+            
         })
     }
     catch(error){
@@ -64,20 +59,18 @@ exports.deleteFriend = (request, respond) => {
         const userID = request.params.id;
         const friendID = request.body.friendID;
         db.query("delete from friendslist where friendID = ? and userID =?;", [friendID, userID], (error, result) => {
-
+            if(result.affectedRows == 0){
+                respond.json({"usernameStatus2": false})
+            }
+            else{
+                respond.json({
+                    "usernameStatus2": true,
+                    message: "username successful"
+                });
+            }
         })
         db.query("delete from friendslist where friendID = ? and userID =?;", [userID, friendID], (error, result) => {
-
-            //TO-DO
-            //DELETE AUTHENTICATION (CHECKING IF RESULT IS AN ACTUAL USERNAME)
-            if(error) {
-                console.log(error);
-            } else {
-                console.log("Delete friend");
-                respond.json({
-                    message: "Delete friend"
-                })
-            }
+            
         })
     }
     catch(error){
