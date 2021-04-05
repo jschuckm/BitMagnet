@@ -1,7 +1,8 @@
 import React from 'react';
 import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
-import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
+import { IconButton, TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
+import { People } from '@material-ui/icons';
 import {Link} from 'react-router-dom';
 
 import './App.css';
@@ -17,16 +18,28 @@ class BoardSelection extends React.Component {
         this.buildBoardList=this.buildBoardList.bind(this);
         this.printBoardsAsLinks=this.printBoardsAsLinks.bind(this);
 
+        //get friends
         this.getFriendsList=this.getFriendsList.bind(this);
         this.printFriendsList=this.printFriendsList.bind(this);
+        this.printFriendsList2=this.printFriendsList2.bind(this);
 
+        //add friends
         this.handleOpenDialogAddFriend=this.handleOpenDialogAddFriend.bind(this);
         this.handleCloseDialogAddFriend=this.handleCloseDialogAddFriend.bind(this);
         this.addFriend=this.addFriend.bind(this);
 
+        //delete friend
         this.handleOpenDialogDeleteFriend=this.handleOpenDialogDeleteFriend.bind(this);
         this.handleCloseDialogDeleteFriend=this.handleCloseDialogDeleteFriend.bind(this);
         this.deleteFriend=this.deleteFriend.bind(this);
+
+        //shared list
+        this.handleOpenDialogShare=this.handleOpenDialogShare.bind(this);
+        this.handleCloseDialogShare=this.handleCloseDialogShare.bind(this);
+
+        //share with friends
+        this.handleOpenDialogShareFriend=this.handleOpenDialogShareFriend.bind(this);
+        this.handleCloseDialogShareFriend=this.handleCloseDialogShareFriend.bind(this);
 
         this.handleOpenDialogDeleteBoard = this.handleOpenDialogDeleteBoard.bind(this);
         this.handleCloseDialogDeleteBoard = this.handleCloseDialogDeleteBoard.bind(this);
@@ -41,6 +54,8 @@ class BoardSelection extends React.Component {
           openDialogAddFriend: false,
           openDialogDeleteFriend: false,
           openDialogDeleteBoard: false,
+          openDialogShare: false,
+          openDialogShareFriend: false,
 
           //TO-FIX, temporary user for testing
           concrete_userID: 'b',
@@ -88,6 +103,22 @@ class BoardSelection extends React.Component {
 
     handleCloseDialogDeleteFriend(){
       this.setState({openDialogDeleteFriend: false});
+    }
+
+    handleOpenDialogShare() {
+      this.setState({openDialogShare: true});
+    }
+
+    handleCloseDialogShare() {
+      this.setState({openDialogShare: false});
+    }
+
+    handleOpenDialogShareFriend() {
+      this.setState({openDialogShareFriend: true});
+    }
+
+    handleCloseDialogShareFriend() {
+      this.setState({openDialogShareFriend: false});
     }
 
     handleOpenDialogDeleteBoard() {
@@ -170,7 +201,7 @@ class BoardSelection extends React.Component {
       return this.state.memberBoards.map((board) => {
           return (
               <Typography data-testid="boardlinks" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
-                <Link to={`/board/${board.boardName}`}>{board.boardName}</Link>
+                <Link to={`/board/${board.boardName}`}>{board.boardName}</Link><IconButton onClick={this.handleOpenDialogShare}><People /></IconButton>
               </Typography>
           )
         });
@@ -179,7 +210,17 @@ class BoardSelection extends React.Component {
     printFriendsList() {
       return this.state.friendsList.map((friend) => {
         return (
-          <Typography data-testid="boardlinks" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
+          <Typography variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
+              {friend.friendID}
+          </Typography>
+        )
+      });
+    }
+
+    printFriendsList2() {
+      return this.state.friendsList.map((friend) => {
+        return (
+          <Typography variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
               {friend.friendID}
           </Typography>
         )
@@ -219,10 +260,20 @@ class BoardSelection extends React.Component {
           body: JSON.stringify({
             friendID: this.state.newFriend
           }),
-        })
-        this.getFriendsList();
-        this.setState({openDialogAddFriend:false});
-        this.setState({newFriend: ''});
+        }).then(async response => {
+          const data = await response.json();
+          console.log(data);
+          console.log(data.usernameStatus);
+          if(data.usernameStatus == true) {
+            console.log("successful")
+            this.getFriendsList();
+            this.setState({openDialogAddFriend:false});
+            this.setState({newFriend: ''});
+          } else if(data.usernameStatus == false) {
+            console.log("failed friend addition");
+            alert("No username found/Already a Friend");
+          }
+        });
     }
 
     deleteFriend(){
@@ -236,10 +287,20 @@ class BoardSelection extends React.Component {
           body: JSON.stringify({
             friendID: this.state.deletingFriend
           }),
+        }).then(async response => {
+          const data = await response.json();
+          console.log(data);
+          console.log(data.usernameStatus2);
+          if(data.usernameStatus2 == true) {
+            console.log("successful")
+            this.getFriendsList();
+            this.setState({openDialogDeleteFriend:false});
+            this.setState({deleteFriend: ''});
+          } else if(data.usernameStatus2 == false) {
+            console.log("failed friend deletion");
+            alert("No username found");
+          }
         });
-        this.getFriendsList();
-        this.setState({openDialogDeleteFriend:false});
-        this.setState({deleteFriend: ''});
     }
 
     render() {
@@ -338,6 +399,32 @@ class BoardSelection extends React.Component {
                     Delete
                   </Button>
                   <Button onClick={this.handleCloseDialogDeleteFriend}>
+                    Back
+                  </Button>
+                </DialogActions>
+              </Dialog>
+              {/* Share List Dialog */}
+              <Dialog open={this.state.openDialogShare} onClose={this.handleCloseDialogShare}>
+                <DialogTitle>Share Board</DialogTitle>
+                <DialogContent>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={this.handleOpenDialogShareFriend}>
+                    Share
+                  </Button>
+                  <Button onClick={this.handleCloseDialogShare}>
+                    Back
+                  </Button>
+                </DialogActions>
+              </Dialog>
+              {/* Share Friends Dialog */}
+              <Dialog open={this.state.openDialogShareFriend} onClose={this.handleCloseDialogShareFriend}>
+                <DialogTitle>Select friends to share with</DialogTitle>
+                <DialogContent style={{overflowY: 'scroll', width: 300, height: 350}}>
+                  {this.printFriendsList2()}
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={this.handleCloseDialogShareFriend}>
                     Back
                   </Button>
                 </DialogActions>
