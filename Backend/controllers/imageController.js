@@ -28,11 +28,9 @@ exports.uploadImage = (request, respond) => {
 
 exports.getImage = (request, respond) => {
     const boardName = request.params.boardName;
-    const fileName = request.params.ImageName;
     console.log(boardName);
-    console.log(fileName);
 
-    db.query("select imageURL from imageTable where imageName like ? and boardID = (select boardID from boardSelection where boardName = ?);", ["%" + fileName, boardName], (error, result) => {
+    db.query("select imageName from imageTable where boardID = (select boardID from boardSelection where boardName = ?);", [boardName], (error, result) => {
         if(error) {
             console.log(error);
         } else {

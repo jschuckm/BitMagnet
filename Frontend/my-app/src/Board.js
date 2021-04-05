@@ -1,14 +1,14 @@
 import React from 'react';
-
 import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
-import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
-import {Link, useParams} from 'react-router-dom';
+import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography} from '@material-ui/core';
+import Image from "material-ui-image";
 import {Rnd} from 'react-rnd';
 
 import './App.css';
 
 class Board extends React.Component {
+
     constructor(props) {
         super(props);
         this.handleOpenNewDialog=this.handleOpenNewDialog.bind(this);
@@ -19,31 +19,37 @@ class Board extends React.Component {
         this.handleCloseTextDialog=this.handleCloseTextDialog.bind(this);
 
         this.handleCloseDialogDelete=this.handleCloseDialogDelete.bind(this);
-        this.createPhotoMagnet = this.createPhotoMagnet.bind(this);
+
+        //this.createPhotoMagnet = this.createPhotoMagnet.bind(this);
 
         this.createMagnetText=this.createMagnetText.bind(this);
 
         this.deleteMagnet=this.deleteMagnet.bind(this);
         this.printMagnets=this.printMagnets.bind(this);
         this.loadBoard=this.loadBoard.bind(this);
-
+      
         this.saveBoard=this.saveBoard.bind(this);
 
         //photo part
         this.handleOpenPhotoDialog = this.handleOpenPhotoDialog.bind(this);
         this.handleClosePhotoDialog = this.handleClosePhotoDialog.bind(this);
+        this.handleFileInput = this.handleFileInput.bind(this);
         this.uploadMagnetPhoto = this.uploadMagnetPhoto.bind(this);
+        this.loadImage=this.loadImage.bind(this);
+        this.printImages = this.printImages.bind(this);
 
         var { boardName } = props.match.params; //get boardName from URL 
 
         this.state = {
           tempBoardName: boardName,
           newMagnetTitle : '', newMagnetText : '', deleteMagnet : '',
-          imageFile: '',
-          imagePreviewURL: '',
-          magnets: [] //will have title, content, type?, position{x: y: }
+          imageFile: null,
+          temp: false,
+          magnets: [], //will have title, content, type?, position{x: y: }
+          images: []
         };
         this.loadBoard();
+        this.loadImage();
     }
 
     handleOpenNewDialog(){
@@ -72,7 +78,7 @@ class Board extends React.Component {
     }
 
     loadBoard(){
-      fetch('auth/'+this.state.tempBoardName+'/getAllMagnet')
+      fetch(this.state.tempBoardName+'/getAllMagnet')
         .then(async response => {
           var tempMagList = [];
           const data = await response.json();
@@ -101,10 +107,6 @@ class Board extends React.Component {
         this.setState({openTextDialog:true});    
     }
 
-    createPhotoMagnet() {
-      this.setState({openPhotoDialog:true})
-    }
-
     saveBoard(){
       const magState = this.state.magnets;
       this.setState({magnets:magState});
@@ -123,7 +125,7 @@ class Board extends React.Component {
       this.setState({openNewDialog:false});
       this.setState({openTextDialog:false});
       try{
-        fetch('/auth/'+this.state.tempBoardName+'/addMagnet', {
+        fetch(this.state.tempBoardName+'/addMagnet', {
           method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -153,7 +155,7 @@ class Board extends React.Component {
         }
         //removing from db
         try{
-          fetch('/auth/'+this.state.tempBoardName+'/deleteMagnet', {
+          fetch(this.state.tempBoardName+'/deleteMagnet', {
             method: 'POST',
               headers: {
                 Accept: 'application/json',
@@ -192,25 +194,96 @@ class Board extends React.Component {
         });
     }
 
-    //photo part
+    //photo part (by Dongwoo)
+
     handleOpenPhotoDialog() {
-      this.setState({openPhotoDialog: true});
+      this.setState({openPhotoDialog:true});
     }
 
     handleClosePhotoDialog() {
-      this.setState({openPhotoDialog: false});
+      this.setState({openPhotoDialog:false});
     }
 
-    uploadMagnetPhoto(e) {
-      e.preventDefault();
-      const formData = new FormData();
-      formData.append('img', this.state.file);
-      fetch("/auth/a/uploadImage", {
-        method: 'POST',
-        body: formData,
+    handleFileInput(e) {
+      this.setState({
+        imageFile : e.target.files[0]
       })
-      .then(console.log("Uploading ... "))
+      this.setState({
+        temp: true
+      })
+      console.log("HandleFileInput part")
     }
+
+    // this.state.tempBoardName+'/addMagnet'
+    uploadMagnetPhoto() {
+      if(this.state.temp) {
+        console.log("uploadMagnetPhoto part");
+        const formData = new FormData();
+        formData.append('file', this.state.imageFile);
+        try {
+          fetch(this.state.tempBoardName + '/uploadImage', {
+            method: 'POST',
+            body: formData,
+          })
+          .then(console.log("Image uploaded"))
+          this.setState({
+            imageFile : null
+          })
+          this.setState({
+            temp: false
+          })
+        } catch(e) {
+          console.log(e);
+        }
+      }      
+    }
+
+    loadImage() {
+      fetch(this.state.tempBoardName + '/getImage')
+      .then(async response => {
+        var tempImageList = [];
+        const data = await response.json();
+        if (data != null) {
+          for (var i = 0; i < data.length; i++) {
+            let posX = Math.random() * 250; //how to get magnet size for safer placement?
+            let posY = Math.random() * 300;
+            let tempImage = {url: "", position: ""};
+            // temp = data[i].imageURL;
+            tempImage.url = data[i].imageName;
+            tempImage.position = {x: posX, y: posY};
+            tempImageList.push(tempImage);
+          }
+          console.log("we have Images", tempImageList);
+          this.setState({images: tempImageList});
+        }
+        else {
+          console.log("we don't have something");
+        }
+      })
+    }
+
+    printImages() {
+      return this.state.images.map((image) => {
+        // var tempURL = "/public/"+image.url;
+        var tempURL = "/images/" + image.url;
+          return (  //ideally this will have a hover on mouse until click for placement. doing random for now.
+            <Rnd
+            default = {{ x: image.position.x, y: image.position.y}} //sets initial position, first assigned and stored in create-magnet-text
+            minWidth = {50}
+            maxWidth = {250}
+            bounds = {"parent"}
+            enableResizing = {false}
+            onDragStop={ (d) => {image.position = {x : d.x, y : d.y} } } //after every move, magnet coords reassigned. state isn't set in magnet (i think?) until save button is clicked.
+            > 
+              <div style = {{backgroundColor: grey[50]}} id = "dragImage">
+                <Typography variant='h5' style={{fontFamily: 'Monospace'}}>
+                  <img src = {tempURL} alt="new"/>
+                </Typography>
+              </div>                    
+            </Rnd>
+          )
+      });
+  }
 
     render() {
       console.log(this.state);
@@ -244,8 +317,9 @@ class Board extends React.Component {
                   </Button>
                   
                   {/* This button has no handlers ++ Test id's will need to be narrowed*/}
+
                   {/* For photo */}
-                  <Button data-testid="createMagSubmitBtn" onClick={this.createPhotoMagnet} style={{marginRight: '10px'}}>
+                  <Button data-testid="createPhotoMagSubmitBtn" onClick={this.handleOpenPhotoDialog} style={{marginRight: '10px'}}>
                     Create Photo Magnet
                   </Button>
                   
@@ -271,19 +345,17 @@ class Board extends React.Component {
                 </DialogActions>
               </Dialog>
 
-              {/* Dialog for photo */}
-              <Dialog open={this.state.openPhotoDialog} onClose={this.handleCloseTextDialog}>
+              {/* Dialog for photo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/}
+              <Dialog open={this.state.openPhotoDialog} onClose={this.handleClosePhotoDialog}>
                 <DialogTitle data-testid="createPhotoPopup">Upload Photo</DialogTitle>
                 <DialogContent>
-                  <form onSubmit={this.uploadMagnetPhoto}>
-                    <input type="file" name="UploadingPhoto" onChange={this.onChange}/>
-                    <button type = "submit">Upload</button>
-                  </form>
+                    <input type="file" name="file" onChange = {e=>this.handleFileInput(e)}/>
+                    <Button type="button" onClick={this.uploadMagnetPhoto()}>Upload</Button>
+
+                    {/* <input type="file" name="file" onChange = {e=>this.handleFileInput(e)}/>
+                    <button type="button" onClick={this.uploadMagnetPhoto()}>Upload</button> */}
                 </DialogContent>
                 <DialogActions>
-                  {/* <Button data-testid="createMagPhotoSubmitBtn" onClick={this.uploadMagnetPhoto} style={{marginRight: '55px'}}>
-                    Upload
-                  </Button> */}
                   <Button data-testid="closeCreatePhotoPopup" onClick={this.handleClosePhotoDialog}>
                     Back
                   </Button>
@@ -326,7 +398,7 @@ class Board extends React.Component {
                 id = {"mainBoard"}
                 >
                     {this.printMagnets()}
-                    
+                    {this.printImages()}
                 </div>
               </div>
               <div style={{

@@ -32,13 +32,13 @@ router.post("/:id/addFriend", friendController.addFriend);
             //auth/:id/deleteFriend
 router.post("/:id/deleteFriend", friendController.deleteFriend);
 
-            //board/:boardName/addMagnet
+            //:boardName/addMagnet
 router.post("/:boardName/addMagnet", magnetController.addMagnet);
 
-            //board/:boardName/deleteMagnet
+            //:boardName/deleteMagnet
 router.post("/:boardName/deleteMagnet", magnetController.deleteMagnet);
 
-            //board/:boardName/getAllMagnet
+            //:boardName/getAllMagnet
 router.get("/:boardName/getAllMagnet", magnetController.getAllMagnet);
 
 
@@ -46,19 +46,23 @@ router.get("/:boardName/getAllMagnet", magnetController.getAllMagnet);
 const upload = multer({
     storage: multer.diskStorage({
         destination: (req, file, cb) => {
-            if(file.mimetype == "image/jpeg" || file.mimetype == "image/jpg" || file.mimetype == "image/png") {
-                cb(null, '../Backend/image')
-            } else {
-                console.log("wrong image format.Please check image format (jpeg, jpg, or png)")
-            }
+            cb(null, '../Frontend/my-app/build/images')
+            // cb(null, '../Backend/image')
+            // if(file.mimetype == "image/jpeg" || file.mimetype == "image/jpg" || file.mimetype == "image/png") {
+            //     cb(null, '../Backend/image')
+            // } else {
+            //     console.log("wrong image format.Please check image format (jpeg, jpg, or png)")
+            // }
         }, 
         filename: (req, file, cb) => {
             cb(null, Date.now() + "-" + file.originalname);
         },
     }),
 });
-            //auth/:boardName/uploadImage
-router.post("/:boardName/uploadImage", upload.single('img'), imageController.uploadImage); //upload image 
-router.get("/:boardName/:ImageName/getImage", imageController.getImage); //get image path
+            //:boardName/uploadImage
+router.post("/:boardName/uploadImage", upload.single('file'), imageController.uploadImage); //upload image 
+
+
+router.get("/:boardName/getImage", imageController.getImage); //get image path
 
 module.exports = router;

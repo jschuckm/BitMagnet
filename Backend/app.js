@@ -32,7 +32,7 @@ app.use(cookieParser());
 const path = "../Frontend/my-app/build"
 app.use(express.static(path)) //render main page (login)
 app.get('/', function (req,res) {
-  res.sendFile(path + "index.html");
+  res.sendFile(path);
 });
 
 //Define Routes
