@@ -1,7 +1,8 @@
 import React from 'react';
 import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
-import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography} from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, IconButton} from '@material-ui/core';
 import Image from "material-ui-image";
 import {Rnd} from 'react-rnd';
 
@@ -36,6 +37,7 @@ class Board extends React.Component {
         this.uploadMagnetPhoto = this.uploadMagnetPhoto.bind(this);
         this.loadImage=this.loadImage.bind(this);
         this.printImages = this.printImages.bind(this);
+        this.removeImage = this.removeImage.bind(this);
 
         var { boardName } = props.match.params; //get boardName from URL 
 
@@ -237,6 +239,38 @@ class Board extends React.Component {
       }      
     }
 
+    removeImage(name) {
+      let index = 99;
+      for(let i=0; i<this.state.images.length; i++) {
+        if(this.state.images[i].url == name) {
+          index = i;
+          console.log("Length is " + this.state.images.length)
+          console.log("Name is " + this.state.images[i].url)
+          console.log(index);
+          console.log(this.state.images[i].url)
+          console.log(this.state.images[index].url)  
+        }
+      }
+      fetch(this.state.tempBoardName + '/deleteImage', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          imageName: this.state.images[index].url
+        }),
+      })
+      console.log("Delete image:" + this.state.images[index].url);
+      this.state.images.splice(index, 1);  
+
+      //for re-rendering
+      this.setState({
+        images: this.state.images
+      })
+    } 
+
+
     loadImage() {
       fetch(this.state.tempBoardName + '/getImage')
       .then(async response => {
@@ -263,6 +297,8 @@ class Board extends React.Component {
     printImages() {
       return this.state.images.map((image) => {
         var tempURL = "/images/" + image.url;
+        var tempNameWithFileFormat = image.url;
+        var tempName = image.url.split('.')[0];
           return (  //ideally this will have a hover on mouse until click for placement. doing random for now.
             <Rnd
             default = {{ x: image.position.x, y: image.position.y}} //sets initial position, first assigned and stored in create-magnet-text
@@ -276,12 +312,21 @@ class Board extends React.Component {
                 <Typography variant='h5' style={{fontFamily: 'Monospace'}}>
                   <Image src = {tempURL}/>
                 </Typography>
+                <Typography>
+                  {tempName}
+                </Typography>
+                <IconButton aria-label="delete" size='small'>
+                  <DeleteIcon onClick={(e)=>this.removeImage(tempNameWithFileFormat)}/>
+                  {/* <DeleteIcon onClick={this.removeImage(tempNameWithFileFormat)}/> */}
+                </IconButton>
               </div>                    
             </Rnd>
           )
       });
   }
 
+//<Typography variant='h5' style={{fontFamily: 'Monospace'}}>{magnet.title}:</Typography>
+//<Typography variant='h6' style={{fontFamily: 'Monospace'}}>{magnet.content}</Typography>
     render() {
       console.log(this.state);
         return (

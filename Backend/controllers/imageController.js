@@ -39,3 +39,20 @@ exports.getImage = (request, respond) => {
         }
     })
 }
+
+exports.deleteImage = (request, respond) => {
+    const boardName = request.params.boardName;
+    const imageName = request.body.imageName;
+    console.log(boardName);
+    console.log(imageName);
+    db.query("delete from imageTable where imageName = ? and boardID = (select boardID from boardSelection where boardName = ?);", [imageName, boardName], (error, result) => {
+        if(error) {
+            console.log(error);
+        } else {
+            console.log("Delete Image");
+            respond.json({
+                message: "Delete Image"
+            })
+        }
+    })
+}
