@@ -55,7 +55,7 @@ const upload = multer({
             // }
         }, 
         filename: (req, file, cb) => {
-            cb(null, Date.now() + "-" + file.originalname);
+            cb(null, file.originalname);
         },
     }),
 });

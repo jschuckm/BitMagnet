@@ -20,7 +20,6 @@ class Board extends React.Component {
 
         this.handleCloseDialogDelete=this.handleCloseDialogDelete.bind(this);
 
-        //this.createPhotoMagnet = this.createPhotoMagnet.bind(this);
 
         this.createMagnetText=this.createMagnetText.bind(this);
 
@@ -44,7 +43,7 @@ class Board extends React.Component {
           tempBoardName: boardName,
           newMagnetTitle : '', newMagnetText : '', deleteMagnet : '',
           imageFile: null,
-          temp: false,
+          tempImageController: false,
           magnets: [], //will have title, content, type?, position{x: y: }
           images: []
         };
@@ -202,21 +201,21 @@ class Board extends React.Component {
 
     handleClosePhotoDialog() {
       this.setState({openPhotoDialog:false});
+      this.setState({ imageFile : null});
     }
 
     handleFileInput(e) {
-      this.setState({
-        imageFile : e.target.files[0]
-      })
-      this.setState({
-        temp: true
-      })
+      this.setState({ imageFile : e.target.files[0]})
       console.log("HandleFileInput part")
+      this.setState({tempImageController: true})
     }
 
-    // this.state.tempBoardName+'/addMagnet'
     uploadMagnetPhoto() {
-      if(this.state.temp) {
+      console.log(this.state.imageFile);
+      var leftSpot = Math.random() * 250; 
+      var topSpot = Math.random() * 300;
+      this.state.images.push({url: this.state.imageFile.name, position: {x : leftSpot, y: topSpot}});
+      if(this.state.tempImageController) {
         console.log("uploadMagnetPhoto part");
         const formData = new FormData();
         formData.append('file', this.state.imageFile);
@@ -230,7 +229,7 @@ class Board extends React.Component {
             imageFile : null
           })
           this.setState({
-            temp: false
+            tempImageControllermp: false
           })
         } catch(e) {
           console.log(e);
@@ -261,10 +260,8 @@ class Board extends React.Component {
         }
       })
     }
-
     printImages() {
       return this.state.images.map((image) => {
-        // var tempURL = "/public/"+image.url;
         var tempURL = "/images/" + image.url;
           return (  //ideally this will have a hover on mouse until click for placement. doing random for now.
             <Rnd
@@ -277,7 +274,7 @@ class Board extends React.Component {
             > 
               <div style = {{backgroundColor: grey[50]}} id = "dragImage">
                 <Typography variant='h5' style={{fontFamily: 'Monospace'}}>
-                  <img src = {tempURL} alt="new"/>
+                  <Image src = {tempURL}/>
                 </Typography>
               </div>                    
             </Rnd>
@@ -349,11 +346,11 @@ class Board extends React.Component {
               <Dialog open={this.state.openPhotoDialog} onClose={this.handleClosePhotoDialog}>
                 <DialogTitle data-testid="createPhotoPopup">Upload Photo</DialogTitle>
                 <DialogContent>
-                    <input type="file" name="file" onChange = {e=>this.handleFileInput(e)}/>
-                    <Button type="button" onClick={this.uploadMagnetPhoto()}>Upload</Button>
-
-                    {/* <input type="file" name="file" onChange = {e=>this.handleFileInput(e)}/>
-                    <button type="button" onClick={this.uploadMagnetPhoto()}>Upload</button> */}
+                    {/* <input type="file" name="file" onChange = {e=>this.handleFileInput(e)}/> */}
+                    {/* <Button type="button" onClick={this.uploadMagnetPhoto()}>Upload</Button> */}
+                    <input style={{display: 'none'}} type="file" onChange={e=>this.handleFileInput(e)} ref={fileInput => this.fileInput = fileInput}/>
+                    <Button onClick={() => this.fileInput.click()}>Pick File</Button>
+                    <Button onClick={() => this.uploadMagnetPhoto()}>Upload</Button>
                 </DialogContent>
                 <DialogActions>
                   <Button data-testid="closeCreatePhotoPopup" onClick={this.handleClosePhotoDialog}>
