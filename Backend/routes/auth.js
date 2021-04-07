@@ -20,6 +20,9 @@ router.get("/:id/main", boardController.getAllBoard);
             //auth/:id/addBoard
 router.post("/:id/addBoard", boardController.addBoard);
 
+            //auth/:id/addBoardShare
+router.post("/:id/addBoardShare", boardController.addBoardShare);
+
             //auth/:id/deleteBoard
 router.post("/:id/deleteBoard", boardController.deleteBoard);
 
