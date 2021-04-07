@@ -53,6 +53,26 @@ exports.addBoard = (request, respond) => {
     })
 }
 
+exports.addBoardShare = (request, respond) => {
+    const userID = request.body.userID;
+    const boardName = request.body.boardName;
+    console.log(userID);
+    console.log(boardName);
+
+    //make relationship between new board and user and add it into userBoardRelationship table
+    db.query("insert into userBoardRelationship(userID, boardID) values (?, (select boardID from boardSelection where boardName = ?));", [userID, boardName], (error, result) =>{
+        if(error){
+            respond.json({"status": false})
+        }
+        else{
+            respond.json({
+                "status": true,
+                message: "username successful"
+            });
+        }
+    })
+}
+
 exports.deleteBoard = (request, respond) => {
 
     const boardName = request.body.boardName;

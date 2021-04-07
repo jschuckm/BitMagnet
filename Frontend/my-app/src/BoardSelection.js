@@ -1,8 +1,7 @@
 import React from 'react';
 import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
-import { IconButton, TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
-import { People } from '@material-ui/icons';
+import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
 import {Link} from 'react-router-dom';
 
 import './App.css';
@@ -21,7 +20,6 @@ class BoardSelection extends React.Component {
         //get friends
         this.getFriendsList=this.getFriendsList.bind(this);
         this.printFriendsList=this.printFriendsList.bind(this);
-        this.printFriendsList2=this.printFriendsList2.bind(this);
 
         //add friends
         this.handleOpenDialogAddFriend=this.handleOpenDialogAddFriend.bind(this);
@@ -33,13 +31,11 @@ class BoardSelection extends React.Component {
         this.handleCloseDialogDeleteFriend=this.handleCloseDialogDeleteFriend.bind(this);
         this.deleteFriend=this.deleteFriend.bind(this);
 
-        //shared list
-        this.handleOpenDialogShare=this.handleOpenDialogShare.bind(this);
-        this.handleCloseDialogShare=this.handleCloseDialogShare.bind(this);
-
         //share with friends
         this.handleOpenDialogShareFriend=this.handleOpenDialogShareFriend.bind(this);
         this.handleCloseDialogShareFriend=this.handleCloseDialogShareFriend.bind(this);
+
+        this.addBoardShare=this.addBoardShare.bind(this);
 
         this.handleOpenDialogDeleteBoard = this.handleOpenDialogDeleteBoard.bind(this);
         this.handleCloseDialogDeleteBoard = this.handleCloseDialogDeleteBoard.bind(this);
@@ -47,14 +43,15 @@ class BoardSelection extends React.Component {
 
         this.state = {
           newBoard : '',
+          tempBoard: '',
           removeBoard : '',
           newFriend : '',
+          sharedFriend: '',
           deletingFriend: '',
           openDialogFriends: false,
           openDialogAddFriend: false,
           openDialogDeleteFriend: false,
           openDialogDeleteBoard: false,
-          openDialogShare: false,
           openDialogShareFriend: false,
 
           //TO-FIX, temporary user for testing
@@ -66,11 +63,12 @@ class BoardSelection extends React.Component {
           //TODO: get user's boards from DB and make array, dummy here:
           memberBoards : []
         };
-        this.buildBoardList(); //will build memberBoards dynamically
     }
 
     componentDidMount(){
       this.getFriendsList();
+       //will build memberBoards dynamically
+      this.buildBoardList();
     }
 
     handleOpenDialog(){
@@ -103,14 +101,6 @@ class BoardSelection extends React.Component {
 
     handleCloseDialogDeleteFriend(){
       this.setState({openDialogDeleteFriend: false});
-    }
-
-    handleOpenDialogShare() {
-      this.setState({openDialogShare: true});
-    }
-
-    handleCloseDialogShare() {
-      this.setState({openDialogShare: false});
     }
 
     handleOpenDialogShareFriend() {
@@ -201,7 +191,7 @@ class BoardSelection extends React.Component {
       return this.state.memberBoards.map((board) => {
           return (
               <Typography data-testid="boardlinks" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
-                <Link to={`/board/${board.boardName}`}>{board.boardName}</Link><IconButton onClick={this.handleOpenDialogShare}><People /></IconButton>
+                <Link to={`/board/${board.boardName}`}>{board.boardName}</Link>
               </Typography>
           )
         });
@@ -211,17 +201,7 @@ class BoardSelection extends React.Component {
       return this.state.friendsList.map((friend) => {
         return (
           <Typography variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
-              {friend.friendID}
-          </Typography>
-        )
-      });
-    }
-
-    printFriendsList2() {
-      return this.state.friendsList.map((friend) => {
-        return (
-          <Typography variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
-              {friend.friendID}
+            {friend.friendID}
           </Typography>
         )
       });
@@ -301,6 +281,40 @@ class BoardSelection extends React.Component {
             alert("No username found");
           }
         });
+    }
+
+    addBoardShare(){
+      var tempURL = 'auth/' + this.props.location.state.detail + '/addBoardShare'
+      console.log(this.state.sharedFriend);
+      try{
+        fetch(tempURL, {
+          method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userID: this.state.sharedFriend,
+              boardName:this.state.tempBoard
+            }),
+          }).then(async response => {
+            const data = await response.json();
+            console.log(data);
+            console.log(data.status);
+            if(data.status == true) {
+              this.setState({openDialogShareFriend: false});
+              this.setState({sharedFriend: ''});
+              this.setState({tempBoard: ''});
+              console.log("trying to share board");
+            } else if(data.status == false) {
+              console.log("sharing failure");
+              alert("Error. Enter an existing board and friend. Cannot be a duplicate.");
+            }
+          });
+      }
+      catch(e){
+        console.log(e);
+      }
     }
 
     render() {
@@ -403,27 +417,17 @@ class BoardSelection extends React.Component {
                   </Button>
                 </DialogActions>
               </Dialog>
-              {/* Share List Dialog */}
-              <Dialog open={this.state.openDialogShare} onClose={this.handleCloseDialogShare}>
-                <DialogTitle>Share Board</DialogTitle>
-                <DialogContent>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={this.handleOpenDialogShareFriend}>
-                    Share
-                  </Button>
-                  <Button onClick={this.handleCloseDialogShare}>
-                    Back
-                  </Button>
-                </DialogActions>
-              </Dialog>
               {/* Share Friends Dialog */}
               <Dialog open={this.state.openDialogShareFriend} onClose={this.handleCloseDialogShareFriend}>
-                <DialogTitle>Select friends to share with</DialogTitle>
-                <DialogContent style={{overflowY: 'scroll', width: 300, height: 350}}>
-                  {this.printFriendsList2()}
+                <DialogTitle>Share a board with a friend</DialogTitle>
+                <DialogContent>
+                  <TextField onChange={(event) => this.setState({tempBoard: event.target.value})} label={"Board"}/><br></br>
+                  <TextField onChange={(event) => this.setState({sharedFriend: event.target.value})} label={"Friend"}/><br></br>
                 </DialogContent>
                 <DialogActions>
+                  <Button onClick={this.addBoardShare} style={{marginRight: '140px'}}>
+                    Share
+                  </Button>
                   <Button onClick={this.handleCloseDialogShareFriend}>
                     Back
                   </Button>
@@ -432,6 +436,9 @@ class BoardSelection extends React.Component {
               <Typography variant='h3' style={{marginRight: '236px', marginTop: '60px', fontFamily: 'Monospace'}}>
                 <em><b data-testid="title">Boards</b></em>
               </Typography>
+              <Button style={{marginLeft: '290px'}} onClick={this.handleOpenDialogShareFriend}>
+                  Share
+              </Button>
               <div style={{
                 marginTop: 10,
                 height: 350,
