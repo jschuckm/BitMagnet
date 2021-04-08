@@ -14,7 +14,7 @@ test-backend:
     - npm install 
     - npm run test
   allow_failure: true
-  timeout: 3 minutes
+  timeout: 3m
 
 deploy-frontend-prod:
   only:
