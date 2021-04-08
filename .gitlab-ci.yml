@@ -13,7 +13,20 @@ test-backend:
     - npm install 
     - npm run test
 
-deploy-prod:
+deploy-frontend-prod:
+  only:
+    - master
   stage: deploy
   script:
-    - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
+    - cd Frontend
+    - cd my-app 
+    - npm install
+    - npm run start
+deploy-backend-prod:
+  only:
+    - master
+  stage: deploy
+  script:
+    - cd Backend 
+    - npm install
+    - npm run start
