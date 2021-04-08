@@ -3,6 +3,7 @@ import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, IconButton} from '@material-ui/core';
+import { sizing } from '@material-ui/system';
 import Image from "material-ui-image";
 import {Rnd} from 'react-rnd';
 
@@ -299,16 +300,16 @@ class Board extends React.Component {
         var tempURL = "/images/" + image.url;
         var tempNameWithFileFormat = image.url;
         var tempName = image.url.split('.')[0];
-          return (  //ideally this will have a hover on mouse until click for placement. doing random for now.
+          return ( //ideally this will have a hover on mouse until click for placement. doing random for now.
             <Rnd
             default = {{ x: image.position.x, y: image.position.y}} //sets initial position, first assigned and stored in create-magnet-text
-            minWidth = {50}
-            maxWidth = {250}
+            minWidth = {120}
+            maxWidth = {120}
             bounds = {"parent"}
             enableResizing = {false}
             onDragStop={ (d) => {image.position = {x : d.x, y : d.y} } } //after every move, magnet coords reassigned. state isn't set in magnet (i think?) until save button is clicked.
             > 
-              <div style = {{backgroundColor: grey[50]}} id = "dragImage">
+              <div style = {{backgroundColor: grey[100]}} id = "dragImage">
                 <Typography variant='h5' style={{fontFamily: 'Monospace'}}>
                   <Image src = {tempURL}/>
                 </Typography>
@@ -317,9 +318,8 @@ class Board extends React.Component {
                 </Typography>
                 <IconButton aria-label="delete" size='small'>
                   <DeleteIcon onClick={(e)=>this.removeImage(tempNameWithFileFormat)}/>
-                  {/* <DeleteIcon onClick={this.removeImage(tempNameWithFileFormat)}/> */}
                 </IconButton>
-              </div>                    
+              </div>
             </Rnd>
           )
       });
