@@ -5,6 +5,7 @@ test-frontend:
     - cd my-app
     - npm install
     - npm run test
+  allow_failure: true
 
 test-backend:
   stage: test
@@ -12,6 +13,7 @@ test-backend:
     - cd Backend
     - npm install 
     - npm run test
+  allow_failure: true
 
 deploy-frontend-prod:
   only:
