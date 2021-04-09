@@ -20,11 +20,7 @@ deploy-frontend-prod:
     - master
   stage: deploy
   script:
-    - cd Frontend
-    - cd my-app 
-    - npm install
-    - lsof -ti tcp:3000 | xargs kill
-    - npm run start&
+    - echo "after before script"
 deploy-backend-prod:
   only:
     - master
