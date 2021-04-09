@@ -197,7 +197,6 @@ class Board extends React.Component {
     }
 
     //photo part (by Dongwoo)
-
     handleOpenPhotoDialog() {
       this.setState({openPhotoDialog:true});
     }
