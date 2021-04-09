@@ -149,7 +149,7 @@ class BoardSelection extends React.Component {
     deleteBoard(){
       let i; let exists = 0;
       for (i = 0; i < this.state.memberBoards.length; i++) {
-        if (this.state.memberBoards[i].boardName == this.state.newBoard) {
+        if (this.state.memberBoards[i].boardName == this.state.removeBoard) {
           exists = 1;
           break;
         }
