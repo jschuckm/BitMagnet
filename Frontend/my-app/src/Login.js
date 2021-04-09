@@ -111,7 +111,7 @@ class Login extends React.Component {
               borderRight: '1px solid black'
             }}>
               <Dialog open={this.state.openDialog} onClose={this.handleCloseDialog}>
-                <DialogTitle>Register Account</DialogTitle>
+                <DialogTitle data-testid="title2">Register Account</DialogTitle>
                 <DialogContent>
                   <TextField data-testid="registeredFirstName" onChange={(event) => this.setState({registeredFirstName: event.target.value})} label={"First Name"}/><br></br>
                   <TextField data-testid="registeredLastName" onChange={(event) => this.setState({registeredLastName: event.target.value})} label={"Last Name"}/><br></br>
@@ -119,7 +119,7 @@ class Login extends React.Component {
                   <TextField data-testid="registeredPassword" onChange={(event) => this.setState({registeredPassword: event.target.value})} label={"Password"} inputProps={{type: 'password'}}/>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={this.registerAuthentication} style={{marginRight: '55px'}}>
+                  <Button data-testid="registerButton2" onClick={this.registerAuthentication} style={{marginRight: '55px'}}>
                     Register
                   </Button>
                   <Button data-testid="backButton" onClick={this.handleCloseDialog}>
@@ -142,11 +142,11 @@ class Login extends React.Component {
               }}>  
                 <TextField data-testid="username" onChange={(event) => this.setState({username: event.target.value})} label={"Username"} style={{marginBottom: '20px', marginTop: '25px'}} />
                 <TextField data-testid="password" onChange={(event) => this.setState({password: event.target.value})} label={"Password"} style={{marginBottom: '20px'}} inputProps={{type: 'password'}} />
-                <Button onClick={this.loginAuthentication}>
+                <Button data-testid="loginButton" onClick={this.loginAuthentication}>
                   Login
                 </Button>
               </div>
-              <Typography variant='h3' style={{marginRight: '175px', marginTop: '-310px', fontFamily: 'Monospace'}}>
+              <Typography data-testid="title" variant='h3' style={{marginRight: '175px', marginTop: '-310px', fontFamily: 'Monospace'}}>
                 <em><b>Bit Magnet</b></em>
               </Typography>
               <Button data-testid="registerButton" style={{marginRight: '310px', marginTop: '280px'}} onClick={this.handleOpenDialog}>
