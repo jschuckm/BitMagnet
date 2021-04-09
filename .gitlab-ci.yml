@@ -19,14 +19,15 @@ deploy-frontend-prod:
   only:
     - master
   stage: deploy
+  before_script:
+    - ./serverstart.sh 
   script:
     - echo "after before script"
 deploy-backend-prod:
   only:
     - master
   stage: deploy
+  before_script:
+    - ./backendserverstart.sh
   script:
-    - cd Backend 
-    - npm install
-    - lsof -ti tcp:8000 | xargs kill
-    - npm run start&
+    - echo "after before script"
