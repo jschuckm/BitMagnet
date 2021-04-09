@@ -54,20 +54,16 @@ class BoardSelection extends React.Component {
           openDialogDeleteBoard: false,
           openDialogShareFriend: false,
 
-          //TO-FIX, temporary user for testing
-          concrete_userID: 'b',
+          //temporary user for testing
+          //concrete_userID: 'b',
 
           friendsList: [],
-
-          //TODO: userName : access DB
-          //TODO: get user's boards from DB and make array, dummy here:
           memberBoards : []
         };
     }
 
     componentDidMount(){
       this.getFriendsList();
-       //will build memberBoards dynamically
       this.buildBoardList();
     }
 
@@ -120,6 +116,13 @@ class BoardSelection extends React.Component {
     }
 
     registerNewBoard(){
+      let i;
+      for (i = 0; i < this.state.memberBoards.length; i++) {
+        if (this.state.memberBoards[i].boardName == this.state.newBoard) {
+          alert("Board already exists.");
+          break;
+        }
+      }
       var tempURL = 'auth/' + this.props.location.state.detail + '/addBoard'
       try{
         fetch(tempURL, {
@@ -144,6 +147,14 @@ class BoardSelection extends React.Component {
     }
 
     deleteBoard(){
+      let i; let exists = 0;
+      for (i = 0; i < this.state.memberBoards.length; i++) {
+        if (this.state.memberBoards[i].boardName == this.state.newBoard) {
+          exists = 1;
+          break;
+        }
+      }
+      if (!exists) alert ("Such a board doesn't exist.");
       var tempURL = 'auth/' + this.props.location.state.detail + '/deleteBoard'
       try{
         fetch(tempURL, {
@@ -178,11 +189,11 @@ class BoardSelection extends React.Component {
           for (var i = 0; i < data.length; i++) {
             tempBoardList.push(data[i]);
           }
-          console.log("we have something", tempBoardList);
+          console.log("we have something boardsy", tempBoardList);
           this.setState({memberBoards: tempBoardList});
         }
         else {
-          console.log("we don't have something");
+          console.log("we don't have something boardsy");
         }
       });
     }
@@ -200,7 +211,7 @@ class BoardSelection extends React.Component {
     printFriendsList() {
       return this.state.friendsList.map((friend) => {
         return (
-          <Typography variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
+          <Typography data-testid="friendlist" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
             {friend.friendID}
           </Typography>
         )
@@ -391,7 +402,7 @@ class BoardSelection extends React.Component {
               <Dialog open={this.state.openDialogAddFriend} onClose={this.handleCloseDialogAddFriend}>
                 <DialogTitle>Add Friend</DialogTitle>
                 <DialogContent>
-                  <TextField onChange={(event) => this.setState({newFriend: event.target.value})} label={"Friend Username"}/><br></br>
+                  <TextField data-testid="addfriend" onChange={(event) => this.setState({newFriend: event.target.value})} label={"Friend Username"}/><br></br>
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={this.addFriend} style={{marginRight: '55px'}}>
@@ -406,7 +417,7 @@ class BoardSelection extends React.Component {
               <Dialog open={this.state.openDialogDeleteFriend} onClose={this.handleCloseDialogDeleteFriend}>
                 <DialogTitle>Delete Friend</DialogTitle>
                 <DialogContent>
-                  <TextField onChange={(event) => this.setState({deletingFriend: event.target.value})} label={"Username to Delete"}/><br></br>
+                  <TextField data-testid="deletefriends" onChange={(event) => this.setState({deletingFriend: event.target.value})} label={"Username to Delete"}/><br></br>
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={this.deleteFriend} style={{marginRight: '55px'}}>
@@ -421,8 +432,8 @@ class BoardSelection extends React.Component {
               <Dialog open={this.state.openDialogShareFriend} onClose={this.handleCloseDialogShareFriend}>
                 <DialogTitle>Share a board with a friend</DialogTitle>
                 <DialogContent>
-                  <TextField onChange={(event) => this.setState({tempBoard: event.target.value})} label={"Board"}/><br></br>
-                  <TextField onChange={(event) => this.setState({sharedFriend: event.target.value})} label={"Friend"}/><br></br>
+                  <TextField data-testid="tempboard" onChange={(event) => this.setState({tempBoard: event.target.value})} label={"Board"}/><br></br>
+                  <TextField data-testid="sharedfriend" onChange={(event) => this.setState({sharedFriend: event.target.value})} label={"Friend"}/><br></br>
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={this.addBoardShare} style={{marginRight: '140px'}}>
