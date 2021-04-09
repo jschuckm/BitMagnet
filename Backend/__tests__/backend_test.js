@@ -90,7 +90,7 @@ describe("test for friend list", () => {
             }, done)
     })
     test("get friend list", async () => {
-        const {body} = await request(app).get('/auth/jestTestAccount3/getFriends') 
+        const {body} = await request(app).get('/auth/jestTestAccount/getFriends') 
         expect(body.length).toEqual(1);
     })
 })
@@ -99,9 +99,9 @@ describe("test for friend list", () => {
 describe("test for board list", ()=> {
     test("add board", async (done) => {
         request(app)
-            .post('/auth/jestTestAccount3/addBoard')
+            .post('/auth/jestTestAccount/addBoard')
             .send({
-                boardName: "JestBoardA3"
+                boardName: "JestBoardA"
             })
             .set('Accept', 'application/json')
             .expect(200, {
@@ -110,9 +110,9 @@ describe("test for board list", ()=> {
     })
     test("add board", async (done) => {
         request(app)
-            .post('/auth/jestTestAccount3/addBoard')
+            .post('/auth/jestTestAccount/addBoard')
             .send({
-                boardName: "JestBoardB3"
+                boardName: "JestBoardB"
             })
             .set('Accept', 'application/json')
             .expect(200, {
@@ -121,9 +121,9 @@ describe("test for board list", ()=> {
     })
     test("add board", async (done) => {
         request(app)
-            .post('/auth/jestTestAccount3/addBoard')
+            .post('/auth/jestTestAccount/addBoard')
             .send({
-                boardName: "JestBoardC3"
+                boardName: "JestBoardC"
             })
             .set('Accept', 'application/json')
             .expect(200, {
@@ -132,9 +132,9 @@ describe("test for board list", ()=> {
     })
     test("delete board", async (done) => {
         request(app)
-            .post('/auth/jestTestAccount3/deleteBoard')
+            .post('/auth/jestTestAccount/deleteBoard')
             .send({
-                boardName: "JestBoardB3"
+                boardName: "JestBoardB"
             })
             .set('Accept', 'application/json')
             .expect(200, {
@@ -142,7 +142,7 @@ describe("test for board list", ()=> {
             },done)
     })
     test("get board list", async () => {
-        const {body} = await request(app).get('/auth/jestTestAccount3/main') 
+        const {body} = await request(app).get('/auth/jestTestAccount/main') 
         expect(body.length).toEqual(2);
     })
 })
@@ -151,10 +151,10 @@ describe("test for board list", ()=> {
 describe("test for board sharing", ()=> {
     test("share board", async (done) => {
         request(app)
-            .post('/auth/jestTestAccount3/addBoardShare')
+            .post('/auth/jestTestAccount/addBoardShare')
             .send({
-                userID: "testFriend3",
-                boardName: "JestBoardA3"
+                userID: "testFriend",
+                boardName: "JestBoardA"
             })
             .set('Accept', 'application/json')
             .expect(200, {
@@ -168,7 +168,7 @@ describe("test for board sharing", ()=> {
 describe("test for magnet part", () => {
     test("add text magnet1", async (done) => {
         request(app)
-            .post('/board/JestBoardA1/addMagnet')
+            .post('/board/JestBoardA/addMagnet')
             .send({
                 magnetName: "jest 1",
                 textMagnet: "this is for jest magnet"
@@ -180,7 +180,7 @@ describe("test for magnet part", () => {
     })
     test("add text magnet2", async (done) => {
         request(app)
-            .post('/board/JestBoardA1/addMagnet')
+            .post('/board/JestBoardA/addMagnet')
             .send({
                 magnetName: "jest 2",
                 textMagnet: "this is for jest magnet2"
@@ -192,7 +192,7 @@ describe("test for magnet part", () => {
     })
     test("delete magnet2", async (done) => {
         request(app)
-            .post('/board/JestBoardA1/deleteMagnet')
+            .post('/board/JestBoardA/deleteMagnet')
             .send({
                 magnetName: "jest 1"
             })
@@ -202,7 +202,7 @@ describe("test for magnet part", () => {
             }, done)
     })
     test("get magnet list", async () => {
-        const {body} = await request(app).get('/board/JestBoardA1/getAllMagnet') 
+        const {body} = await request(app).get('/board/JestBoardA/getAllMagnet') 
         expect(body.length).toEqual(1);
     })
 })
@@ -211,7 +211,7 @@ describe("test for magnet part", () => {
 const testImage = `${__dirname}/DuckFace-Jest.PNG`
 describe('test image controller', () => {    
     test('get image list', async () => {
-        const {body} = await request(app).get('/board/JestBoardA1/getImage') 
-        expect(body.length).toEqual(1);
+        const {body} = await request(app).get('/board/JestBoardA/getImage') 
+        expect(body.length).toEqual(0);
     })
 })
