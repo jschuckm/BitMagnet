@@ -8,15 +8,17 @@ class App extends Component {
   render() {
     return (
         <div className="App">
-          
+
           <Switch>
-            <Route exact path = "/" component={Login}/>
-            <Route path="/login" component={Login}/>
-            <Route path="/boardselection" component={BoardSelection}/>
-            <Route path="/board/:boardName" component={Board}/>
+            <Route exact path = "/" component={Login} />
+            <Route path="/login" component={Login} />
+            <Route path="/boardselection" component={BoardSelection} />
+            <Route path="/board/:boardName" component={Board} />
           </Switch>
         </div>
     );
   }
 }
 export default App;
+
+//render={(props) => <DetailsPage globalStore={globalStore} {...props} />
