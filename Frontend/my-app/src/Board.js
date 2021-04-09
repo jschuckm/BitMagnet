@@ -65,7 +65,15 @@ class Board extends React.Component {
     }
 
     handleOpenTextDialog() {
-      this.setState({openTextDialog: true});
+      let i;
+      let uniq = 1;
+      for (i = 0; i < this.state.magnets.length; i++) {
+        if (this.state.newMagnetTitle == this.state.magnets[i].title) {
+          alert("That title is taken");
+          uniq = 0;
+        }
+      }
+      if (uniq) this.setState({openTextDialog: true})
     }
 
     handleCloseTextDialog() {
@@ -98,12 +106,6 @@ class Board extends React.Component {
             console.log("we don't have something");
           }
           });
-    }
-
-    createMagnet(){
-        //this.state.magnets.push({title:this.state.newMagnetTitle, content: ''}); **PUSH OCCURS AFTER CONTENT IS OBTAINED
-        //unnecessary function, just use openTextDialog()
-        this.setState({openTextDialog:true});    
     }
 
     saveBoard(){
@@ -146,12 +148,15 @@ class Board extends React.Component {
     }
 
     deleteMagnet(){
+      let found = 0;
         this.setState({openDialogDelete:false});
         for( let i = 0;i<this.state.magnets.length;i++){
             if(this.state.magnets[i].title==this.state.deleteMagnet){
                 this.state.magnets.splice(i,1);
+                found = 1;
             }
         }
+        if (!found) alert("That magnet doesn't exist.");
         //removing from db
         try{
           fetch(this.state.tempBoardName+'/deleteMagnet', {

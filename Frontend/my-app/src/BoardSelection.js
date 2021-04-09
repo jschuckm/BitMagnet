@@ -54,20 +54,16 @@ class BoardSelection extends React.Component {
           openDialogDeleteBoard: false,
           openDialogShareFriend: false,
 
-          //TO-FIX, temporary user for testing
-          concrete_userID: 'b',
+          //temporary user for testing
+          //concrete_userID: 'b',
 
           friendsList: [],
-
-          //TODO: userName : access DB
-          //TODO: get user's boards from DB and make array, dummy here:
           memberBoards : []
         };
     }
 
     componentDidMount(){
       this.getFriendsList();
-       //will build memberBoards dynamically
       this.buildBoardList();
     }
 
@@ -120,6 +116,13 @@ class BoardSelection extends React.Component {
     }
 
     registerNewBoard(){
+      let i;
+      for (i = 0; i < this.state.memberBoards.length; i++) {
+        if (this.state.memberBoards[i].boardName == this.state.newBoard) {
+          alert("Board already exists.");
+          break;
+        }
+      }
       var tempURL = 'auth/' + this.props.location.state.detail + '/addBoard'
       try{
         fetch(tempURL, {
@@ -144,6 +147,14 @@ class BoardSelection extends React.Component {
     }
 
     deleteBoard(){
+      let i; let exists = 0;
+      for (i = 0; i < this.state.memberBoards.length; i++) {
+        if (this.state.memberBoards[i].boardName == this.state.newBoard) {
+          exists = 1;
+          break;
+        }
+      }
+      if (!exists) alert ("Such a board doesn't exist.");
       var tempURL = 'auth/' + this.props.location.state.detail + '/deleteBoard'
       try{
         fetch(tempURL, {
@@ -178,11 +189,11 @@ class BoardSelection extends React.Component {
           for (var i = 0; i < data.length; i++) {
             tempBoardList.push(data[i]);
           }
-          console.log("we have something", tempBoardList);
+          console.log("we have something boardsy", tempBoardList);
           this.setState({memberBoards: tempBoardList});
         }
         else {
-          console.log("we don't have something");
+          console.log("we don't have something boardsy");
         }
       });
     }
