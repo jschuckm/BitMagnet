@@ -19,15 +19,22 @@ deploy-frontend-prod:
   only:
     - master
   stage: deploy
-  before_script:
-    - sudo ./serverstart.sh 
   script:
-    - echo "after before script"
+    - cd Frontend
+    - cd my-app 
+    - npm install
+    - lsof -ti tcp:3000 | xargs kill
+    - ( npm run start </dev/null &>/dev/null & )
+    - echo "server ran start script\n"
+    - exit 0
 deploy-backend-prod:
   only:
     - master
   stage: deploy
-  before_script:
-    - sudo ./backendserverstart.sh
   script:
-    - echo "after before script"
+    - cd Backend 
+    - npm install
+    - lsof -ti tcp:8000 | xargs kill
+    - ( npm run start </dev/null &>/dev/null & )
+    - echo "backend server before script has ran\n"
+    - exit 0
