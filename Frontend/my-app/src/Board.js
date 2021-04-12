@@ -4,6 +4,7 @@ import grey from '@material-ui/core/colors/grey';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, IconButton} from '@material-ui/core';
 import { sizing } from '@material-ui/system';
+import {ArrowBack} from '@material-ui/icons';
 import Image from "material-ui-image";
 import {Rnd} from 'react-rnd';
 
@@ -13,6 +14,8 @@ class Board extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.backbutton=this.backbutton.bind(this);
         this.handleOpenNewDialog=this.handleOpenNewDialog.bind(this);
         this.handleCloseDialog=this.handleCloseDialog.bind(this);
         this.handleOpenDialogDelete=this.handleOpenDialogDelete.bind(this);
@@ -52,6 +55,13 @@ class Board extends React.Component {
         };
         this.loadBoard();
         this.loadImage();
+    }
+
+    backbutton(){
+      this.props.history.push({
+        pathname: '/boardselection',
+        state: { detail: this.props.location.state.detail }
+      });
     }
 
     handleOpenNewDialog(){
@@ -422,7 +432,10 @@ class Board extends React.Component {
                   </Button>
                 </DialogActions>
               </Dialog>
-              <Typography variant='h3' style={{marginRight: '260px', marginTop: '60px', paddingBottom: '10px', fontFamily: 'Monospace'}}>
+              <IconButton style={{marginRight: '900px'}} onClick={this.backbutton}>
+                <ArrowBack />
+              </IconButton>
+              <Typography variant='h3' style={{marginRight: '260px', marginTop: '10px', paddingBottom: '10px', fontFamily: 'Monospace'}}>
                 <em><b data-testid="title">Board</b></em>
               </Typography>
               
