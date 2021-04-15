@@ -9,6 +9,7 @@ import Image from "material-ui-image";
 import {Rnd} from 'react-rnd';
 
 import './App.css';
+import './image.css';
 
 class Board extends React.Component {
 
@@ -323,31 +324,28 @@ class Board extends React.Component {
         var tempURL = "/images/" + image.url;
         var tempNameWithFileFormat = image.url;
         var tempName = image.url.split('.')[0];
-          return ( //ideally this will have a hover on mouse until click for placement. doing random for now.
-            <Rnd
-            default = {{ x: image.position.x, y: image.position.y}} //sets initial position, first assigned and stored in create-magnet-text
-            minWidth = {120}
-            maxWidth = {120}
-            bounds = {"parent"}
-            enableResizing = {false}
-            onDragStop={ (d) => {image.position = {x : d.x, y : d.y} } } //after every move, magnet coords reassigned. state isn't set in magnet (i think?) until save button is clicked.
-            > 
-              <div style = {{backgroundColor: grey[100]}} id = "dragImage">
-                <Typography variant='h5' style={{fontFamily: 'Monospace'}}>
-                  <Image src = {tempURL}/>
-                </Typography>
-                <Typography>
-                  {tempName}
-                </Typography>
-                <IconButton aria-label="delete" size='small'>
-                  <DeleteIcon onClick={(e)=>this.removeImage(tempNameWithFileFormat)}/>
-                </IconButton>
-              </div>
-            </Rnd>
+          return (
+            <div style={{ width: "200px", height: "150px" }}>
+              <Rnd
+                default={{ x: image.position.x, y: image.position.y, width: 150, height: 100 }}
+                minWidth={150}
+                minHeight={100}
+                enableResizing = {false}
+                onDragStop={ (d) => {image.position = {x : d.x, y : d.y} } }
+              >
+                <div style={{ margin: 0, height: "100%", paddingBottom: "40px" }}>
+                  <div class="img-wrap">
+                    <span class="close" onClick={(e)=>this.removeImage(tempNameWithFileFormat)}>x</span>
+                    <img src={tempURL}/>
+                  </div>
+                </div>
+              </Rnd>
+            </div> 
           )
       });
   }
 
+  
 //<Typography variant='h5' style={{fontFamily: 'Monospace'}}>{magnet.title}:</Typography>
 //<Typography variant='h6' style={{fontFamily: 'Monospace'}}>{magnet.content}</Typography>
     render() {
