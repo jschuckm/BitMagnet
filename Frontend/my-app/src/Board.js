@@ -16,6 +16,10 @@ class Board extends React.Component {
     constructor(props) {
         super(props);
 
+        this.handleOpenLogoutDialog=this.handleOpenLogoutDialog.bind(this);
+        this.handleCloseLogoutDialog=this.handleCloseLogoutDialog.bind(this);
+        this.logout=this.logout.bind(this);
+
         this.backbutton=this.backbutton.bind(this);
         this.handleOpenNewDialog=this.handleOpenNewDialog.bind(this);
         this.handleCloseDialog=this.handleCloseDialog.bind(this);
@@ -53,7 +57,8 @@ class Board extends React.Component {
           imageFile: null,
           tempImageController: false,
           magnets: [], //will have title, content, type?, position{x: y: }
-          images: []
+          images: [],
+          logoutDialog: false,
         };
         this.loadBoard();
         this.loadImage();
@@ -72,6 +77,18 @@ class Board extends React.Component {
         pathname: '/boardselection',
         state: { detail: this.props.location.state.detail }
       });
+    }
+
+    logout(){
+      this.setState({logoutDialog: false});
+      this.props.history.push({pathname: '/login'});
+    }
+    handleOpenLogoutDialog(){
+      this.setState({logoutDialog: true});
+    }
+
+    handleCloseLogoutDialog(){
+      this.setState({logoutDialog: false});
     }
 
     handleOpenNewDialog(){
@@ -367,8 +384,32 @@ class Board extends React.Component {
               flexDirection: 'column',
               alignItems: 'center',
               borderLeft: '1px solid black',
-              borderRight: '1px solid black'
+              borderRight: '1px solid black',
+              position: "relative",
             }}>
+              <div style = {{height:"5vh",width:"100%",borderBottom:"1px solid black",display:"flex",justifyContent:"space-between"}}>
+              <Typography variant='h6' style={{fontFamily: 'Monospace',position:"relative",left:"1vh",width:"fit-content"}}>
+                <em><b>Bit Magnet</b></em>
+              </Typography>
+              <Button style={{position:"relative",right:"1vh"}} onClick={this.handleOpenLogoutDialog}>
+                Logout
+              </Button>
+              </div>
+              {/* Logout dialog */}
+              <Dialog open={this.state.logoutDialog} onClose={this.handleCloseLogoutDialog}>
+                  <DialogTitle>Are you sure you would like to log out?</DialogTitle>
+                  <DialogContent>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button style={{marginRight: '85px'}} onClick={this.logout}>
+                      Logout
+                    </Button>
+                    <Button onClick={this.handleCloseLogoutDialog}>
+                      Back
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+
               <Dialog open={this.state.openNewDialog} onClose={this.handleCloseDialog}>
                 <DialogTitle data-testid="createPopup">Add Magnet</DialogTitle>
                 <DialogContent>
@@ -439,7 +480,7 @@ class Board extends React.Component {
                   </Button>
                 </DialogActions>
               </Dialog>
-              <IconButton style={{marginRight: '900px'}} onClick={this.backbutton}>
+              <IconButton style={{position: "absolute",left: 0,top:"5vh"}} onClick={this.backbutton}>
                 <ArrowBack />
               </IconButton>
               <Typography variant='h3' style={{marginRight: '260px', marginTop: '10px', paddingBottom: '10px', fontFamily: 'Monospace'}}>
