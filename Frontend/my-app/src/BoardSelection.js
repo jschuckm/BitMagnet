@@ -117,8 +117,10 @@ class BoardSelection extends React.Component {
     }
 
     locationDetail() {
-      if (!this.props.location)
+      if (!this.props.location) {
+        console.log("WARNING, no live user");
         return "test";
+      }
       else return this.props.location.state.detail;
     }
 

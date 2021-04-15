@@ -56,6 +56,7 @@ class Board extends React.Component {
       let retVal = "test";
       if (this.props.match)
         retVal = this.props.match.params;
+      else console.log("WARNING no live board name");
       return retVal;
     }
 
