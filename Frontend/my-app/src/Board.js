@@ -447,7 +447,7 @@ class Board extends React.Component {
               </Typography>
               
               <div style={{
-                height: 500,
+                height: "75vh",
                 width: 400,
                 display: 'flex',
                 backgroundColor: blue[25],
@@ -458,7 +458,7 @@ class Board extends React.Component {
                 borderBottom: '1px solid black',
               }}>
                 <div style={{
-                height: 500,
+                height: "100%",
                 display: 'flex',
                 flexDirection: 'column'}}
                 id = {"mainBoard"}
