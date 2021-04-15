@@ -65,7 +65,8 @@ const upload = multer({
             //:boardName/uploadImage
 router.post("/:boardName/uploadImage", upload.single('file'), imageController.uploadImage); //upload image 
 
-
 router.get("/:boardName/getImage", imageController.getImage); //get image path
+
+router.post("/:boardName/deleteImage", imageController.deleteImage); //delete image
 
 module.exports = router;

@@ -9,6 +9,11 @@ import './App.css';
 class BoardSelection extends React.Component {
     constructor(props) {
         super(props);
+
+        this.handleOpenLogoutDialog=this.handleOpenLogoutDialog.bind(this);
+        this.handleCloseLogoutDialog=this.handleCloseLogoutDialog.bind(this);
+        this.logout=this.logout.bind(this);
+
         this.handleOpenDialog=this.handleOpenDialog.bind(this);
         this.handleCloseDialog=this.handleCloseDialog.bind(this);
         this.handleOpenDialogFriends=this.handleOpenDialogFriends.bind(this);
@@ -54,6 +59,7 @@ class BoardSelection extends React.Component {
           openDialogDeleteFriend: false,
           openDialogDeleteBoard: false,
           openDialogShareFriend: false,
+          logoutDialog: false,
 
           //temporary user for testing
           //concrete_userID: 'b',
@@ -66,6 +72,14 @@ class BoardSelection extends React.Component {
     componentDidMount(){
       this.getFriendsList();
       this.buildBoardList();
+    }
+
+    handleOpenLogoutDialog(){
+      this.setState({logoutDialog: true});
+    }
+
+    handleCloseLogoutDialog(){
+      this.setState({logoutDialog: false});
     }
 
     handleOpenDialog(){
@@ -122,6 +136,11 @@ class BoardSelection extends React.Component {
         return "test";
       }
       else return this.props.location.state.detail;
+    }
+    
+    logout(){
+      this.setState({logoutDialog: false});
+      this.props.history.push({pathname: '/login'});
     }
 
     registerNewBoard(){
@@ -211,7 +230,7 @@ class BoardSelection extends React.Component {
       return this.state.memberBoards.map((board) => {
           return (
               <Typography data-testid="boardlinks" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
-                <Link to={`/board/${board.boardName}`}>{board.boardName}</Link>
+                <Link to={{pathname: `/board/${board.boardName}`, state: {detail: this.props.location.state.detail}}}>{board.boardName}</Link>
               </Typography>
           )
         });
@@ -220,7 +239,7 @@ class BoardSelection extends React.Component {
     printFriendsList() {
       return this.state.friendsList.map((friend) => {
         return (
-          <Typography variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
+          <Typography data-testid="friendlist" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
             {friend.friendID}
           </Typography>
         )
@@ -357,6 +376,21 @@ class BoardSelection extends React.Component {
               borderLeft: '1px solid black',
               borderRight: '1px solid black'
             }}>
+              {/* Logout dialog */}
+              <Dialog open={this.state.logoutDialog} onClose={this.handleCloseLogoutDialog}>
+                <DialogTitle>Are you sure you would like to log out?</DialogTitle>
+                <DialogContent>
+                </DialogContent>
+                <DialogActions>
+                  <Button style={{marginRight: '85px'}} onClick={this.logout}>
+                    Logout
+                  </Button>
+                  <Button onClick={this.handleCloseLogoutDialog}>
+                    Back
+                  </Button>
+                </DialogActions>
+              </Dialog>
+
               {/* Board Select Dialog */}
               <Dialog open={this.state.openDialog} onClose={this.handleCloseDialog}>
                 <DialogTitle data-testid="boardAddPopup">Make Board</DialogTitle>
@@ -411,7 +445,7 @@ class BoardSelection extends React.Component {
               <Dialog open={this.state.openDialogAddFriend} onClose={this.handleCloseDialogAddFriend}>
                 <DialogTitle>Add Friend</DialogTitle>
                 <DialogContent>
-                  <TextField onChange={(event) => this.setState({newFriend: event.target.value})} label={"Friend Username"}/><br></br>
+                  <TextField data-testid="addfriend" onChange={(event) => this.setState({newFriend: event.target.value})} label={"Friend Username"}/><br></br>
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={this.addFriend} style={{marginRight: '55px'}}>
@@ -426,7 +460,7 @@ class BoardSelection extends React.Component {
               <Dialog open={this.state.openDialogDeleteFriend} onClose={this.handleCloseDialogDeleteFriend}>
                 <DialogTitle>Delete Friend</DialogTitle>
                 <DialogContent>
-                  <TextField onChange={(event) => this.setState({deletingFriend: event.target.value})} label={"Username to Delete"}/><br></br>
+                  <TextField data-testid="deletefriends" onChange={(event) => this.setState({deletingFriend: event.target.value})} label={"Username to Delete"}/><br></br>
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={this.deleteFriend} style={{marginRight: '55px'}}>
@@ -441,8 +475,8 @@ class BoardSelection extends React.Component {
               <Dialog open={this.state.openDialogShareFriend} onClose={this.handleCloseDialogShareFriend}>
                 <DialogTitle>Share a board with a friend</DialogTitle>
                 <DialogContent>
-                  <TextField onChange={(event) => this.setState({tempBoard: event.target.value})} label={"Board"}/><br></br>
-                  <TextField onChange={(event) => this.setState({sharedFriend: event.target.value})} label={"Friend"}/><br></br>
+                  <TextField data-testid="tempboard" onChange={(event) => this.setState({tempBoard: event.target.value})} label={"Board"}/><br></br>
+                  <TextField data-testid="sharedfriend" onChange={(event) => this.setState({sharedFriend: event.target.value})} label={"Friend"}/><br></br>
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={this.addBoardShare} style={{marginRight: '140px'}}>
@@ -453,6 +487,9 @@ class BoardSelection extends React.Component {
                   </Button>
                 </DialogActions>
               </Dialog>
+              <Button style={{marginLeft: '750px', marginTop: '10px'}} onClick={this.handleOpenLogoutDialog}>
+                Logout
+              </Button>
               <Typography variant='h3' style={{marginRight: '236px', marginTop: '60px', fontFamily: 'Monospace'}}>
                 <em><b data-testid="title">Boards</b></em>
               </Typography>

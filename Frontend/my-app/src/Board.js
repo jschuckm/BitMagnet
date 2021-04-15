@@ -1,7 +1,10 @@
 import React from 'react';
 import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
-import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography} from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, IconButton} from '@material-ui/core';
+import { sizing } from '@material-ui/system';
+import {ArrowBack} from '@material-ui/icons';
 import Image from "material-ui-image";
 import {Rnd} from 'react-rnd';
 
@@ -11,6 +14,8 @@ class Board extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.backbutton=this.backbutton.bind(this);
         this.handleOpenNewDialog=this.handleOpenNewDialog.bind(this);
         this.handleCloseDialog=this.handleCloseDialog.bind(this);
         this.handleOpenDialogDelete=this.handleOpenDialogDelete.bind(this);
@@ -37,6 +42,7 @@ class Board extends React.Component {
         this.uploadMagnetPhoto = this.uploadMagnetPhoto.bind(this);
         this.loadImage=this.loadImage.bind(this);
         this.printImages = this.printImages.bind(this);
+        this.removeImage = this.removeImage.bind(this);
 
         var { boardName } = this.getBoardName(); //get boardName from URL 
 
@@ -58,6 +64,13 @@ class Board extends React.Component {
         retVal = this.props.match.params;
       else console.log("WARNING no live board name");
       return retVal;
+    }
+    
+    backbutton(){
+      this.props.history.push({
+        pathname: '/boardselection',
+        state: { detail: this.props.location.state.detail }
+      });
     }
 
     handleOpenNewDialog(){
@@ -208,7 +221,6 @@ class Board extends React.Component {
     }
 
     //photo part (by Dongwoo)
-
     handleOpenPhotoDialog() {
       this.setState({openPhotoDialog:true});
     }
@@ -251,6 +263,38 @@ class Board extends React.Component {
       }      
     }
 
+    removeImage(name) {
+      let index = 99;
+      for(let i=0; i<this.state.images.length; i++) {
+        if(this.state.images[i].url == name) {
+          index = i;
+          console.log("Length is " + this.state.images.length)
+          console.log("Name is " + this.state.images[i].url)
+          console.log(index);
+          console.log(this.state.images[i].url)
+          console.log(this.state.images[index].url)  
+        }
+      }
+      fetch(this.state.tempBoardName + '/deleteImage', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          imageName: this.state.images[index].url
+        }),
+      })
+      console.log("Delete image:" + this.state.images[index].url);
+      this.state.images.splice(index, 1);  
+
+      //for re-rendering
+      this.setState({
+        images: this.state.images
+      })
+    } 
+
+
     loadImage() {
       fetch(this.state.tempBoardName + '/getImage')
       .then(async response => {
@@ -277,25 +321,35 @@ class Board extends React.Component {
     printImages() {
       return this.state.images.map((image) => {
         var tempURL = "/images/" + image.url;
-          return (  //ideally this will have a hover on mouse until click for placement. doing random for now.
+        var tempNameWithFileFormat = image.url;
+        var tempName = image.url.split('.')[0];
+          return ( //ideally this will have a hover on mouse until click for placement. doing random for now.
             <Rnd
             default = {{ x: image.position.x, y: image.position.y}} //sets initial position, first assigned and stored in create-magnet-text
-            minWidth = {50}
-            maxWidth = {250}
+            minWidth = {120}
+            maxWidth = {120}
             bounds = {"parent"}
             enableResizing = {false}
             onDragStop={ (d) => {image.position = {x : d.x, y : d.y} } } //after every move, magnet coords reassigned. state isn't set in magnet (i think?) until save button is clicked.
             > 
-              <div style = {{backgroundColor: grey[50]}} id = "dragImage">
+              <div style = {{backgroundColor: grey[100]}} id = "dragImage">
                 <Typography variant='h5' style={{fontFamily: 'Monospace'}}>
                   <Image src = {tempURL}/>
                 </Typography>
-              </div>                    
+                <Typography>
+                  {tempName}
+                </Typography>
+                <IconButton aria-label="delete" size='small'>
+                  <DeleteIcon onClick={(e)=>this.removeImage(tempNameWithFileFormat)}/>
+                </IconButton>
+              </div>
             </Rnd>
           )
       });
   }
 
+//<Typography variant='h5' style={{fontFamily: 'Monospace'}}>{magnet.title}:</Typography>
+//<Typography variant='h6' style={{fontFamily: 'Monospace'}}>{magnet.content}</Typography>
     render() {
       console.log(this.state);
         return (
@@ -387,7 +441,10 @@ class Board extends React.Component {
                   </Button>
                 </DialogActions>
               </Dialog>
-              <Typography variant='h3' style={{marginRight: '260px', marginTop: '60px', paddingBottom: '10px', fontFamily: 'Monospace'}}>
+              <IconButton style={{marginRight: '900px'}} onClick={this.backbutton}>
+                <ArrowBack />
+              </IconButton>
+              <Typography variant='h3' style={{marginRight: '260px', marginTop: '10px', paddingBottom: '10px', fontFamily: 'Monospace'}}>
                 <em><b data-testid="title">Board</b></em>
               </Typography>
               
