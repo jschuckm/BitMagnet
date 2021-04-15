@@ -33,6 +33,7 @@ class Board extends React.Component {
         this.loadBoard=this.loadBoard.bind(this);
       
         this.saveBoard=this.saveBoard.bind(this);
+        this.getBoardName=this.getBoardName.bind(this);
 
         //photo part
         this.handleOpenPhotoDialog = this.handleOpenPhotoDialog.bind(this);
@@ -43,7 +44,7 @@ class Board extends React.Component {
         this.printImages = this.printImages.bind(this);
         this.removeImage = this.removeImage.bind(this);
 
-        var { boardName } = props.match.params; //get boardName from URL 
+        var { boardName } = this.getBoardName(); //get boardName from URL 
 
         this.state = {
           tempBoardName: boardName,
@@ -57,6 +58,14 @@ class Board extends React.Component {
         this.loadImage();
     }
 
+    getBoardName() {
+      let retVal = "test";
+      if (this.props.match)
+        retVal = this.props.match.params;
+      else console.log("WARNING no live board name");
+      return retVal;
+    }
+    
     backbutton(){
       this.props.history.push({
         pathname: '/boardselection',

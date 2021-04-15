@@ -45,6 +45,7 @@ class BoardSelection extends React.Component {
         this.handleOpenDialogDeleteBoard = this.handleOpenDialogDeleteBoard.bind(this);
         this.handleCloseDialogDeleteBoard = this.handleCloseDialogDeleteBoard.bind(this);
         this.deleteBoard = this.deleteBoard.bind(this);
+        this.locationDetail = this.locationDetail.bind(this);
 
         this.state = {
           newBoard : '',
@@ -129,6 +130,14 @@ class BoardSelection extends React.Component {
       this.setState({openDialogDeleteBoard: false});
     }
 
+    locationDetail() {
+      if (!this.props.location) {
+        console.log("WARNING, no live user");
+        return "test";
+      }
+      else return this.props.location.state.detail;
+    }
+    
     logout(){
       this.setState({logoutDialog: false});
       this.props.history.push({pathname: '/login'});
@@ -142,7 +151,7 @@ class BoardSelection extends React.Component {
           break;
         }
       }
-      var tempURL = 'auth/' + this.props.location.state.detail + '/addBoard'
+      var tempURL = 'auth/' + this.locationDetail() + '/addBoard'
       try{
         fetch(tempURL, {
           method: 'POST',
@@ -174,7 +183,7 @@ class BoardSelection extends React.Component {
         }
       }
       if (!exists) alert ("Such a board doesn't exist.");
-      var tempURL = 'auth/' + this.props.location.state.detail + '/deleteBoard'
+      var tempURL = 'auth/' + this.locationDetail + '/deleteBoard'
       try{
         fetch(tempURL, {
           method: 'POST',
@@ -199,7 +208,7 @@ class BoardSelection extends React.Component {
 
     buildBoardList() {
       //reads boards from DB for state var memberBoards
-      var tempURL = 'auth/' + this.props.location.state.detail + '/main'
+      var tempURL = 'auth/' + this.locationDetail() + '/main'
       fetch(tempURL)
       .then(async response => {
         var tempBoardList = [];
@@ -239,8 +248,8 @@ class BoardSelection extends React.Component {
 
     getFriendsList(){
       var tempFriendsList = [];
-      console.log("test get ID: " + this.props.location.state.detail);
-      var tempURL = 'auth/' + this.props.location.state.detail + '/getFriends'
+      console.log("test get ID: " + this.locationDetail);
+      var tempURL = 'auth/' + this.locationDetail + '/getFriends'
       try{
         // fetch('auth/t/getFriends')
         fetch(tempURL)
@@ -260,7 +269,7 @@ class BoardSelection extends React.Component {
     }
 
     addFriend(){
-      var tempURL = 'auth/' + this.props.location.state.detail + '/addFriend'
+      var tempURL = 'auth/' + this.locationDetail() + '/addFriend'
       fetch(tempURL, {
         method: 'POST',
           headers: {
@@ -287,7 +296,7 @@ class BoardSelection extends React.Component {
     }
 
     deleteFriend(){
-      var tempURL = 'auth/' + this.props.location.state.detail + '/deleteFriend'
+      var tempURL = 'auth/' + this.locationDetail + '/deleteFriend'
       fetch(tempURL, {
         method: 'POST',
           headers: {
@@ -314,7 +323,7 @@ class BoardSelection extends React.Component {
     }
 
     addBoardShare(){
-      var tempURL = 'auth/' + this.props.location.state.detail + '/addBoardShare'
+      var tempURL = 'auth/' + this.locationDetail + '/addBoardShare'
       console.log(this.state.sharedFriend);
       try{
         fetch(tempURL, {
