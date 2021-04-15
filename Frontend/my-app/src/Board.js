@@ -387,7 +387,7 @@ class Board extends React.Component {
               borderRight: '1px solid black',
               position: "relative",
             }}>
-              <div style = {{height:"5vh",width:"100%",borderBottom:"1px solid black",display:"flex",justifyContent:"space-between"}}>
+              <div style = {{height:"35px",width:"100%",borderBottom:"1px solid black",display:"flex",justifyContent:"space-between"}}>
               <Typography variant='h6' style={{fontFamily: 'Monospace',position:"relative",left:"1vh",width:"fit-content"}}>
                 <em><b>Bit Magnet</b></em>
               </Typography>
