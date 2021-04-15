@@ -33,22 +33,25 @@ exports.addBoard = (request, respond) => {
     console.log(boardName);
     //add new board into boardSelection table
     db.query("insert into boardSelection(boardName) values (?);", [boardName], (error, result) => {
-        if(error) {
-            console.log(error);
+        /*if(error) {
+            console.log(error)
         } else {
             console.log("Insert new Board");
             respond.json({
                 message: "Insert new Board"
             })
         }
-    } )
+        */
+    })
 
     //make relationship between new board and user and add it into userBoardRelationship table
     db.query("insert into userBoardRelationship(userID, boardID) values (?, (select boardID from boardSelection where boardName = ?));", [userId, boardName], (error, result) =>{
         if(error) {
             console.log(error);
+            respond.json({"newboardstatus":false});
         } else {
-            console.log("Make relationship");
+            console.log("Make relationship"),
+            respond.json({"newboardstatus":true})
         }
     })
 }

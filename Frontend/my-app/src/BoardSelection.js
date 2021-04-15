@@ -145,14 +145,7 @@ class BoardSelection extends React.Component {
 
     registerNewBoard(){
       let i;
-      for (i = 0; i < this.state.memberBoards.length; i++) {
-        if (this.state.memberBoards[i].boardName == this.state.newBoard) {
-          alert("Board already exists.");
-          break;
-        }
-      }
       var tempURL = 'auth/' + this.locationDetail() + '/addBoard'
-      try{
         fetch(tempURL, {
           method: 'POST',
             headers: {
@@ -163,15 +156,19 @@ class BoardSelection extends React.Component {
               userID: this.state.concrete_userID,
               boardName:this.state.newBoard
             }),
-          });
-          console.log("trying to add to board");
-      }
-      catch(e){
-        console.log(e);
-      }
-      this.buildBoardList();
-      this.setState({openDialog: false});
-      this.setState({newBoard: ''});
+          }).then(async response => {
+            const data = await response.json();
+            console.log(data);
+            if (data.newboardstatus == true) {
+              console.log("new board added");
+              this.buildBoardList();
+              this.setState({openDialog: false});
+              this.setState({newBoard: ''});
+            } else if (data.newboardstatus == false) {
+              console.log("no new board added, see alert");
+              alert("BitMagnet already has a board with that name");
+            }
+          })
     }
 
     deleteBoard(){
