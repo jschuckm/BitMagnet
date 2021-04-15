@@ -28,6 +28,7 @@ class Board extends React.Component {
         this.loadBoard=this.loadBoard.bind(this);
       
         this.saveBoard=this.saveBoard.bind(this);
+        this.getBoardName=this.getBoardName.bind(this);
 
         //photo part
         this.handleOpenPhotoDialog = this.handleOpenPhotoDialog.bind(this);
@@ -37,7 +38,7 @@ class Board extends React.Component {
         this.loadImage=this.loadImage.bind(this);
         this.printImages = this.printImages.bind(this);
 
-        var { boardName } = props.match.params; //get boardName from URL 
+        var { boardName } = this.getBoardName(); //get boardName from URL 
 
         this.state = {
           tempBoardName: boardName,
@@ -49,6 +50,13 @@ class Board extends React.Component {
         };
         this.loadBoard();
         this.loadImage();
+    }
+
+    getBoardName() {
+      let retVal = "test";
+      if (this.props.match)
+        retVal = this.props.match.params;
+      return retVal;
     }
 
     handleOpenNewDialog(){

@@ -2,10 +2,17 @@ import React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from "react-dom/test-utils"
 import Board from '../Board';
+import 'regenerator-runtime/runtime'
+
 let container = null;
 beforeEach(()=>{
     container = document.createElement("div");
     document.body.appendChild(container);
+    global.fetch = jest.fn(() => Promise.resolve({
+      json: () => Promise.resolve({
+        //we can put return value here
+      })
+    }))
 })
 afterEach(()=>{
     unmountComponentAtNode(container);
