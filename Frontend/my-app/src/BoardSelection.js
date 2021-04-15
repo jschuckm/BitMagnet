@@ -484,9 +484,14 @@ class BoardSelection extends React.Component {
                   </Button>
                 </DialogActions>
               </Dialog>
-              <Button style={{marginLeft: '750px', marginTop: '10px'}} onClick={this.handleOpenLogoutDialog}>
+              <div style = {{height:"35px",width:"100%",borderBottom:"1px solid black",display:"flex",justifyContent:"space-between"}}>
+              <Typography variant='h6' style={{fontFamily: 'Monospace',position:"relative",left:"1vh",width:"fit-content"}}>
+                <em><b>Bit Magnet</b></em>
+              </Typography>
+              <Button style={{position:"relative",right:"1vh"}} onClick={this.handleOpenLogoutDialog}>
                 Logout
               </Button>
+              </div>
               <Typography variant='h3' style={{marginRight: '236px', marginTop: '60px', fontFamily: 'Monospace'}}>
                 <em><b data-testid="title">Boards</b></em>
               </Typography>

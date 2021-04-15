@@ -5,6 +5,7 @@ import grey from '@material-ui/core/colors/grey';
 import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, IconButton, Divider } from '@material-ui/core';
 import { Help } from '@material-ui/icons';
 import { Redirect } from "react-router-dom";
+import {Link} from 'react-router-dom';
 
 import './App.css';
 
@@ -141,6 +142,23 @@ class Login extends React.Component {
               borderLeft: '1px solid black',
               borderRight: '1px solid black'
             }}>
+              <div style = {{height:"35px",width:"100%",borderBottom:"1px solid black",display:"flex",justifyContent:"space-between"}}>
+              <Typography variant='h6' style={{fontFamily: 'Monospace',position:"relative",left:"1vh",width:"fit-content"}}>
+                <em><b>Bit Magnet</b></em>
+              </Typography>
+              <div style={{position:"relative",right:"1vh"}}>
+              <Button onClick={()=>this.props.history.push('/about')}>
+                About
+              </Button>
+              <Button>
+                Register
+              </Button>
+              <Button onClick={()=>this.props.history.push('/login')}>
+                Login
+              </Button>
+              </div>
+              </div>
+
               <Dialog open={this.state.openDialog} onClose={this.handleCloseDialog}>
                 <DialogTitle data-testid="title2"><u>Register Account</u></DialogTitle>
                 <DialogContent>
@@ -200,7 +218,7 @@ class Login extends React.Component {
                 </Button>
               </div>
               <Typography data-testid="title" variant='h3' style={{marginRight: '175px', marginTop: '-310px', fontFamily: 'Monospace'}}>
-                <em><b>Bit Magnet</b></em>
+                <em><b>Login</b></em>
               </Typography>
               <Button variant="contained" data-testid="registerButton" style={{marginRight: '300px', marginTop: '280px'}} onClick={this.handleOpenDialog}>
                 Register
