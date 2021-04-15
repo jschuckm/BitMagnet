@@ -69,4 +69,7 @@ router.get("/:boardName/getImage", imageController.getImage); //get image path
 
 router.post("/:boardName/deleteImage", imageController.deleteImage); //delete image
 
+            //:boardName/getUsers
+router.get("/:boardName/getUsers", boardController.getUsers); //show board members  
+
 module.exports = router;

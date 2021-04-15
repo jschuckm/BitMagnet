@@ -1,3 +1,4 @@
+const { request, response } = require("express");
 const mysql = require("mysql");
 
 const db = mysql.createConnection({
@@ -88,6 +89,19 @@ exports.deleteBoard = (request, respond) => {
             respond.json({
                 message: "Delete that board"
             })
+        }
+    })
+}
+
+exports.getUsers = (request, respond) => {
+    const boardName = request.params.boardName;
+
+    db.query("select u.userID from userBoardRelationship u where u.boardID = (select boardID from boardSelection where boardName = ?);", [boardName], (error, result) => {
+        if(error) {
+            console.log(error);
+        } else {
+            console.log(result);
+            respond.json(result);
         }
     })
 }
