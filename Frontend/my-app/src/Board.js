@@ -222,9 +222,10 @@ class Board extends React.Component {
     }
 
     printMagnets() {
-        return this.state.magnets.map((magnet) => {
+        return this.state.magnets.map((magnet, i) => {
             return ( //ideally this will have a hover on mouse until click for placement. doing random for now.
               <Rnd
+              key = {magnet.index}
               default = {{ x: magnet.position.x, y: magnet.position.y}} //sets initial position, first assigned and stored in create-magnet-text
               minWidth = {50}
               maxWidth = {250}
