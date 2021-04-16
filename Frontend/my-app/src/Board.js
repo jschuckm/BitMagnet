@@ -21,24 +21,21 @@ class Board extends React.Component {
         this.logout=this.logout.bind(this);
 
         this.backbutton=this.backbutton.bind(this);
-        this.handleOpenNewDialog=this.handleOpenNewDialog.bind(this);
-        this.handleCloseDialog=this.handleCloseDialog.bind(this);
-        this.handleOpenDialogDelete=this.handleOpenDialogDelete.bind(this);
+        //this.handleOpenNewDialog=this.handleOpenNewDialog.bind(this);
+        //this.handleCloseDialog=this.handleCloseDialog.bind(this);
+        //this.handleOpenDialogDelete=this.handleOpenDialogDelete.bind(this);
 
         this.handleOpenTextDialog=this.handleOpenTextDialog.bind(this);
         this.handleCloseTextDialog=this.handleCloseTextDialog.bind(this);
-
-        this.handleCloseDialogDelete=this.handleCloseDialogDelete.bind(this);
-
-
         this.createMagnetText=this.createMagnetText.bind(this);
+        this.removeText=this.removeText.bind(this);
 
-        this.deleteMagnet=this.deleteMagnet.bind(this);
         this.printMagnets=this.printMagnets.bind(this);
         this.loadBoard=this.loadBoard.bind(this);
-      
         this.saveBoard=this.saveBoard.bind(this);
+
         this.getBoardName=this.getBoardName.bind(this);
+        this.getMaxIndex = this.getMaxIndex.bind(this);
 
         //photo part
         this.handleOpenPhotoDialog = this.handleOpenPhotoDialog.bind(this);
@@ -53,15 +50,34 @@ class Board extends React.Component {
 
         this.state = {
           tempBoardName: boardName,
-          newMagnetTitle : '', newMagnetText : '', deleteMagnet : '',
+          newMagnetText : '',
           imageFile: null,
           tempImageController: false,
           magnets: [], //will have title, content, type?, position{x: y: }
           images: [],
           logoutDialog: false,
         };
-        this.loadBoard();
-        this.loadImage();
+    }
+    
+    componentDidMount(){
+      console.log("mount function running");
+      this.loadImage();
+      this.loadBoard();
+    }
+
+    getMaxIndex() {
+      let indexMax = 0;
+      let i;
+      console.log("mag array length " + this.state.magnets.length);
+      for (i = 0; i < this.state.magnets.length; i++) {
+        if (this.state.magnets[i].index > indexMax) {
+          console.log("index of " + this.state.magnets[i].index);
+          indexMax = this.state.magnets[i].index;
+        }
+      }
+      this.state.maxIndex = indexMax;
+      console.log("index max is " + indexMax);
+      console.log("max index is " + this.state.maxIndex);
     }
 
     getBoardName() {
@@ -104,24 +120,13 @@ class Board extends React.Component {
         this.setState({openDialogDelete: true});
     }
 
+  
     handleOpenTextDialog() {
-      let i;
-      let uniq = 1;
-      for (i = 0; i < this.state.magnets.length; i++) {
-        if (this.state.newMagnetTitle == this.state.magnets[i].title) {
-          alert("That title is taken");
-          uniq = 0;
-        }
-      }
-      if (uniq) this.setState({openTextDialog: true})
+      this.setState({openTextDialog: true})
     }
 
     handleCloseTextDialog() {
       this.setState({openTextDialog: false});
-    }
-  
-    handleCloseDialogDelete(){
-      this.setState({openDialogDelete: false});
     }
 
     loadBoard(){
@@ -133,17 +138,18 @@ class Board extends React.Component {
             for (var i = 0; i < data.length; i++) {
               let posX = Math.random() * 250; //how to get magnet size for safer placement?
               let posY = Math.random() * 300;
-              let tempMagnet = {title: "", content: "", position: ""};
-              tempMagnet.title = data[i].magnetName;
+              let tempMagnet = {index: "", content: "", position: ""};
+              tempMagnet.index = Number(data[i].magnetName);
               tempMagnet.content = data[i].textMagnet;
               tempMagnet.position = {x: posX, y: posY};
               tempMagList.push(tempMagnet);
             }
-            console.log("we have something", tempMagList);
+            console.log("board loaded", tempMagList);
             this.setState({magnets: tempMagList});
+            this.getMaxIndex();
           }
           else {
-            console.log("we don't have something");
+            console.log("board not loaded");
           }
           });
     }
@@ -157,12 +163,10 @@ class Board extends React.Component {
 
     createMagnetText() {
       console.log(this.state.tempBoardName);
-      console.log(this.state.magnets);
       console.log(this.state.newMagnetText);
       var leftSpot = Math.random() * 250; //how to get magnet size for safer placement?
       var topSpot = Math.random() * 300;
-      this.state.magnets.push({title:this.state.newMagnetTitle, content: this.state.newMagnetText, position: {x : leftSpot, y: topSpot}});
-      console.log(this.state.magnets);
+      this.state.magnets.push({index:this.state.maxIndex +1, content: this.state.newMagnetText, position: {x : leftSpot, y: topSpot}});
       this.setState({openNewDialog:false});
       this.setState({openTextDialog:false});
       try{
@@ -174,7 +178,7 @@ class Board extends React.Component {
             },
             body: JSON.stringify({
               boardName: this.state.concrete_boardID,
-              magnetName: this.state.newMagnetTitle,
+              magnetName: (this.state.maxIndex + 1).toString(), //formerly magnet title on frontend
               textMagnet: this.state.newMagnetText
             }),
           });
@@ -183,38 +187,38 @@ class Board extends React.Component {
       catch(e){
         console.log(e);
       }
-      this.state.newMagnetTitle="";
       this.state.newMagnetText="";
+      this.setState({maxIndex: this.state.maxIndex +1});
     }
 
-    deleteMagnet(){
-      let found = 0;
-        this.setState({openDialogDelete:false});
-        for( let i = 0;i<this.state.magnets.length;i++){
-            if(this.state.magnets[i].title==this.state.deleteMagnet){
-                this.state.magnets.splice(i,1);
-                found = 1;
-            }
+    removeText(indexDel) {
+      var magArr = this.state.magnets;
+      for(let i=0; i<this.state.magnets.length; i++) {
+        console.log("checking array index " + this.state.magnets[i].index + " and passed index " + indexDel);
+        if(this.state.magnets[i].index == indexDel) {
+          console.log("magnet was " + i + "th");
+          magArr.splice(i, 1);
+          console.log("found magnet to delete by perm index");
         }
-        if (!found) alert("That magnet doesn't exist.");
-        //removing from db
-        try{
-          fetch(this.state.tempBoardName+'/deleteMagnet', {
-            method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                boardName: this.state.concrete_boardID,
-                magnetName: this.state.deleteMagnet
-              }),
-            });
-            console.log("delete magnet frontend");
-        }
-        catch(e){
-          console.log(e);
-        }
+      }
+      try{
+        fetch(this.state.tempBoardName+'/deleteMagnet', {
+          method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              boardName: this.state.concrete_boardID,
+              magnetName: indexDel.toString()
+            }),
+          });
+          console.log("delete text magnet frontend");
+      }
+      catch(e){
+        console.log(e);
+      }
+      this.setState({magnets: magArr});
     }
 
     printMagnets() {
@@ -228,10 +232,10 @@ class Board extends React.Component {
               enableResizing = {false}
               onDragStop={ (d) => {magnet.position = {x : d.x, y : d.y} } } //after every move, magnet coords reassigned. state isn't set in magnet (i think?) until save button is clicked.
               >
-                <div style = {{backgroundColor: grey[50]}} id = "dragMag">
-                  <Typography variant='h5' style={{fontFamily: 'Monospace'}}>
-                    {magnet.title}: </Typography><Typography variant='h6' style={{fontFamily: 'Monospace'}}>{magnet.content}
+                <div style = {{backgroundColor: grey[50]}} class = "img-wrap">
+                    <Typography variant='h6' style={{fontFamily: 'Monospace'}}>{magnet.content}
                   </Typography>
+                  <span class="close" onClick={(e)=>this.removeText(magnet.index)}>x</span>
                 </div>
               </Rnd>
             )
@@ -312,7 +316,6 @@ class Board extends React.Component {
       })
     } 
 
-
     loadImage() {
       fetch(this.state.tempBoardName + '/getImage')
       .then(async response => {
@@ -335,7 +338,9 @@ class Board extends React.Component {
           console.log("we don't have something");
         }
       })
+      return 1;
     }
+
     printImages() {
       return this.state.images.map((image) => {
         var tempURL = "/images/" + image.url;
@@ -362,9 +367,6 @@ class Board extends React.Component {
       });
   }
 
-  
-//<Typography variant='h5' style={{fontFamily: 'Monospace'}}>{magnet.title}:</Typography>
-//<Typography variant='h6' style={{fontFamily: 'Monospace'}}>{magnet.content}</Typography>
     render() {
       console.log(this.state);
         return (
@@ -409,30 +411,7 @@ class Board extends React.Component {
                     </Button>
                   </DialogActions>
                 </Dialog>
-
-              <Dialog open={this.state.openNewDialog} onClose={this.handleCloseDialog}>
-                <DialogTitle data-testid="createPopup">Add Magnet</DialogTitle>
-                <DialogContent>
-                  <TextField data-testid="createMagTxt"onChange={(event) => this.setState({newMagnetTitle: event.target.value})} label={"Magnet Title"}/><br></br>
-                </DialogContent>
-                <DialogActions>
-                  <Button data-testid="createMagSubmitBtn" onClick={this.handleOpenTextDialog} style={{marginRight: '10px'}}>
-                    Text
-                  </Button>
-                  
-                  {/* This button has no handlers ++ Test id's will need to be narrowed*/}
-
-                  {/* For photo */}
-                  <Button data-testid="createPhotoMagSubmitBtn" onClick={this.handleOpenPhotoDialog} style={{marginRight: '10px'}}>
-                    Create Photo Magnet
-                  </Button>
-                  
-                  <Button data-testid="closeCreatePopup" onClick={this.handleCloseDialog}>
-                    Back
-                  </Button>
-                </DialogActions>
-              </Dialog>
-
+                
               {/*Dialog for text content*/}
               <Dialog open={this.state.openTextDialog} onClose={this.handleCloseTextDialog}>
                 <DialogTitle data-testid="createTextPopup">Enter Text</DialogTitle>
@@ -466,27 +445,13 @@ class Board extends React.Component {
                 </DialogActions>
               </Dialog>
 
-              <Dialog open={this.state.openDialogDelete} onClose={this.handleCloseDialogDelete}>
-                <DialogTitle data-testid="deletePopup">Delete Magnet</DialogTitle>
-                <DialogContent>
-                  <TextField data-testid="deleteMagtxt" onChange={(event) => this.setState({deleteMagnet: event.target.value})} label={"Magnet Text"}/><br></br>
-                </DialogContent>
-                <DialogActions>
-                  <Button data-testid="deleteMagSubmitBtn" onClick={this.deleteMagnet} style={{marginRight: '55px'}}>
-                    Delete Magnet
-                  </Button>
-                  <Button data-testid="closeDeletePopup" onClick={this.handleCloseDialogDelete}>
-                    Back
-                  </Button>
-                </DialogActions>
-              </Dialog>
               <IconButton style={{position: "absolute",left: 0,top:"5vh"}} onClick={this.backbutton}>
                 <ArrowBack />
               </IconButton>
               <Typography variant='h3' style={{marginRight: '260px', marginTop: '10px', paddingBottom: '10px', fontFamily: 'Monospace'}}>
                 <em><b data-testid="title">Board</b></em>
               </Typography>
-              
+
               <div style={{
                 height: "75vh",
                 width: 400,
@@ -513,17 +478,16 @@ class Board extends React.Component {
               display: 'flex',
               marginRight: 50
               }}>
-              <Button data-testid="addMagnetBtn" style={{marginLeft: '45px', marginTop: '10px'}} onClick={this.handleOpenNewDialog}>
-                Add magnet
+              <Button data-testid="addTextMagnetBtn" style={{marginLeft: '40px', marginTop: '10px'}} onClick={this.handleOpenTextDialog}>
+                Add Text
               </Button>
-              <Button data-testid="deleteMagnetBtn" style={{marginLeft: '45px', marginTop: '10px'}} onClick={this.handleOpenDialogDelete}>
-                Delete magnet
+              <Button data-testid="addPhotoMagnetBtn" style={{marginLeft: '35px', marginTop: '10px'}} onClick={this.handleOpenPhotoDialog}>
+                Add Photo
               </Button>
-              <Button data-testid="saveMagnetBtn" style={{marginLeft: '45px', marginTop: '10px'}} onClick={this.saveBoard}>
-                Save board
+              <Button data-testid="viewMembersBtn" style={{marginLeft: '35px', marginTop: '10px'}} onClick = {null}>
+              View members
               </Button>
             </div></div>
-
           </div>
         );
     }
