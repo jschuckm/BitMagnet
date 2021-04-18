@@ -16,6 +16,8 @@ class Board extends React.Component {
     constructor(props) {
         super(props);
 
+        var { boardName } = this.getBoardName(); //get boardName from URL 
+
         this.handleOpenLogoutDialog=this.handleOpenLogoutDialog.bind(this);
         this.handleCloseLogoutDialog=this.handleCloseLogoutDialog.bind(this);
         this.logout=this.logout.bind(this);
@@ -46,7 +48,11 @@ class Board extends React.Component {
         this.printImages = this.printImages.bind(this);
         this.removeImage = this.removeImage.bind(this);
 
-        var { boardName } = this.getBoardName(); //get boardName from URL 
+        //View Members
+        this.handleOpenMembersDialog = this.handleOpenMembersDialog.bind(this); 
+        this.handleCloseMembersDialog = this.handleCloseMembersDialog.bind(this);
+        this.getMemberList = this.getMemberList.bind(this);
+        this.printMemberList = this.printMemberList.bind(this);
 
         this.state = {
           tempBoardName: boardName,
@@ -56,6 +62,7 @@ class Board extends React.Component {
           magnets: [], //will have title, content, type?, position{x: y: }
           images: [],
           logoutDialog: false,
+          MemberList: [],
         };
     }
     
@@ -63,6 +70,7 @@ class Board extends React.Component {
       console.log("mount function running");
       this.loadImage();
       this.loadBoard();
+      this.getMemberList();
     }
 
     getMaxIndex() {
@@ -368,6 +376,41 @@ class Board extends React.Component {
       });
   }
 
+  //member views part 
+  handleOpenMembersDialog() {
+    this.setState({openMemberDialog:true});
+  }
+  
+  handleCloseMembersDialog() {
+    this.setState({openMemberDialog:false});
+  }
+
+  getMemberList() {
+    console.log("MIIIIIIIIIIIIIIIIIIIIIIII");
+    var tempMemberList = [];
+    fetch(this.state.tempBoardName + '/getUsers')
+    .then(console.log("get Member list"))
+    .then(response=>response.json())
+    .then(data => {
+      console.log(data.length)
+      for(var i=0; i<data.length; i++) {
+        tempMemberList.push(data[i])
+      }
+      this.setState({MemberList:tempMemberList})
+    })
+    console.log("MIIIIIIIIIIIIIIIIIIIIIIII");
+  }
+
+  printMemberList() {
+    return this.state.MemberList.map((member) => {
+      return (
+        <Typography data-testid="friendlist" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
+          {member.userID}
+        </Typography>
+      )
+    });
+  }
+
     render() {
       console.log(this.state);
         return (
@@ -446,12 +489,27 @@ class Board extends React.Component {
                 </DialogActions>
               </Dialog>
 
+              {/* Dialog for member view  */}
+              <Dialog open={this.state.openMemberDialog} onClose={this.handleCloseMembersDialog}>
+                <DialogTitle data-testid="GetMemberList">Member List</DialogTitle>
+                <DialogContent style={{overflowY: 'scroll', width: 300, height: 350}}>
+                  {this.printMemberList()}
+                </DialogContent>
+                <DialogActions>
+                  <Button data-testid="closeMemberList" onClick={this.handleCloseMembersDialog}>
+                    Back
+                  </Button>
+                </DialogActions>
+              </Dialog>
+
               <IconButton style={{position: "absolute",left: 0,top:"5vh"}} onClick={this.backbutton}>
                 <ArrowBack />
               </IconButton>
               <Typography variant='h3' style={{marginRight: '260px', marginTop: '10px', paddingBottom: '10px', fontFamily: 'Monospace'}}>
                 <em><b data-testid="title">Board</b></em>
               </Typography>
+
+
 
               <div style={{
                 height: "75vh",
@@ -485,7 +543,7 @@ class Board extends React.Component {
               <Button data-testid="addPhotoMagnetBtn" style={{marginLeft: '35px', marginTop: '10px'}} onClick={this.handleOpenPhotoDialog}>
                 Add Photo
               </Button>
-              <Button data-testid="viewMembersBtn" style={{marginLeft: '35px', marginTop: '10px'}} onClick = {null}>
+              <Button data-testid="viewMembersBtn" style={{marginLeft: '35px', marginTop: '10px'}} onClick = {this.handleOpenMembersDialog}>
               View members
               </Button>
             </div></div>
@@ -494,3 +552,4 @@ class Board extends React.Component {
     }
 }
 export default Board;
+
