@@ -53,6 +53,14 @@ class Board extends React.Component {
         this.handleOpenNewMembersDialog = this.handleOpenNewMembersDialog.bind(this);
         this.handleCloseNewMembersDialog = this.handleCloseNewMembersDialog.bind(this);
 
+        //custom placement for text
+        this.handleWillPlaceText = this.handleWillPlaceText.bind(this);
+        this.placeMagnet = this.placeMagnet.bind(this);
+        this.handleShadowMouse = this.handleShadowMouse.bind(this);
+        this.printShadow = this.printShadow.bind(this);
+
+        //custom placement for image
+
         this.addMember = this.addMember.bind(this);
 
         this.state = {
@@ -65,6 +73,10 @@ class Board extends React.Component {
           images: [],
           logoutDialog: false,
           MemberList: [],
+          willPlace: 0,
+          newMagX: 0,
+          newMagY: 0,
+          mousePos: {x: 0, y: 0}
         };
     }
     
@@ -170,14 +182,65 @@ class Board extends React.Component {
       console.log(this.state.magnets);
     }
 
-    createMagnetText() {
-      console.log(this.state.tempBoardName);
-      console.log(this.state.newMagnetText);
-      var leftSpot = Math.random() * 250; //how to get magnet size for safer placement?
-      var topSpot = Math.random() * 300;
-      this.state.magnets.push({index:this.state.maxIndex +1, content: this.state.newMagnetText, position: {x : leftSpot, y: topSpot}});
+    handleWillPlaceText() {
       this.setState({openNewDialog:false});
       this.setState({openTextDialog:false});
+      this.setState({willPlace : 1});
+      console.log("waiting for click place");
+    }
+
+    handleShadowMouse(e) {
+      if (this.state.willPlace) {
+        var offsets = document.getElementById('mainBoard').getBoundingClientRect();
+        var top = offsets.top;
+        var left = offsets.left;
+        console.log(`Position: (${e.clientX}, ${e.clientY})`);
+        let mousePosX = e.clientX;
+        let mousePosY = e.clientY;
+        this.setState({mousePos : { x: mousePosX - left, y: mousePosY}});
+      }
+    }
+
+    printShadow() {
+      const shadowStyle = {
+        position: 'absolute',
+        left: this.state.mousePos.x,
+        top: this.state.mousePos.y,
+        backgroundColor: grey[50],
+        maxWidth : 250
+      }
+      if (this.state.willPlace) {
+        return(
+        <div id = 'shadowBox' style = {shadowStyle}>
+          <Typography variant='h6' style={{fontFamily: 'Monospace'}}>
+            {this.state.newMagnetText}
+        </Typography>
+        </div>
+        )
+      }
+    }
+
+    placeMagnet(e) {
+      console.log("checking to place");
+      if (this.state.willPlace) {
+        var offsets = document.getElementById('mainBoard').getBoundingClientRect();
+        var maxWidth = document.getElementById('shadowBox')
+        var top = offsets.top;
+        var left = offsets.left;
+        console.log(`Position: (${e.clientX}, ${e.clientY})`);
+        let newMagX = e.clientX;
+        let newMagY = e.clientY;
+        this.createMagnetText(newMagX - left, newMagY - top);
+      }
+    }
+    
+    createMagnetText(xPos, yPos) {
+      console.log(this.state.tempBoardName);
+      console.log(this.state.newMagnetText);
+      //var leftSpot = Math.random() * 250; //how to get magnet size for safer placement?
+      //var topSpot = Math.random() * 300;
+      this.state.magnets.push({index:this.state.maxIndex +1, content: this.state.newMagnetText, position: {x: xPos, y: yPos}});
+      this.setState({willPlace : 0});
       try{
         fetch(this.state.tempBoardName+'/addMagnet', {
           method: 'POST',
@@ -234,7 +297,6 @@ class Board extends React.Component {
               <Rnd
               key = {magnet.index}
               default = {{ x: magnet.position.x, y: magnet.position.y}} //sets initial position, first assigned and stored in create-magnet-text
-              minWidth = {50}
               maxWidth = {250}
               bounds = {"parent"}
               enableResizing = {false}
@@ -285,7 +347,7 @@ class Board extends React.Component {
             imageFile : null
           })
           this.setState({
-            tempImageControllermp: false
+            tempImageController: false
           })
         } catch(e) {
           console.log(e);
@@ -455,7 +517,7 @@ class Board extends React.Component {
   }
 
     render() {
-      console.log(this.state);
+      //console.log(this.state);
         return (
           <div style={{
             height: window.innerHeight,
@@ -499,14 +561,14 @@ class Board extends React.Component {
                   </DialogActions>
                 </Dialog>
                 
-              {/*Dialog for text content*/}
+              {/*Dialog for text content ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/}
               <Dialog open={this.state.openTextDialog} onClose={this.handleCloseTextDialog}>
                 <DialogTitle data-testid="createTextPopup">Enter Text</DialogTitle>
                 <DialogContent>
                   <TextField multiline rows={4} data-testid="createMagTxtContent"onChange={(event) => this.setState({newMagnetText: event.target.value})} label={"Magnet Text"}/><br></br>
                 </DialogContent>
                 <DialogActions>
-                  <Button data-testid="createMagTextSubmitBtn" onClick={this.createMagnetText} style={{marginRight: '0px'}}>
+                  <Button data-testid="createMagTextSubmitBtn" onClick={this.handleWillPlaceText} style={{marginRight: '0px'}}>
                     Post Text
                   </Button>
                   <Button data-testid="closeCreateTextPopup" onClick={this.handleCloseTextDialog}>
@@ -554,8 +616,6 @@ class Board extends React.Component {
                 <DialogContent style={{overflowY: 'scroll', width: 300, height: 350}}>
                   {this.printMemberList()}
                 </DialogContent>
-
-                {/* IN PROGRESS */}
                 <DialogActions>
                   <Button data-testid="addMemberButton" style={{marginRight: '90px', display: 'flex'}} onClick={this.handleOpenNewMembersDialog}>
                     Add member
@@ -564,7 +624,6 @@ class Board extends React.Component {
                     Back
                   </Button>
                 </DialogActions>
-
               </Dialog>
               
 
@@ -586,16 +645,20 @@ class Board extends React.Component {
                 borderLeft: '1px solid black',
                 borderRight: '1px solid black',
                 borderTop: '1px solid black',
-                borderBottom: '1px solid black',
-              }}>
+                borderBottom: '1px solid black'
+                }}
+                id = {"mainBoard"}
+                onClick = {e=>this.placeMagnet(e)}
+                onMouseMove = {e=>this.handleShadowMouse(e)}
+              >
                 <div style={{
                 height: "100%",
                 display: 'flex',
                 flexDirection: 'column'}}
-                id = {"mainBoard"}
                 >
                     {this.printMagnets()}
                     {this.printImages()}
+                    {this.printShadow()}
                 </div>
               </div>
               <div style={{
