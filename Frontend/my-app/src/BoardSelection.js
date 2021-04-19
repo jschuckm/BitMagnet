@@ -1,7 +1,10 @@
 import React from 'react';
 import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
-import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@material-ui/core';
+import red from '@material-ui/core/colors/red';
+import green from '@material-ui/core/colors/green';
+import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Popper, Paper, List, ListItem } from '@material-ui/core';
+import { AddCircleOutline,  DeleteOutline } from '@material-ui/icons';
 import {Link} from 'react-router-dom';
 
 import './App.css';
@@ -224,13 +227,15 @@ class BoardSelection extends React.Component {
     }
 
     printBoardsAsLinks() {
-      return this.state.memberBoards.map((board) => {
-          return (
-              <Typography data-testid="boardlinks" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
-                <Link to={{pathname: `/board/${board.boardName}`, state: {detail: this.props.location.state.detail}}}>{board.boardName}</Link>
-              </Typography>
-          )
-        });
+      return(
+        this.state.memberBoards.map((board) => 
+          <Paper style={{ marginRight: '5px', marginLeft:'-10px', borderLeft: '1px solid black', borderRight: '1px solid black', borderTop: '1px solid black', borderBottom: '1px solid black'}}>
+            <List>
+              <Link to={{pathname: `/board/${board.boardName}`, state: {detail: this.props.location.state.detail}}} style={{ textDecoration: 'none', marginLeft:'10px' }}>{board.boardName}</Link>
+            </List><br></br>
+          </Paper>
+        )
+      )
     }
 
     printFriendsList() {
@@ -488,6 +493,9 @@ class BoardSelection extends React.Component {
               <Typography variant='h6' style={{fontFamily: 'Monospace',position:"relative",left:"1vh",width:"fit-content"}}>
                 <em><b>Bit Magnet</b></em>
               </Typography>
+              <Button style={{position:"relative", marginLeft: '710px'}} onClick={this.handleOpenDialogFriends}>
+                Friends
+              </Button>
               <Button style={{position:"relative",right:"1vh"}} onClick={this.handleOpenLogoutDialog}>
                 Logout
               </Button>
@@ -495,16 +503,18 @@ class BoardSelection extends React.Component {
               <Typography variant='h3' style={{marginRight: '236px', marginTop: '60px', fontFamily: 'Monospace'}}>
                 <em><b data-testid="title">Boards</b></em>
               </Typography>
+              {/*
               <Button style={{marginLeft: '290px'}} onClick={this.handleOpenDialogShareFriend}>
                   Share
               </Button>
+              */}
               <div style={{
                 marginTop: 10,
                 height: 350,
                 width: 400,
                 display: 'flex',
                 overflowY: 'scroll',
-                backgroundColor: grey[50],
+                backgroundColor: grey[100],
                 flexDirection: 'column',
                 borderLeft: '1px solid black',
                 borderRight: '1px solid black',
@@ -523,16 +533,15 @@ class BoardSelection extends React.Component {
               </span>
               </div>
               <div style={{
-              display: 'flex'
+              display: 'flex',
+              flexDirection: 'column',
+              marginLeft: '250px'
               }}>
-                <Button style={{marginRight: '100px'}} onClick={this.handleOpenDialogFriends}>
-                  Friends
+                <Button variant='contained' style ={{marginTop: '20px', backgroundColor: green[200]}} data-testid="addBoardBtn" onClick={this.handleOpenDialog}>
+                  New Board  <AddCircleOutline />
                 </Button>
-                <Button data-testid="addBoardBtn" onClick={this.handleOpenDialog}>
-                  Start Board
-                </Button>
-                <Button style ={{}} data-testid="quitBoardBtn" onClick={this.handleOpenDialogDeleteBoard}>
-                  Quit Board
+                <Button variant='contained' style ={{marginTop: '10px', backgroundColor: red[200]}} data-testid="quitBoardBtn" onClick={this.handleOpenDialogDeleteBoard}>
+                  Quit Board  <DeleteOutline />
                 </Button>
               </div>
             </div>
