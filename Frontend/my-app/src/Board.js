@@ -23,9 +23,6 @@ class Board extends React.Component {
         this.logout=this.logout.bind(this);
 
         this.backbutton=this.backbutton.bind(this);
-        //this.handleOpenNewDialog=this.handleOpenNewDialog.bind(this);
-        //this.handleCloseDialog=this.handleCloseDialog.bind(this);
-        //this.handleOpenDialogDelete=this.handleOpenDialogDelete.bind(this);
 
         this.handleOpenTextDialog=this.handleOpenTextDialog.bind(this);
         this.handleCloseTextDialog=this.handleCloseTextDialog.bind(this);
@@ -53,10 +50,15 @@ class Board extends React.Component {
         this.handleCloseMembersDialog = this.handleCloseMembersDialog.bind(this);
         this.getMemberList = this.getMemberList.bind(this);
         this.printMemberList = this.printMemberList.bind(this);
+        this.handleOpenNewMembersDialog = this.handleOpenNewMembersDialog.bind(this);
+        this.handleCloseNewMembersDialog = this.handleCloseNewMembersDialog.bind(this);
+
+        this.addMember = this.addMember.bind(this);
 
         this.state = {
-          tempBoardName: boardName,
+          tempBoardName : boardName,
           newMagnetText : '',
+          newMemberIdText : '',
           imageFile: null,
           tempImageController: false,
           magnets: [], //will have title, content, type?, position{x: y: }
@@ -76,7 +78,7 @@ class Board extends React.Component {
     getMaxIndex() {
       let indexMax = 0;
       let i;
-      console.log("mag array length " + this.state.magnets.length);
+      //console.log("mag array length " + this.state.magnets.length);
       for (i = 0; i < this.state.magnets.length; i++) {
         if (this.state.magnets[i].index > indexMax) {
           console.log("index of " + this.state.magnets[i].index);
@@ -84,7 +86,6 @@ class Board extends React.Component {
         }
       }
       this.state.maxIndex = indexMax;
-      console.log("index max is " + indexMax);
       console.log("max index is " + this.state.maxIndex);
     }
 
@@ -185,7 +186,7 @@ class Board extends React.Component {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              boardName: this.state.concrete_boardID,
+              boardName: this.state.tempBoardName,
               magnetName: (this.state.maxIndex + 1).toString(), //formerly magnet title on frontend
               textMagnet: this.state.newMagnetText
             }),
@@ -202,9 +203,7 @@ class Board extends React.Component {
     removeText(indexDel) {
       var magArr = this.state.magnets;
       for(let i=0; i<this.state.magnets.length; i++) {
-        console.log("checking array index " + this.state.magnets[i].index + " and passed index " + indexDel);
         if(this.state.magnets[i].index == indexDel) {
-          console.log("magnet was " + i + "th");
           magArr.splice(i, 1);
           console.log("found magnet to delete by perm index");
         }
@@ -217,7 +216,7 @@ class Board extends React.Component {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              boardName: this.state.concrete_boardID,
+              boardName: this.state.tempBoardName,
               magnetName: indexDel.toString()
             }),
           });
@@ -239,7 +238,7 @@ class Board extends React.Component {
               maxWidth = {250}
               bounds = {"parent"}
               enableResizing = {false}
-              onDragStop={ (d) => {magnet.position = {x : d.x, y : d.y} } } //after every move, magnet coords reassigned. state isn't set in magnet (i think?) until save button is clicked.
+              onDragStop={ (d) => {magnet.position = {x : d.x, y : d.y} } } //after every move, call save function to store new position
               >
                 <div style = {{backgroundColor: grey[50]}} class = "img-wrap">
                     <Typography variant='h6' style={{fontFamily: 'Monospace'}}>{magnet.content}
@@ -291,7 +290,8 @@ class Board extends React.Component {
         } catch(e) {
           console.log(e);
         }
-      }      
+      }
+      this.handleClosePhotoDialog();      
     }
 
     removeImage(name) {
@@ -356,22 +356,19 @@ class Board extends React.Component {
         var tempNameWithFileFormat = image.url;
         var tempName = image.url.split('.')[0];
           return (
-            <div style={{ width: "200px", height: "150px" }}>
               <Rnd
+                key = {image.url}
                 default={{ x: image.position.x, y: image.position.y, width: 150, height: 100 }}
                 minWidth={150}
                 minHeight={100}
                 enableResizing = {false}
                 onDragStop={ (d) => {image.position = {x : d.x, y : d.y} } }
               >
-                <div style={{ margin: 0, height: "100%", paddingBottom: "40px" }}>
                   <div class="img-wrap">
                     <span class="close" onClick={(e)=>this.removeImage(tempNameWithFileFormat)}>x</span>
-                    <img src={tempURL}/>
+                    <img src ={tempURL} width = {"100%"} max-width = {"300"}/>
                   </div>
-                </div>
               </Rnd>
-            </div> 
           )
       });
   }
@@ -383,6 +380,14 @@ class Board extends React.Component {
   
   handleCloseMembersDialog() {
     this.setState({openMemberDialog:false});
+  }
+
+  handleOpenNewMembersDialog() {
+    this.setState({openNewMembersDialog:true});
+  }
+
+  handleCloseNewMembersDialog() {
+    this.setState({openNewMembersDialog:false});
   }
 
   getMemberList() {
@@ -404,11 +409,49 @@ class Board extends React.Component {
   printMemberList() {
     return this.state.MemberList.map((member) => {
       return (
-        <Typography data-testid="friendlist" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
+        <Typography key = {member.userID} data-testid="friendlist" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
           {member.userID}
         </Typography>
       )
     });
+  }
+
+  addMember() {
+      //var tempURL = this.getBoardName + '/addBoardShare'
+      console.log(this.state.newMemberIdText);
+      try{
+        fetch(this.tempBoardName + '/addBoardShare', {
+          method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userID: this.state.newMemberIdText,
+              boardName:this.state.tempBoardName
+            }),
+          }).then(async response => {
+            const data = await response.json();
+            console.log(data);
+            console.log(data.status);
+            if(data.status == true) {
+              var members = this.state.MemberList;
+              let newMember = {userID : this.state.newMemberIdText}
+              members.push(newMember);
+              this.setState({MemberList: members});
+              this.setState({newMemberIdText: ''});
+              console.log("trying to share board");
+            } else if(data.status == false) {
+              console.log("sharing failure");
+              alert("Error. Enter an existing board and friend. Cannot be a duplicate.");
+            }
+          });
+      }
+      catch(e){
+        console.log(e);
+      }
+    this.handleCloseNewMembersDialog();
+    //this.handleCloseMembersDialog;
   }
 
     render() {
@@ -489,18 +532,41 @@ class Board extends React.Component {
                 </DialogActions>
               </Dialog>
 
+              {/*Prompt to add new member id*/}
+              <Dialog open = {this.state.openNewMembersDialog} onClose = {this.handleCloseNewMembersDialog}>
+                  <DialogTitle data-testid="addMemberId">Add Member</DialogTitle>
+                  <DialogContent>
+                  <TextField data-testid="AddMemberIdTextEntry"onChange={(event) => this.setState({newMemberIdText: event.target.value})} label={"Member name"}/><br></br>
+                </DialogContent>
+                <DialogActions>
+                  <Button data-testid="submitAddMemberId" onClick={this.addMember} style={{marginRight: '0px'}}>
+                    Add
+                  </Button>
+                  <Button data-testid="closeCreateTextPopup" onClick={this.handleCloseNewMembersDialog}>
+                    Back
+                  </Button>
+                </DialogActions>  
+              </Dialog>
+
               {/* Dialog for member view  */}
               <Dialog open={this.state.openMemberDialog} onClose={this.handleCloseMembersDialog}>
                 <DialogTitle data-testid="GetMemberList">Member List</DialogTitle>
                 <DialogContent style={{overflowY: 'scroll', width: 300, height: 350}}>
                   {this.printMemberList()}
                 </DialogContent>
+
+                {/* IN PROGRESS */}
                 <DialogActions>
-                  <Button data-testid="closeMemberList" onClick={this.handleCloseMembersDialog}>
+                  <Button data-testid="addMemberButton" style={{marginRight: '90px', display: 'flex'}} onClick={this.handleOpenNewMembersDialog}>
+                    Add member
+                  </Button>
+                  <Button data-testid="closeMemberList" style = {{marginRight: '70px', display: 'flex'}} onClick={this.handleCloseMembersDialog}>
                     Back
                   </Button>
                 </DialogActions>
+
               </Dialog>
+              
 
               <IconButton style={{position: "absolute",left: 0,top:"5vh"}} onClick={this.backbutton}>
                 <ArrowBack />
