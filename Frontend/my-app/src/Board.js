@@ -552,10 +552,10 @@ class Board extends React.Component {
                   <DialogContent>
                   </DialogContent>
                   <DialogActions>
-                    <Button style={{marginRight: '85px'}} onClick={this.logout}>
+                    <Button variant='contained' style={{marginRight: '85px'}} onClick={this.logout}>
                       Logout
                     </Button>
-                    <Button onClick={this.handleCloseLogoutDialog}>
+                    <Button variant='contained' onClick={this.handleCloseLogoutDialog}>
                       Back
                     </Button>
                   </DialogActions>
@@ -640,7 +640,7 @@ class Board extends React.Component {
                 height: "75vh",
                 width: 400,
                 display: 'flex',
-                backgroundColor: blue[25],
+                backgroundColor: grey[100],
                 flexDirection: 'column',
                 borderLeft: '1px solid black',
                 borderRight: '1px solid black',

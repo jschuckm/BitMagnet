@@ -12,10 +12,11 @@ exports.getFriends = (request, respond) => {
     const userID = request.params.id;
     console.log(userID);
     var friendList = [];
-    db.query("select friendID from friendslist where userID = ?;", [userID], (error, result) => {
+    db.query("select * from friendslist where userID = ?;", [userID], (error, result) => {
         if(error) {
             console.log(error);
-        } else {            
+        } else {     
+            console.log(result.length);     
             for(var i=0; i<result.length; i++) {
                 friendList.push({friendID: result[i].friendID});
             }
