@@ -251,13 +251,14 @@ class BoardSelection extends React.Component {
     getFriendsList(){
       var tempFriendsList = [];
       console.log("test get ID: " + this.locationDetail);
-      var tempURL = 'auth/' + this.locationDetail + '/getFriends'
+      var tempURL = 'auth/' + this.locationDetail + '/getFriends';
       try{
         // fetch('auth/t/getFriends')
         fetch(tempURL)
         .then(console.log("hello"))
         .then (response => response.json())
-        .then( data => {
+        .then(data => {
+          console.log(data)
           console.log(data.length)
           for(var i=0; i<data.length; i++) {
             tempFriendsList.push(data[i])
@@ -384,10 +385,10 @@ class BoardSelection extends React.Component {
                 <DialogContent>
                 </DialogContent>
                 <DialogActions>
-                  <Button style={{marginRight: '85px'}} onClick={this.logout}>
+                  <Button variant='contained' style={{marginRight: '85px'}} onClick={this.logout}>
                     Logout
                   </Button>
-                  <Button onClick={this.handleCloseLogoutDialog}>
+                  <Button variant='contained' onClick={this.handleCloseLogoutDialog}>
                     Back
                   </Button>
                 </DialogActions>
@@ -427,48 +428,48 @@ class BoardSelection extends React.Component {
 
               {/* Friend Dialog */}
               <Dialog open={this.state.openDialogFriends} onClose={this.handleCloseDialogFriends}>
-                <DialogTitle>Friends List</DialogTitle>
+                <DialogTitle><u>Friends List</u></DialogTitle>
                 <DialogContent style={{overflowY: 'scroll', width: 300, height: 350}}>
                   {this.printFriendsList()}
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={this.handleOpenDialogAddFriend}>
+                  <Button variant='contained' style={{backgroundColor: green[200]}} onClick={this.handleOpenDialogAddFriend}>
                     Add Friend
                   </Button>
-                  <Button onClick={this.handleOpenDialogDeleteFriend}>
+                  <Button variant='contained' style={{backgroundColor: red[200]}} onClick={this.handleOpenDialogDeleteFriend}>
                     Delete Friend
                   </Button>
-                  <Button onClick={this.handleCloseDialogFriends}>
+                  <Button variant='contained' onClick={this.handleCloseDialogFriends}>
                     Back
                   </Button>
                 </DialogActions>
               </Dialog>
               {/* Add Friend Dialog */}
               <Dialog open={this.state.openDialogAddFriend} onClose={this.handleCloseDialogAddFriend}>
-                <DialogTitle>Add Friend</DialogTitle>
+                <DialogTitle><u>Add Friend</u></DialogTitle>
                 <DialogContent>
                   <TextField data-testid="addfriend" onChange={(event) => this.setState({newFriend: event.target.value})} label={"Friend Username"}/><br></br>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={this.addFriend} style={{marginRight: '55px'}}>
+                  <Button variant='contained' style={{backgroundColor: green[200], marginRight: '65px'}} onClick={this.addFriend}>
                     Add
                   </Button>
-                  <Button onClick={this.handleCloseDialogAddFriend}>
+                  <Button variant='contained' onClick={this.handleCloseDialogAddFriend}>
                     Back
                   </Button>
                 </DialogActions>
               </Dialog>
               {/* Delete Friend Dialog */}
               <Dialog open={this.state.openDialogDeleteFriend} onClose={this.handleCloseDialogDeleteFriend}>
-                <DialogTitle>Delete Friend</DialogTitle>
+                <DialogTitle><u>Delete Friend</u></DialogTitle>
                 <DialogContent>
                   <TextField data-testid="deletefriends" onChange={(event) => this.setState({deletingFriend: event.target.value})} label={"Username to Delete"}/><br></br>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={this.deleteFriend} style={{marginRight: '55px'}}>
+                  <Button variant='contained' style={{backgroundColor: red[200], marginRight: '55px'}} onClick={this.deleteFriend}>
                     Delete
                   </Button>
-                  <Button onClick={this.handleCloseDialogDeleteFriend}>
+                  <Button variant='contained' onClick={this.handleCloseDialogDeleteFriend}>
                     Back
                   </Button>
                 </DialogActions>

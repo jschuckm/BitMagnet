@@ -150,9 +150,6 @@ class Login extends React.Component {
               <Button onClick={()=>this.props.history.push('/about')}>
                 About
               </Button>
-              <Button>
-                Register
-              </Button>
               <Button onClick={()=>this.props.history.push('/login')}>
                 Login
               </Button>
