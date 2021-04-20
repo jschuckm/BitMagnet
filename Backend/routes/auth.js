@@ -4,6 +4,7 @@ const boardController = require("../controllers/boardController");
 const friendController = require("../controllers/friendController");
 const magnetController = require("../controllers/magnetController");
 const imageController = require("../controllers/imageController");
+const updateController = require("../controllers/updateController");
 const multer = require('multer');
 
 const router = express.Router();
@@ -71,5 +72,10 @@ router.post("/:boardName/deleteImage", imageController.deleteImage); //delete im
 
             //:boardName/getUsers
 router.get("/:boardName/getUsers", boardController.getUsers); //show board members  
+
+router.post("/:boardName/updateAddPosition", updateController.updatePosition); //update Position
+
+router.get("/:boardName/getPosition", updateController.getPosition); //get Position 
+
 
 module.exports = router;
