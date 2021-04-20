@@ -183,7 +183,7 @@ class BoardSelection extends React.Component {
         }
       }
       if (!exists) alert ("Such a board doesn't exist.");
-      var tempURL = 'auth/' + this.locationDetail + '/deleteBoard'
+      var tempURL = 'auth/' + this.locationDetail() + '/deleteBoard'
       try{
         fetch(tempURL, {
           method: 'POST',
@@ -250,8 +250,8 @@ class BoardSelection extends React.Component {
 
     getFriendsList(){
       var tempFriendsList = [];
-      console.log("test get ID: " + this.locationDetail);
-      var tempURL = 'auth/' + this.locationDetail + '/getFriends';
+      console.log("test get ID: " + this.locationDetail());
+      var tempURL = 'auth/' + this.locationDetail() + '/getFriends';
       try{
         // fetch('auth/t/getFriends')
         fetch(tempURL)
@@ -299,7 +299,7 @@ class BoardSelection extends React.Component {
     }
 
     deleteFriend(){
-      var tempURL = 'auth/' + this.locationDetail + '/deleteFriend'
+      var tempURL = 'auth/' + this.locationDetail() + '/deleteFriend'
       fetch(tempURL, {
         method: 'POST',
           headers: {
