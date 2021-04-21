@@ -4,7 +4,7 @@ const boardController = require("../controllers/boardController");
 const friendController = require("../controllers/friendController");
 const magnetController = require("../controllers/magnetController");
 const imageController = require("../controllers/imageController");
-const updateController = require("../controllers/updateController");
+const positionController = require("../controllers/positionController");
 const multer = require('multer');
 
 const router = express.Router();
@@ -63,7 +63,7 @@ const upload = multer({
         },
     }),
 });
-            //:boardName/uploadImage
+            //:boardName/uploadImage //
 router.post("/:boardName/uploadImage", upload.single('file'), imageController.uploadImage); //upload image 
 
 router.get("/:boardName/getImage", imageController.getImage); //get image path
@@ -73,9 +73,9 @@ router.post("/:boardName/deleteImage", imageController.deleteImage); //delete im
             //:boardName/getUsers
 router.get("/:boardName/getUsers", boardController.getUsers); //show board members  
 
-router.post("/:boardName/updateAddPosition", updateController.updatePosition); //update Position
+router.post("/:boardName/updateImagePosition", positionController.updateImagePosition); //update Position
 
-router.get("/:boardName/getPosition", updateController.getPosition); //get Position 
+router.post("/:boardName/updateMagnetPosition", positionController.updateMagnetPosition); 
 
 
 module.exports = router;

@@ -11,10 +11,8 @@ exports.uploadImage = (request, respond) => {
     const fileName = request.file.filename;
     const filePath = request.file.path;
     const boardName = request.params.boardName;
-    console.log(fileName);
-    console.log(filePath);
 
-    db.query("insert into imageTable(imageName, imageURL, boardID) values (?, ?, (select boardID from boardSelection where boardName = ?));", [fileName, filePath, boardName], (error, result) => {
+    db.query("insert into imageTable(imageName, imageURL, boardID, xPosition, yPosition) values (?, ?, (select boardID from boardSelection where boardName = ?), (select RAND() * 250), (select RAND() * 300));", [fileName, filePath, boardName], (error, result) => {
         if(error) {
             console.log(error);
         } else {
@@ -24,13 +22,14 @@ exports.uploadImage = (request, respond) => {
             })
         }
     })
+    
 }
 
 exports.getImage = (request, respond) => {
     const boardName = request.params.boardName;
     console.log(boardName);
 
-    db.query("select imageName from imageTable where boardID = (select boardID from boardSelection where boardName = ?);", [boardName], (error, result) => {
+    db.query("select imageName, xPosition, yPosition from imageTable where boardID = (select boardID from boardSelection where boardName = ?);", [boardName], (error, result) => {
         if(error) {
             console.log(error);
         } else {

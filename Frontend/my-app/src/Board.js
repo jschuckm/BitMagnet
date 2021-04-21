@@ -1,11 +1,9 @@
 import React from 'react';
 import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
-import DeleteIcon from '@material-ui/icons/Delete';
 import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, IconButton} from '@material-ui/core';
 import { sizing } from '@material-ui/system';
 import {ArrowBack} from '@material-ui/icons';
-import Image from "material-ui-image";
 import {Rnd} from 'react-rnd';
 
 import './App.css';
@@ -59,7 +57,6 @@ class Board extends React.Component {
         this.handleShadowMouse = this.handleShadowMouse.bind(this);
         this.printShadow = this.printShadow.bind(this);
 
-        //custom placement for image
 
         this.addMember = this.addMember.bind(this);
 
@@ -76,7 +73,9 @@ class Board extends React.Component {
           willPlace: 0,
           newMagX: 0,
           newMagY: 0,
-          mousePos: {x: 0, y: 0}
+          mousePos: {x: 0, y: 0},
+          tempImageX: 0,
+          tempImageY: 0,
         };
     }
     
@@ -332,28 +331,21 @@ class Board extends React.Component {
       console.log(this.state.imageFile);
       var leftSpot = Math.random() * 250; 
       var topSpot = Math.random() * 300;
-      this.state.images.push({url: this.state.imageFile.name, position: {x : leftSpot, y: topSpot}});
+      this.state.images.push({url: this.state.imageFile.name, position: {x : leftSpot, y: topSpot}});      
       if(this.state.tempImageController) {
         console.log("uploadMagnetPhoto part");
         const formData = new FormData();
         formData.append('file', this.state.imageFile);
-        try {
-          fetch(this.state.tempBoardName + '/uploadImage', {
-            method: 'POST',
-            body: formData,
-          })
-          .then(console.log("Image uploaded"))
-          this.setState({
-            imageFile : null
-          })
-          this.setState({
-            tempImageController: false
-          })
-        } catch(e) {
-          console.log(e);
-        }
+        fetch(this.state.tempBoardName + '/uploadImage', {
+          method: 'POST',
+          body: formData,
+        })
+        .then(console.log("Image uploaded"))
+        this.setState({ tempImageController: false})
+        this.setState({ tempImageX: leftSpot, tempImageY: topSpot}) 
       }
-      this.handleClosePhotoDialog();      
+      console.log("Checkpoint")
+      this.handleClosePhotoDialog();  
     }
 
     removeImage(name) {
@@ -388,18 +380,19 @@ class Board extends React.Component {
     } 
 
     loadImage() {
+      console.log("Start loading")
       fetch(this.state.tempBoardName + '/getImage')
       .then(async response => {
         var tempImageList = [];
         const data = await response.json();
         if (data != null) {
           for (var i = 0; i < data.length; i++) {
-            let posX = Math.random() * 250; //how to get magnet size for safer placement?
-            let posY = Math.random() * 300;
+            console.log(data.length + " this is length of data")
             let tempImage = {url: "", position: ""};
-            // temp = data[i].imageURL;
             tempImage.url = data[i].imageName;
-            tempImage.position = {x: posX, y: posY};
+            tempImage.position = {x: data[i].xPosition, y: data[i].yPosition};
+            console.log(data[i].xPosition)
+            console.log(data[i].yPosition)
             tempImageList.push(tempImage);
           }
           console.log("we have Images", tempImageList);
@@ -416,7 +409,6 @@ class Board extends React.Component {
       return this.state.images.map((image) => {
         var tempURL = "/images/" + image.url;
         var tempNameWithFileFormat = image.url;
-        var tempName = image.url.split('.')[0];
           return (
               <Rnd
                 key = {image.url}
@@ -424,8 +416,14 @@ class Board extends React.Component {
                 minWidth={150}
                 minHeight={100}
                 enableResizing = {false}
-                onDragStop={ (d) => {image.position = {x : d.x, y : d.y} } }
+                // onDragStop={ (d) => {image.position = {x : d.x, y : d.y} } }
+                onDragStop={(d)=> {
+                  this.setState({tempImageX: d.x, tempImageY: d.y})
+                  this.savePosition(this.state.tempImageX, this.state.tempImageY, image.url)
+                }}
               >
+                {console.log(this.state.tempImageX)}
+                {console.log(this.state.tempImageY)}
                   <div class="img-wrap">
                     <span class="close" onClick={(e)=>this.removeImage(tempNameWithFileFormat)}>x</span>
                     <img src ={tempURL} width = {"100%"} max-width = {"300"}/>
@@ -453,7 +451,7 @@ class Board extends React.Component {
   }
 
   getMemberList() {
-    console.log("MIIIIIIIIIIIIIIIIIIIIIIII");
+    console.log("Start");
     var tempMemberList = [];
     fetch(this.state.tempBoardName + '/getUsers')
     .then(console.log("get Member list"))
@@ -465,7 +463,7 @@ class Board extends React.Component {
       }
       this.setState({MemberList:tempMemberList})
     })
-    console.log("MIIIIIIIIIIIIIIIIIIIIIIII");
+    console.log("End");
   }
 
   printMemberList() {
@@ -516,8 +514,42 @@ class Board extends React.Component {
     //this.handleCloseMembersDialog;
   }
 
+  //save position
+  savePosition(x, y, name) {
+    fetch(this.state.tempBoardName + '/updateImagePosition', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        imageName: name,
+        xPosition: x,
+        yPosition: y
+      }),
+    })
+    this.setState({ imageFile : null})
+    console.log("save position!")
+  }
+
+  saveTextPosition(x,y,name) {
+    fetch(this.state.tempBoardName + '/updateMagnetPosition', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        magnetName: name,
+        xPosition: x,
+        yPosition: y
+      }),
+    })
+    console.log("save position!")
+  }
+
     render() {
-      //console.log(this.state);
+      console.log(this.state);
         return (
           <div style={{
             height: window.innerHeight,
@@ -579,18 +611,18 @@ class Board extends React.Component {
 
               {/* Dialog for photo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/}
               <Dialog open={this.state.openPhotoDialog} onClose={this.handleClosePhotoDialog}>
-                <DialogTitle data-testid="createPhotoPopup">Upload Photo</DialogTitle>
+                <DialogTitle data-testid="createPhotoPopup" >Upload Photo</DialogTitle>
                 <DialogContent>
                     {/* <input type="file" name="file" onChange = {e=>this.handleFileInput(e)}/> */}
                     {/* <Button type="button" onClick={this.uploadMagnetPhoto()}>Upload</Button> */}
                     <input style={{display: 'none'}} type="file" onChange={e=>this.handleFileInput(e)} ref={fileInput => this.fileInput = fileInput}/>
                     <Button onClick={() => this.fileInput.click()}>Pick File</Button>
                     <Button onClick={() => this.uploadMagnetPhoto()}>Upload</Button>
+                    {/* <Button onClick={() => this.doTogether()}>Upload</Button> */}
+                    {/* .then(this.savePosition(leftSpot, topSpot, this.state.imageFile.name)) */}
                 </DialogContent>
                 <DialogActions>
-                  <Button data-testid="closeCreatePhotoPopup" onClick={this.handleClosePhotoDialog}>
-                    Back
-                  </Button>
+                  <Button data-testid="closeCreatePhotoPopup" onClick={this.handleClosePhotoDialog}>Back</Button>
                 </DialogActions>
               </Dialog>
 
