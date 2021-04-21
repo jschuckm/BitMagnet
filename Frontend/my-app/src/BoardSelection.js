@@ -264,6 +264,11 @@ class BoardSelection extends React.Component {
             tempFriendsList.push(data[i])
           }
           this.setState({friendsList:tempFriendsList})
+          /*
+          this.props.history.push({
+            state: { detail2: this.state.friendsList }
+          });
+          */
         })
       }
       catch(err){
@@ -326,7 +331,7 @@ class BoardSelection extends React.Component {
     }
 
     addBoardShare(){
-      var tempURL = 'auth/' + this.locationDetail + '/addBoardShare'
+      var tempURL = 'auth/' + this.locationDetail() + '/addBoardShare'
       console.log(this.state.sharedFriend);
       try{
         fetch(tempURL, {
@@ -385,7 +390,7 @@ class BoardSelection extends React.Component {
                 <DialogContent>
                 </DialogContent>
                 <DialogActions>
-                  <Button variant='contained' style={{marginRight: '85px'}} onClick={this.logout}>
+                  <Button variant='contained' style={{marginRight: '85px', backgroundColor: red[200]}} onClick={this.logout}>
                     Logout
                   </Button>
                   <Button variant='contained' onClick={this.handleCloseLogoutDialog}>
@@ -396,15 +401,15 @@ class BoardSelection extends React.Component {
 
               {/* Board Select Dialog */}
               <Dialog open={this.state.openDialog} onClose={this.handleCloseDialog}>
-                <DialogTitle data-testid="boardAddPopup">Make Board</DialogTitle>
+                <DialogTitle data-testid="boardAddPopup"><u>New Board</u></DialogTitle>
                 <DialogContent>
                   <TextField data-testid="boardAddText" onChange={(event) => this.setState({newBoard: event.target.value})} label={"Board Name"}/><br></br>
                 </DialogContent>
                 <DialogActions>
-                  <Button data-testid="boardAddSubmit" onClick={this.registerNewBoard} style={{marginRight: '55px'}}>
+                  <Button data-testid="boardAddSubmit" variant='contained' onClick={this.registerNewBoard} style={{marginRight: '55px', backgroundColor: green[200]}}>
                     Create Board
                   </Button>
-                  <Button data-testid="boardAddCancel" onClick={this.handleCloseDialog}>
+                  <Button data-testid="boardAddCancel" variant='contained' onClick={this.handleCloseDialog}>
                     Back
                   </Button>
                 </DialogActions>
@@ -412,15 +417,15 @@ class BoardSelection extends React.Component {
 
               {/*delete board dialog*/}
               <Dialog open={this.state.openDialogDeleteBoard} onClose={this.handleCloseDialogDeleteBoard}>
-                <DialogTitle data-testid="deleteBoardPopup">Quit Board</DialogTitle>
+                <DialogTitle data-testid="deleteBoardPopup"><u>Quit Board</u></DialogTitle>
                 <DialogContent>
                   <TextField data-testid="boardDeleteText" onChange={(event) => this.setState({removeBoard: event.target.value})} label={"Board Name"}/><br></br>
                 </DialogContent>
                 <DialogActions>
-                  <Button data-testid="boardDeleteSubmit" onClick={this.deleteBoard} style={{marginRight: '55px'}}>
+                  <Button data-testid="boardDeleteSubmit" variant='contained' onClick={this.deleteBoard} style={{marginRight: '70px', backgroundColor: red[200]}}>
                     Quit
                   </Button>
-                  <Button data-testid="boardDeleteCancel" onClick={this.handleCloseDialogDeleteBoard}>
+                  <Button data-testid="boardDeleteCancel" variant='contained' onClick={this.handleCloseDialogDeleteBoard}>
                     Back
                   </Button>
                 </DialogActions>
@@ -429,7 +434,7 @@ class BoardSelection extends React.Component {
               {/* Friend Dialog */}
               <Dialog open={this.state.openDialogFriends} onClose={this.handleCloseDialogFriends}>
                 <DialogTitle><u>Friends List</u></DialogTitle>
-                <DialogContent style={{overflowY: 'scroll', width: 300, height: 350}}>
+                <DialogContent style={{backgroundColor: grey[100], overflowY: 'scroll', marginLeft: '10px', width: 300, height: 350}}>
                   {this.printFriendsList()}
                 </DialogContent>
                 <DialogActions>
@@ -539,10 +544,10 @@ class BoardSelection extends React.Component {
               marginLeft: '250px'
               }}>
                 <Button variant='contained' style ={{marginTop: '20px', backgroundColor: green[200]}} data-testid="addBoardBtn" onClick={this.handleOpenDialog}>
-                  New Board  <AddCircleOutline />
+                  New Board  <AddCircleOutline style={{marginLeft:'5px'}}/>
                 </Button>
                 <Button variant='contained' style ={{marginTop: '10px', backgroundColor: red[200]}} data-testid="quitBoardBtn" onClick={this.handleOpenDialogDeleteBoard}>
-                  Quit Board  <DeleteOutline />
+                  Quit Board  <DeleteOutline style={{marginLeft:'5px'}}/>
                 </Button>
               </div>
             </div>
