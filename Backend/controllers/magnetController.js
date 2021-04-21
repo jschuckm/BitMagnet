@@ -11,8 +11,10 @@ exports.addMagnet = (request, respond) => {
     const boardName = request.params.boardName;
     const magnetName = request.body.magnetName;
     const textMagnet = request.body.textMagnet;
+    const xPosition = request.body.xPosition;
+    const yPosition = request.body.yPosition;
     
-    db.query("insert into magnet(magnetName, textMagnet, boardID) values (?, ?, (select boardID from boardSelection where boardName = ?));", [magnetName, textMagnet, boardName], (error, result) => {
+    db.query("insert into magnet(magnetName, textMagnet, boardID, xPosition, yPosition) values (?, ?, (select boardID from boardSelection where boardName = ?), ?, ?);", [magnetName, textMagnet, boardName, xPosition, yPosition], (error, result) => {
         if(error) {
             console.log(error);
         } else {
@@ -44,7 +46,7 @@ exports.getAllMagnet = (request, respond) => {
     
     const boardID = request.params.boardName;
     var magnetList = [];
-    db.query("select m.magnetName, m.textMagnet from magnet m where boardID = (select boardID from boardSelection where boardName = ?);", [boardID], (error, result) => {
+    db.query("select m.magnetName, m.textMagnet, m.xPosition, m.yPosition from magnet m  where boardID = (select boardID from boardSelection where boardName = ?);", [boardID], (error, result) => {
         if(error) {
             console.log(error);
         } else {            
@@ -55,7 +57,7 @@ exports.getAllMagnet = (request, respond) => {
                 });
             }
             console.log("Return list of magnet");
-            respond.json(magnetList);
+            respond.json(result);
         }
     })
 };

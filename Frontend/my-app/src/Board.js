@@ -76,6 +76,8 @@ class Board extends React.Component {
           mousePos: {x: 0, y: 0},
           tempImageX: 0,
           tempImageY: 0,
+          tempTextX: 0,
+          tempTextY: 0,
         };
     }
     
@@ -156,12 +158,12 @@ class Board extends React.Component {
           const data = await response.json();
           if (data != null) {
             for (var i = 0; i < data.length; i++) {
-              let posX = Math.random() * 250; //how to get magnet size for safer placement?
-              let posY = Math.random() * 300;
+              // let posX = Math.random() * 250; 
+              // let posY = Math.random() * 300;
               let tempMagnet = {index: "", content: "", position: ""};
               tempMagnet.index = Number(data[i].magnetName);
               tempMagnet.content = data[i].textMagnet;
-              tempMagnet.position = {x: posX, y: posY};
+              tempMagnet.position = {x: data[i].xPosition, y: data[i].yPosition};
               tempMagList.push(tempMagnet);
             }
             console.log("board loaded", tempMagList);
@@ -252,7 +254,9 @@ class Board extends React.Component {
               body: JSON.stringify({
                 boardName: this.state.tempBoardName,
                 magnetName: (this.state.maxIndex + 1).toString(), //formerly magnet title on frontend
-                textMagnet: this.state.newMagnetText
+                textMagnet: this.state.newMagnetText,
+                xPosition: xPos,
+                yPosition: yPos
               }),
             });
             console.log("saving magnet frontend");
@@ -301,10 +305,14 @@ class Board extends React.Component {
               maxWidth = {250}
               bounds = {"parent"}
               enableResizing = {false}
-              onDragStop={ (d) => {magnet.position = {x : d.x, y : d.y} } } //after every move, call save function to store new position
+              // onDragStop={ (d) => {magnet.position = {x : d.x, y : d.y} } } //after every move, call save function to store new position
+              onDragStop={(d)=> {
+                this.setState({tempTextX: d.x, tempTextY: d.y})
+                this.saveTextPosition(this.state.tempTextX, this.state.tempTextY, magnet.index)
+              }}
               >
                 <div style = {{backgroundColor: grey[50]}} class = "img-wrap">
-                    <Typography variant='h6' style={{fontFamily: 'Monospace'}}>{magnet.content}
+                  <Typography variant='h6' style={{fontFamily: 'Monospace'}}>{magnet.content}
                   </Typography>
                   <span class="close" onClick={(e)=>this.removeText(magnet.index)}>x</span>
                 </div>
