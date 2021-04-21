@@ -1,9 +1,10 @@
 import React from 'react';
 import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
+import red from '@material-ui/core/colors/red';
+import green from '@material-ui/core/colors/green';
 import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, IconButton} from '@material-ui/core';
-import { sizing } from '@material-ui/system';
-import {ArrowBack} from '@material-ui/icons';
+import {ArrowBack, Backup, FileCopy, Person, TextFields, Image} from '@material-ui/icons';
 import {Rnd} from 'react-rnd';
 
 import './App.css';
@@ -80,7 +81,7 @@ class Board extends React.Component {
           tempTextY: 0,
         };
     }
-    
+
     componentDidMount(){
       console.log("mount function running");
       this.loadImage();
@@ -477,6 +478,35 @@ class Board extends React.Component {
   }
 
   printMemberList() {
+    /*
+    let friendsList2 = this.props.location.state.detail2;
+    console.log(friendsList2);
+    let MemberList2 = this.state.MemberList;
+    let smileystring = ":)"
+
+    for(var i=0;i<this.state.MemberList.length;i++){
+      for(var j=0;j<friendsList2.length;j++){
+        if(this.state.MemberList[i] === friendsList2[j])
+        {
+          MemberList2.push(this.state.MemberList[i] + smileystring);
+        }
+        else{
+          MemberList2.push(this.state.MemberList[i]);
+        }
+      }
+    }
+
+    console.log(MemberList2);
+    */
+
+    return (
+      this.state.MemberList.map((member) => 
+        <Typography key = {member.userID} data-testid="friendlist" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
+          {member.userID}
+        </Typography>
+      )
+    )
+    /*
     return this.state.MemberList.map((member) => {
       return (
         <Typography key = {member.userID} data-testid="friendlist" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
@@ -484,6 +514,7 @@ class Board extends React.Component {
         </Typography>
       )
     });
+    */
   }
 
   addMember() {
@@ -596,7 +627,7 @@ class Board extends React.Component {
                   <DialogContent>
                   </DialogContent>
                   <DialogActions>
-                    <Button variant='contained' style={{marginRight: '85px'}} onClick={this.logout}>
+                    <Button variant='contained' style={{marginRight: '85px', backgroundColor: red[200]}} onClick={this.logout}>
                       Logout
                     </Button>
                     <Button variant='contained' onClick={this.handleCloseLogoutDialog}>
@@ -607,15 +638,19 @@ class Board extends React.Component {
                 
               {/*Dialog for text content ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/}
               <Dialog open={this.state.openTextDialog} onClose={this.handleCloseTextDialog}>
-                <DialogTitle data-testid="createTextPopup">Enter Text</DialogTitle>
+                <DialogTitle data-testid="createTextPopup"><u>Enter Text</u></DialogTitle>
                 <DialogContent>
-                  <TextField multiline rows={4} data-testid="createMagTxtContent"onChange={(event) => this.setState({newMagnetText: event.target.value})} label={"Magnet Text"}/><br></br>
+                  <TextField multiline rows={4}
+                            data-testid="createMagTxtContent"
+                            onChange={(event) => this.setState({newMagnetText: event.target.value})}
+                            label={"Magnet Text"}/>
+                            <br></br>
                 </DialogContent>
                 <DialogActions>
-                  <Button data-testid="createMagTextSubmitBtn" onClick={this.handleWillPlaceText} style={{marginRight: '0px'}}>
+                  <Button data-testid="createMagTextSubmitBtn" variant='contained' onClick={this.handleWillPlaceText} style={{marginRight: '12px'}}>
                     Post Text
                   </Button>
-                  <Button data-testid="closeCreateTextPopup" onClick={this.handleCloseTextDialog}>
+                  <Button data-testid="closeCreateTextPopup" variant='contained' onClick={this.handleCloseTextDialog}>
                     Back
                   </Button>
                 </DialogActions>
@@ -623,18 +658,23 @@ class Board extends React.Component {
 
               {/* Dialog for photo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/}
               <Dialog open={this.state.openPhotoDialog} onClose={this.handleClosePhotoDialog}>
-                <DialogTitle data-testid="createPhotoPopup" >Upload Photo</DialogTitle>
+                <DialogTitle data-testid="createPhotoPopup" ><u>Upload Photo</u></DialogTitle>
                 <DialogContent>
                     {/* <input type="file" name="file" onChange = {e=>this.handleFileInput(e)}/> */}
                     {/* <Button type="button" onClick={this.uploadMagnetPhoto()}>Upload</Button> */}
                     <input style={{display: 'none'}} type="file" onChange={e=>this.handleFileInput(e)} ref={fileInput => this.fileInput = fileInput}/>
-                    <Button onClick={() => this.fileInput.click()}>Pick File</Button>
-                    <Button onClick={() => this.uploadMagnetPhoto()}>Upload</Button>
+                    <div style={{
+                         display: 'flex',
+                         flexDirection: 'column'
+                    }}>
+                      <Button variant='outlined' onClick={() => this.fileInput.click()}>Pick File <FileCopy style={{marginLeft:'5px'}}/></Button><br></br>
+                      <Button variant='outlined' onClick={() => this.uploadMagnetPhoto()}>Upload <Backup style={{marginLeft:'5px'}}/></Button><br></br>
+                    </div>
                     {/* <Button onClick={() => this.doTogether()}>Upload</Button> */}
                     {/* .then(this.savePosition(leftSpot, topSpot, this.state.imageFile.name)) */}
                 </DialogContent>
                 <DialogActions>
-                  <Button data-testid="closeCreatePhotoPopup" onClick={this.handleClosePhotoDialog}>Back</Button>
+                  <Button data-testid="closeCreatePhotoPopup" variant='contained' onClick={this.handleClosePhotoDialog}>Back</Button>
                 </DialogActions>
               </Dialog>
 
@@ -656,15 +696,15 @@ class Board extends React.Component {
 
               {/* Dialog for member view  */}
               <Dialog open={this.state.openMemberDialog} onClose={this.handleCloseMembersDialog}>
-                <DialogTitle data-testid="GetMemberList">Member List</DialogTitle>
-                <DialogContent style={{overflowY: 'scroll', width: 300, height: 350}}>
+                <DialogTitle data-testid="GetMemberList"><u>Board Member List</u></DialogTitle>
+                <DialogContent style={{overflowY: 'scroll', backgroundColor: grey[100], marginLeft: '5px', width: 295, height: 350}}>
                   {this.printMemberList()}
                 </DialogContent>
                 <DialogActions>
-                  <Button data-testid="addMemberButton" style={{marginRight: '90px', display: 'flex'}} onClick={this.handleOpenNewMembersDialog}>
+                  <Button data-testid="addMemberButton" variant='contained' style={{backgroundColor: green[200], marginRight: '105px', display: 'flex'}} onClick={this.handleOpenNewMembersDialog}>
                     Add member
                   </Button>
-                  <Button data-testid="closeMemberList" style = {{marginRight: '25px', display: 'flex'}} onClick={this.handleCloseMembersDialog}>
+                  <Button data-testid="closeMemberList" variant='contained' style = {{marginLeft: '30px', display: 'flex'}} onClick={this.handleCloseMembersDialog}>
                     Back
                   </Button>
                 </DialogActions>
@@ -674,15 +714,19 @@ class Board extends React.Component {
               <IconButton style={{position: "absolute",left: 0,top:"5vh"}} onClick={this.backbutton}>
                 <ArrowBack />
               </IconButton>
-              <Typography variant='h3' style={{marginRight: '260px', marginTop: '10px', paddingBottom: '10px', fontFamily: 'Monospace'}}>
-                <em><b data-testid="title">Board</b></em>
-              </Typography>
-
-
+              <div style={{}}>
+                <Typography variant='h3' style={{marginRight: '230px', marginTop: '10px', paddingBottom: '0px', fontFamily: 'Monospace'}}>
+                  <em><b data-testid="title">Board</b></em>
+                </Typography>
+                <Button data-testid="viewMembersBtn" variant='contained' style={{marginRight:'-210px', marginTop:'-70px'}} onClick = {this.handleOpenMembersDialog}>
+                  Members <Person style={{marginLeft:'5px'}}/>
+                </Button>
+              </div>
 
               <div style={{
-                height: 600,
+                height: 560,
                 width: 400,
+                marginTop: '-10px',
                 display: 'flex',
                 backgroundColor: grey[100],
                 flexDirection: 'column',
@@ -700,18 +744,15 @@ class Board extends React.Component {
                     {this.printShadow()}
               </div>
               <div style={{
-              width: 400,
-              display: 'flex',
-              marginRight: 50
+              width: 500,
+              display: 'flex'
               }}>
-              <Button data-testid="addTextMagnetBtn" style={{marginLeft: '40px', marginTop: '10px'}} onClick={this.handleOpenTextDialog}>
-                Add Text
+              <Button data-testid="addTextMagnetBtn" variant='contained' style={{marginLeft: '82px', marginTop: '10px'}} onClick={this.handleOpenTextDialog}>
+                Add Text <TextFields style={{marginLeft:'5px'}} />
               </Button>
-              <Button data-testid="addPhotoMagnetBtn" style={{marginLeft: '20px', marginTop: '10px'}} onClick={this.handleOpenPhotoDialog}>
-                Add Photo
-              </Button>
-              <Button data-testid="viewMembersBtn" style={{marginLeft: '65px', marginTop: '10px'}} onClick = {this.handleOpenMembersDialog}>
-              View members
+              &nbsp;
+              <Button data-testid="addPhotoMagnetBtn" variant='contained' style={{marginLeft: '50px', marginTop: '10px'}} onClick={this.handleOpenPhotoDialog}>
+                Add Photo <Image style={{marginLeft:'5px'}} />
               </Button>
             </div></div>
           </div>
