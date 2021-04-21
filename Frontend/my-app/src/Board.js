@@ -183,15 +183,20 @@ class Board extends React.Component {
     }
 
     handleWillPlaceText() {
-      this.setState({openNewDialog:false});
-      this.setState({openTextDialog:false});
-      this.setState({willPlace : 1});
-      console.log("waiting for click place");
+      if (this.state.newMagnetText != "") {
+        this.setState({openNewDialog:false});
+        this.setState({openTextDialog:false});
+        this.setState({willPlace : 1});
+        console.log("waiting for click place");
+      }
+      else {
+        alert("Text magnet must contain text");
+      }
     }
 
     handleShadowMouse(e) {
       if (this.state.willPlace) {
-        var offsets = document.getElementById('mainBoard').getBoundingClientRect();
+        var offsets = document.getElementById('action-window').getBoundingClientRect();
         var top = offsets.top;
         var left = offsets.left;
         console.log(`Position: (${e.clientX}, ${e.clientY})`);
@@ -224,7 +229,6 @@ class Board extends React.Component {
       console.log("checking to place");
       if (this.state.willPlace) {
         var offsets = document.getElementById('mainBoard').getBoundingClientRect();
-        var maxWidth = document.getElementById('shadowBox')
         var top = offsets.top;
         var left = offsets.left;
         console.log(`Position: (${e.clientX}, ${e.clientY})`);
@@ -237,30 +241,28 @@ class Board extends React.Component {
     createMagnetText(xPos, yPos) {
       console.log(this.state.tempBoardName);
       console.log(this.state.newMagnetText);
-      //var leftSpot = Math.random() * 250; //how to get magnet size for safer placement?
-      //var topSpot = Math.random() * 300;
-      this.state.magnets.push({index:this.state.maxIndex +1, content: this.state.newMagnetText, position: {x: xPos, y: yPos}});
-      this.setState({willPlace : 0});
-      try{
-        fetch(this.state.tempBoardName+'/addMagnet', {
-          method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              boardName: this.state.tempBoardName,
-              magnetName: (this.state.maxIndex + 1).toString(), //formerly magnet title on frontend
-              textMagnet: this.state.newMagnetText
-            }),
-          });
-          console.log("saving magnet frontend");
-      }
-      catch(e){
-        console.log(e);
-      }
-      this.state.newMagnetText="";
-      this.setState({maxIndex: this.state.maxIndex +1});
+        this.state.magnets.push({index:this.state.maxIndex +1, content: this.state.newMagnetText, position: {x: xPos, y: yPos}});
+        this.setState({willPlace : 0});
+        try{
+          fetch(this.state.tempBoardName+'/addMagnet', {
+            method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                boardName: this.state.tempBoardName,
+                magnetName: (this.state.maxIndex + 1).toString(), //formerly magnet title on frontend
+                textMagnet: this.state.newMagnetText
+              }),
+            });
+            console.log("saving magnet frontend");
+        }
+        catch(e){
+          console.log(e);
+        }
+        this.state.newMagnetText="";
+        this.setState({maxIndex: this.state.maxIndex +1});
     }
 
     removeText(indexDel) {
@@ -537,7 +539,9 @@ class Board extends React.Component {
               borderLeft: '1px solid black',
               borderRight: '1px solid black',
               position: "relative",
-            }}>
+            }}
+            id = {"action-window"
+            }>
               <div style = {{height:"35px",width:"100%",borderBottom:"1px solid black",display:"flex",justifyContent:"space-between"}}>
               <Typography variant='h6' style={{fontFamily: 'Monospace',position:"relative",left:"1vh",width:"fit-content"}}>
                 <em><b>Bit Magnet</b></em>
@@ -620,7 +624,7 @@ class Board extends React.Component {
                   <Button data-testid="addMemberButton" style={{marginRight: '90px', display: 'flex'}} onClick={this.handleOpenNewMembersDialog}>
                     Add member
                   </Button>
-                  <Button data-testid="closeMemberList" style = {{marginRight: '70px', display: 'flex'}} onClick={this.handleCloseMembersDialog}>
+                  <Button data-testid="closeMemberList" style = {{marginRight: '25px', display: 'flex'}} onClick={this.handleCloseMembersDialog}>
                     Back
                   </Button>
                 </DialogActions>
@@ -637,7 +641,7 @@ class Board extends React.Component {
 
 
               <div style={{
-                height: "75vh",
+                height: 600,
                 width: 400,
                 display: 'flex',
                 backgroundColor: grey[100],
@@ -648,18 +652,12 @@ class Board extends React.Component {
                 borderBottom: '1px solid black'
                 }}
                 id = {"mainBoard"}
-                onClick = {e=>this.placeMagnet(e)}
                 onMouseMove = {e=>this.handleShadowMouse(e)}
+                onClick = {e=>this.placeMagnet(e)}
               >
-                <div style={{
-                height: "100%",
-                display: 'flex',
-                flexDirection: 'column'}}
-                >
                     {this.printMagnets()}
                     {this.printImages()}
                     {this.printShadow()}
-                </div>
               </div>
               <div style={{
               width: 400,
@@ -669,10 +667,10 @@ class Board extends React.Component {
               <Button data-testid="addTextMagnetBtn" style={{marginLeft: '40px', marginTop: '10px'}} onClick={this.handleOpenTextDialog}>
                 Add Text
               </Button>
-              <Button data-testid="addPhotoMagnetBtn" style={{marginLeft: '35px', marginTop: '10px'}} onClick={this.handleOpenPhotoDialog}>
+              <Button data-testid="addPhotoMagnetBtn" style={{marginLeft: '20px', marginTop: '10px'}} onClick={this.handleOpenPhotoDialog}>
                 Add Photo
               </Button>
-              <Button data-testid="viewMembersBtn" style={{marginLeft: '35px', marginTop: '10px'}} onClick = {this.handleOpenMembersDialog}>
+              <Button data-testid="viewMembersBtn" style={{marginLeft: '65px', marginTop: '10px'}} onClick = {this.handleOpenMembersDialog}>
               View members
               </Button>
             </div></div>
