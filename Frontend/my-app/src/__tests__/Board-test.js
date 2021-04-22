@@ -25,7 +25,7 @@ it('Will show button to add text magnet, will open and close popup', () => {
     render(<Board/>,container);
   });
 
-  expect(document.querySelector('[data-testid="title"]').textContent).toBe("Board");
+  expect(document.querySelector('[data-testid="title"]').textContent).toBe("");
 
   expect(document.querySelector('[data-testid="createTextPopup"]')).toBe(null);
   expect(document.querySelector('[data-testid="addTextMagnetBtn"')).toBeVisible();
