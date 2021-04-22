@@ -474,27 +474,6 @@ class Board extends React.Component {
   }
 
   printMemberList() {
-    /*
-    let friendsList2 = this.props.location.state.detail2;
-    console.log(friendsList2);
-    let MemberList2 = this.state.MemberList;
-    let smileystring = ":)"
-
-    for(var i=0;i<this.state.MemberList.length;i++){
-      for(var j=0;j<friendsList2.length;j++){
-        if(this.state.MemberList[i] === friendsList2[j])
-        {
-          MemberList2.push(this.state.MemberList[i] + smileystring);
-        }
-        else{
-          MemberList2.push(this.state.MemberList[i]);
-        }
-      }
-    }
-
-    console.log(MemberList2);
-    */
-
     return (
       this.state.MemberList.map((member) => 
         <Typography key = {member.userID} data-testid="friendlist" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
@@ -502,15 +481,6 @@ class Board extends React.Component {
         </Typography>
       )
     )
-    /*
-    return this.state.MemberList.map((member) => {
-      return (
-        <Typography key = {member.userID} data-testid="friendlist" variant='h5' style={{fontFamily: 'Monospace', marginTop: '10px', align: 'left'}}>
-          {member.userID}
-        </Typography>
-      )
-    });
-    */
   }
 
   addMember() {
@@ -719,13 +689,13 @@ class Board extends React.Component {
               <IconButton style={{position: "absolute",left: 0,top:"5vh"}} onClick={this.backbutton}>
                 <ArrowBack />
               </IconButton>
-              <div style={{}}>
-                <Typography variant='h3' style={{marginRight: '230px', marginTop: '10px', paddingBottom: '0px', fontFamily: 'Monospace'}}>
-                  <em><b data-testid="title">Board</b></em>
-                </Typography>
-                <Button data-testid="viewMembersBtn" variant='contained' style={{marginRight:'-210px', marginTop:'-70px'}} onClick = {this.handleOpenMembersDialog}>
+              <div style={{width: 400, marginBottom: '20px', display: 'inline-block'}}>
+                <Typography variant='h3' style={{marginTop: '10px', paddingBottom: '0px', fontFamily: 'Monospace', textAlign: 'left', marginLeft: '20px'}}>
+                  <em><b data-testid="title">{this.state.tempBoardName}</b></em>
+                  <Button data-testid="viewMembersBtn" variant='contained' style={{float:'right', marginRight:'20px'}} onClick = {this.handleOpenMembersDialog}>
                   Members <Person style={{marginLeft:'5px'}}/>
                 </Button>
+                </Typography>
               </div>
 
               <div style={{
