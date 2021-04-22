@@ -690,9 +690,9 @@ class Board extends React.Component {
                 <ArrowBack />
               </IconButton>
               <div style={{width: 400, marginBottom: '20px', display: 'inline-block'}}>
-                <Typography variant='h3' style={{marginTop: '10px', paddingBottom: '0px', fontFamily: 'Monospace', textAlign: 'left', marginLeft: '20px'}}>
+                <Typography variant='h3' style={{marginTop: '10px', paddingBottom: '0px', fontFamily: 'Monospace', textAlign: 'left', marginLeft: '5px'}}>
                   <em><b data-testid="title">{this.state.tempBoardName}</b></em>
-                  <Button data-testid="viewMembersBtn" variant='contained' style={{float:'right', marginRight:'20px'}} onClick = {this.handleOpenMembersDialog}>
+                  <Button data-testid="viewMembersBtn" variant='contained' style={{float:'right', marginRight:'5px'}} onClick = {this.handleOpenMembersDialog}>
                   Members <Person style={{marginLeft:'5px'}}/>
                 </Button>
                 </Typography>
