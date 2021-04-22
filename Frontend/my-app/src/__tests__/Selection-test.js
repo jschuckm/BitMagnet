@@ -6,6 +6,7 @@ import { act } from "react-dom/test-utils";
 import {MemoryRouter} from 'react-router-dom';
 import { TextField } from '@material-ui/core';
 import 'regenerator-runtime/runtime'
+import Board from '../Board';
 
 
 let container = null;
@@ -78,3 +79,39 @@ it('has a quit button with popup that opens and closes', () => {
   });
   expect(document.querySelector('[data-testid="deleteBoardPopup"]')).not.toBeVisible();
 });
+
+it('has a friends button that opens and closes friends popup',()=>{
+  act(()=>{
+    render(<MemoryRouter><BoardSelection/></MemoryRouter>,container);
+  })
+  const friendsButton = document.querySelector('[data-testid="friendsBoardPopUp"]');
+  expect(friendsButton).toBeVisible();
+  act(()=>{
+    friendsButton.dispatchEvent(new MouseEvent("click",{bubbles:true}));
+  })
+  expect(document.querySelector('[data-testid="friendDialog"]')).toBeVisible();
+  const addFriendBtn = document.querySelector('[data-testid="friendDialogAdd"]');
+  expect(addFriendBtn).toBeVisible();
+  act(()=>{
+    addFriendBtn.dispatchEvent(new MouseEvent("click",{bubbles:true}));
+  })
+  expect(document.querySelector('[data-testid="addFriendDialog"]')).toBeVisible();
+  const addFriendBackBtn = document.querySelector('[data-testid="addFriendDialogBack"]');
+  expect(addFriendBackBtn).toBeVisible();
+  act(()=>{
+    addFriendBackBtn.dispatchEvent(new MouseEvent("click",{bubbles:true}));
+  })
+  expect(addFriendBackBtn).not.toBeVisible();
+  const deleteFriendBtn = document.querySelector('[data-testid="friendDialogDelete"]');
+  expect(deleteFriendBtn).toBeVisible();
+  act(()=>{
+    deleteFriendBtn.dispatchEvent(new MouseEvent("click",{bubbles:true}));
+  })
+  expect(document.querySelector('[data-testid="deleteFriendDialog"]')).toBeVisible();
+  const deleteBackBtn = document.querySelector('[data-testid="deleteFriendDialogBack"]');
+  act(()=>{
+    deleteBackBtn.dispatchEvent(new MouseEvent("click",{bubbles:true}));
+  })
+  expect(deleteBackBtn).not.toBeVisible();
+  expect(addFriendBtn).toBeVisible();
+})
