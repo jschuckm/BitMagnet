@@ -29,7 +29,6 @@ class Board extends React.Component {
 
         this.printMagnets=this.printMagnets.bind(this);
         this.loadBoard=this.loadBoard.bind(this);
-        this.saveBoard=this.saveBoard.bind(this);
 
         this.getBoardName=this.getBoardName.bind(this);
         this.getMaxIndex = this.getMaxIndex.bind(this);
@@ -176,19 +175,17 @@ class Board extends React.Component {
           });
     }
 
-    saveBoard(){
-      const magState = this.state.magnets;
-      this.setState({magnets:magState});
-      console.log("saving");
-      console.log(this.state.magnets);
-    }
-
-    handleWillPlaceText() {
+    handleWillPlaceText(e) {
       if (this.state.newMagnetText != "") {
+        var offsets = document.getElementById('action-window').getBoundingClientRect();
+        var top = offsets.top;
+        var left = offsets.left;
         this.setState({openNewDialog:false});
         this.setState({openTextDialog:false});
         this.setState({willPlace : 1});
+        this.setState({mousePos : { x: e.clientX - left, y: e.clientY}});
         console.log("waiting for click place");
+
       }
       else {
         alert("Text magnet must contain text");
@@ -213,6 +210,7 @@ class Board extends React.Component {
         left: this.state.mousePos.x,
         top: this.state.mousePos.y,
         backgroundColor: grey[50],
+        border: "1px solid black",
         maxWidth : 250
       }
       if (this.state.willPlace) {
@@ -305,10 +303,9 @@ class Board extends React.Component {
               maxWidth = {250}
               bounds = {"parent"}
               enableResizing = {false}
-              // onDragStop={ (d) => {magnet.position = {x : d.x, y : d.y} } } //after every move, call save function to store new position
               onDragStop={(d)=> {
-                this.setState({tempTextX: d.x, tempTextY: d.y})
-                this.saveTextPosition(this.state.tempTextX, this.state.tempTextY, magnet.index)
+                //this.setState({tempTextX: d.x, tempTextY: d.y}) //passing d which has needed position and offsets of magnet
+                this.saveTextPosition(d, magnet.index)
               }}
               >
                 <div style = {{backgroundColor: grey[50]}} class = "img-wrap">
@@ -409,7 +406,7 @@ class Board extends React.Component {
           this.setState({images: tempImageList});
         }
         else {
-          console.log("we don't have something");
+          console.log("we don't have images");
         }
       })
       return 1;
@@ -426,14 +423,13 @@ class Board extends React.Component {
                 minWidth={150}
                 minHeight={100}
                 enableResizing = {false}
-                // onDragStop={ (d) => {image.position = {x : d.x, y : d.y} } }
                 onDragStop={(d)=> {
                   this.setState({tempImageX: d.x, tempImageY: d.y})
-                  this.savePosition(this.state.tempImageX, this.state.tempImageY, image.url)
+                  this.savePosition(d, image.url)
                 }}
               >
-                {console.log(this.state.tempImageX)}
-                {console.log(this.state.tempImageY)}
+                {console.log("image X pos: ", this.state.tempImageX)}
+                {console.log("image Y pos: ", this.state.tempImageY)}
                   <div class="img-wrap">
                     <span class="close" onClick={(e)=>this.removeImage(tempNameWithFileFormat)}>x</span>
                     <img src ={tempURL} width = {"100%"} max-width = {"300"}/>
@@ -525,7 +521,10 @@ class Board extends React.Component {
   }
 
   //save position
-  savePosition(x, y, name) {
+  savePosition(e, name) {
+    var divOffsets = document.getElementById('mainBoard').getBoundingClientRect();
+    var totalLeftOffset = divOffsets.left + e.offsetX;
+    var totalTopOffset = divOffsets.top + e.offsetY;
     fetch(this.state.tempBoardName + '/updateImagePosition', {
       method: 'POST',
       headers: {
@@ -534,15 +533,20 @@ class Board extends React.Component {
       },
       body: JSON.stringify({
         imageName: name,
-        xPosition: x,
-        yPosition: y
+        xPosition: e.clientX - totalLeftOffset,
+        yPosition: e.clientY - totalTopOffset
       }),
     })
     this.setState({ imageFile : null})
     console.log("save position!")
   }
 
-  saveTextPosition(x,y,name) {
+  saveTextPosition(e, name) {
+    var divOffsets = document.getElementById('mainBoard').getBoundingClientRect();
+    
+    var totalLeftOffset = divOffsets.left + e.offsetX;
+    var totalTopOffset = divOffsets.top + e.offsetY;
+
     fetch(this.state.tempBoardName + '/updateMagnetPosition', {
       method: 'POST',
       headers: {
@@ -551,8 +555,8 @@ class Board extends React.Component {
       },
       body: JSON.stringify({
         magnetName: name,
-        xPosition: x,
-        yPosition: y
+        xPosition: e.clientX - totalLeftOffset,
+        yPosition: e.clientY - totalTopOffset
       }),
     })
     console.log("save position!")
@@ -612,7 +616,7 @@ class Board extends React.Component {
                   <TextField multiline rows={4} data-testid="createMagTxtContent"onChange={(event) => this.setState({newMagnetText: event.target.value})} label={"Magnet Text"}/><br></br>
                 </DialogContent>
                 <DialogActions>
-                  <Button data-testid="createMagTextSubmitBtn" onClick={this.handleWillPlaceText} style={{marginRight: '0px'}}>
+                  <Button data-testid="createMagTextSubmitBtn" onClick={e=>this.handleWillPlaceText(e)} style={{marginRight: '0px'}}>
                     Post Text
                   </Button>
                   <Button data-testid="closeCreateTextPopup" onClick={this.handleCloseTextDialog}>
