@@ -6,27 +6,28 @@
     border-right: 2px solid black;
     border-bottom: 2px solid black;
     border-top: 1px solid black;
-    min-width: 25px;
+    min-width: 20px;
 }
+
 .img-wrap .close {
     position: absolute;
-    top: 2px;
-    right: 2px;
-    z-index: 100;
-    background-color: #FFF;
-    padding: 2px 2px 2px;
+    top: 1px;
+    right: 1px;
+    padding: 1px 2px 2px;
+    background-color: rgb(250, 250, 250);
     color: #000;
     font-weight: bold;
     cursor: pointer;
     opacity: .2;
     text-align: center;
-    font-size: 8px;
-    line-height: 8px;
+    font-size: 7px;
+    line-height: 7px;
     border-radius: 50%;
     border-left: 1px solid black;
     border-right: 2px solid black;
     border-bottom: 2px solid black;
     border-top: 1px solid black;
+    z-index: 100;
 }
 .img-wrap:hover .close {
     opacity: 1;
