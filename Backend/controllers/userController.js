@@ -99,3 +99,16 @@ exports.login = async (request, respond) => {
         console.log(error);
     }
 }
+
+exports.deleteUser = async (request, respond) => {
+    const userID = request.params.id;
+    db.query("delete from account where users=?;", [userID], (error, result) => {
+        if(error) {
+            console.log(error)
+        } else {
+            respond.json({
+                message: "delete user"
+            });
+        }
+    })
+}

@@ -9,10 +9,10 @@ describe("test for user account/", ()=> {
         request(app)
             .post('/auth/register')
             .send({
-                users: "jestTestAccount",
-                password: "1234",
-                FirstName: "fn",
-                LastName: 'ln'
+                users: "jestBackEndAccount",
+                password: "123456789",
+                FirstName: "BackEnd",
+                LastName: "Jest"
             })
             .set('Accept', 'application/json')
             .expect(200, {
@@ -24,8 +24,8 @@ describe("test for user account/", ()=> {
         request(app)
             .post('/auth/login')
             .send({
-                users: "jestTestAccount",
-                password: "1234"
+                users: "jestBackEndAccount",
+                password: "123456789"
             })
             .set('Accept', 'application/json')
             .expect(200, {
@@ -35,7 +35,6 @@ describe("test for user account/", ()=> {
     })
 })
 
-
 //Jest for friendController
 describe("test for friend list", () => {
     test("make new friend account", async (done) => {
@@ -43,9 +42,9 @@ describe("test for friend list", () => {
             .post('/auth/register')
             .send({
                 users: "testFriend",
-                password: "1234",
-                FirstName: "fn",
-                LastName: 'ln'
+                password: "123456789",
+                FirstName: "Test",
+                LastName: 'Friend'
             })
             .set('Accept', 'application/json')
             .expect(200, {
@@ -55,31 +54,7 @@ describe("test for friend list", () => {
     })
     test("add friend", async (done) => {
         request(app)
-            .post('/auth/jestTestAccount/addFriend')
-            .send({
-                friendID: "testFriend"
-            })
-            .set('Accept', 'application/json')
-            .expect(200, {
-                "usernameStatus": true,
-                message: "username successful"
-            }, done)
-    })
-    test("delete friend", async (done) => {
-        request(app)
-            .post('/auth/jestTestAccount/deleteFriend')
-            .send({
-                friendID: "testFriend"
-            })
-            .set('Accept', 'application/json')
-            .expect(200, {
-                "usernameStatus2": true,
-                message: "username successful"
-            }, done)
-    })
-    test("add friend", async (done) => {
-        request(app)
-            .post('/auth/jestTestAccount/addFriend')
+            .post('/auth/jestBackEndAccount/addFriend')
             .send({
                 friendID: "testFriend"
             })
@@ -90,8 +65,20 @@ describe("test for friend list", () => {
             }, done)
     })
     test("get friend list", async () => {
-        const {body} = await request(app).get('/auth/jestTestAccount/getFriends') 
+        const {body} = await request(app).get('/auth/jestBackEndAccount/getFriends') 
         expect(body.length).toEqual(1);
+    })
+    test("delete friend", async (done) => {
+        request(app)
+            .post('/auth/jestBackEndAccount/deleteFriend')
+            .send({
+                friendID: "testFriend"
+            })
+            .set('Accept', 'application/json')
+            .expect(200, {
+                "usernameStatus2": true,
+                message: "username successful"
+            }, done)
     })
 })
 
@@ -99,40 +86,29 @@ describe("test for friend list", () => {
 describe("test for board list", ()=> {
     test("add board", async (done) => {
         request(app)
-            .post('/auth/jestTestAccount/addBoard')
+            .post('/auth/jestBackEndAccount/addBoard')
             .send({
                 boardName: "JestBoardA"
             })
             .set('Accept', 'application/json')
             .expect(200, {
-                message: "Insert new Board"
+                "newboardstatus": true
             },done)
     })
     test("add board", async (done) => {
         request(app)
-            .post('/auth/jestTestAccount/addBoard')
+            .post('/auth/jestBackEndAccount/addBoard')
             .send({
                 boardName: "JestBoardB"
             })
             .set('Accept', 'application/json')
             .expect(200, {
-                message: "Insert new Board"
-            },done)
-    })
-    test("add board", async (done) => {
-        request(app)
-            .post('/auth/jestTestAccount/addBoard')
-            .send({
-                boardName: "JestBoardC"
-            })
-            .set('Accept', 'application/json')
-            .expect(200, {
-                message: "Insert new Board"
+                "newboardstatus": true
             },done)
     })
     test("delete board", async (done) => {
         request(app)
-            .post('/auth/jestTestAccount/deleteBoard')
+            .post('/auth/jestBackEndAccount/deleteBoard')
             .send({
                 boardName: "JestBoardB"
             })
@@ -142,16 +118,16 @@ describe("test for board list", ()=> {
             },done)
     })
     test("get board list", async () => {
-        const {body} = await request(app).get('/auth/jestTestAccount/main') 
-        expect(body.length).toEqual(2);
+        const {body} = await request(app).get('/auth/jestBackEndAccount/main') 
+        expect(body.length).toEqual(1);
     })
 })
 
-// jest for boardSharing
+//jest for boardSharing
 describe("test for board sharing", ()=> {
     test("share board", async (done) => {
         request(app)
-            .post('/auth/jestTestAccount/addBoardShare')
+            .post('/auth/jestBackEndAccount/addBoardShare')
             .send({
                 userID: "testFriend",
                 boardName: "JestBoardA"
@@ -162,6 +138,10 @@ describe("test for board sharing", ()=> {
                 message: "username successful"
             },done)
     })
+    test("get list of shared member", async () => {
+        const {body} = await request(app).get('/board/JestBoardA/getUsers') 
+        expect(body.length).toEqual(2);
+    })
 })
 
 // jest for magnetController.js
@@ -170,8 +150,10 @@ describe("test for magnet part", () => {
         request(app)
             .post('/board/JestBoardA/addMagnet')
             .send({
-                magnetName: "jest 1",
-                textMagnet: "this is for jest magnet"
+                magnetName: "1",
+                textMagnet: "this is for jest magnet 1",
+                xPosition: 10,
+                yPosition: 12
             })
             .set('Accept', 'application/json')
             .expect(200, {
@@ -182,36 +164,103 @@ describe("test for magnet part", () => {
         request(app)
             .post('/board/JestBoardA/addMagnet')
             .send({
-                magnetName: "jest 2",
-                textMagnet: "this is for jest magnet2"
+                magnetName: "2",
+                textMagnet: "this is for jest magnet 2",
+                xPosition: 45,
+                yPosition: 232
             })
             .set('Accept', 'application/json')
             .expect(200, {
                 message: "Add new Magnet"
             }, done)
     })
-    test("delete magnet2", async (done) => {
+    test("get magnet list", async () => {
+        const {body} = await request(app).get('/board/JestBoardA/getAllMagnet') 
+        expect(body.length).toEqual(2);
+    })
+    test("delete magnet1", async (done) => {
         request(app)
             .post('/board/JestBoardA/deleteMagnet')
             .send({
-                magnetName: "jest 1"
+                magnetName: "1"
             })
             .set('Accept', 'application/json')
             .expect(200, {
                 message: "Delete magnet"
             }, done)
     })
-    test("get magnet list", async () => {
-        const {body} = await request(app).get('/board/JestBoardA/getAllMagnet') 
-        expect(body.length).toEqual(1);
-    })
 })
 
 //jest for imageController.js
-const testImage = `${__dirname}/DuckFace-Jest.PNG`
 describe('test image controller', () => {    
+    test('upload image', async (done)=> {
+        request(app)
+            .post('/board/JestBoardA/uploadImage')
+            .attach('test', __dirname + '/test.PNG')
+            .expect(500, done)
+    })
+
     test('get image list', async () => {
         const {body} = await request(app).get('/board/JestBoardA/getImage') 
         expect(body.length).toEqual(0);
+    })
+})
+
+//jest for update position of magnet 
+describe("test for update position of image and text magnet", () => {
+    test("update text magnet position", async(done) => {
+        request(app)
+            .post('/board/JestBoardA/updateImagePosition')
+            .send({
+                magnetName: "2",
+                xPosition: "99",
+                yPosition: "100",
+            })
+            .set('Accept', 'application/json')
+            .expect(200, {
+                message : "Update position"
+            }, done)
+    })
+})
+
+// reset all test result
+describe("reset/", ()=>{
+    test("delete magnet2", async (done) => {
+        request(app)
+            .post('/board/JestBoardA/deleteMagnet')
+            .send({
+                magnetName: "2"
+            })
+            .set('Accept', 'application/json')
+            .expect(200, {
+                message: "Delete magnet"
+            }, done)
+    })
+    test("delete board", async (done) => {
+        request(app)
+            .post('/auth/jestBackEndAccount/deleteBoard')
+            .send({
+                boardName: "JestBoardA"
+            })
+            .set('Accept', 'application/json')
+            .expect(200, {
+                message: "Delete that board"
+            },done)
+    })
+    test("delete user", (done) => {
+        request(app)
+            .get('/auth/jestBackEndAccount/deleteAccount')
+            .set('Accept', 'application/json')
+            .expect(200, {
+                message: "delete user"
+            }, done)
+    })
+    test("delete user", (done) => {
+        request(app)
+            .get('/auth/testFriend/deleteAccount')
+            .set('Accept', 'application/json')
+            .expect(200, {
+                message: "delete user"
+            }, done)
     })
 })
