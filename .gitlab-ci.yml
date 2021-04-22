@@ -12,7 +12,7 @@ test-backend:
   script:
     - cd Backend
     - npm install 
-    #- npm run test
+    - npm run test
   allow_failure: true
 
 #deploy-frontend-prod:
