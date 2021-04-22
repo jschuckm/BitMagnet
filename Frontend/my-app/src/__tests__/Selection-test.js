@@ -26,7 +26,7 @@ afterEach(()=>{
     container = null;
 });
 
-it('displays all interface material on loading, can open and close dialog popup', () => {
+it('displays all interface material on loading, can open and close new board popup', () => {
   act(()=>{
     render(<MemoryRouter><BoardSelection/></MemoryRouter>,container);
   });
@@ -47,7 +47,7 @@ it('displays all interface material on loading, can open and close dialog popup'
   expect(document.querySelector('[data-testid="boardAddPopup"]')).not.toBeVisible();
 });
 
-it ('will test existance of state and memberBoards array', () => {
+it ('will contain state and memberBoards array', () => {
   let shallow = createShallow(); 
 
   const wrapper = shallow(<BoardSelection />);
@@ -57,4 +57,24 @@ it ('will test existance of state and memberBoards array', () => {
   let numBoards = boards.length;
   expect(boards).toBeDefined();
   expect(typeof(numBoards) == 'number');
+});
+
+it('has a quit button with popup that opens and closes', () => {
+  act(()=>{
+    render(<MemoryRouter><BoardSelection/></MemoryRouter>,container);
+  });
+
+  expect(document.querySelector('[data-testid="deleteBoardPopup"]')).toBe(null);
+  const quitButton = document.querySelector('[data-testid="quitBoardBtn"]');
+  expect(quitButton).toBeVisible();
+  act(() => {
+    quitButton.dispatchEvent(new MouseEvent("click", {bubbles:true}));
+  });
+  expect(document.querySelector('[data-testid="deleteBoardPopup"]')).toBeVisible();
+  const backButton = document.querySelector('[data-testid="boardDeleteCancel"]');
+  expect(backButton).toBeVisible();
+  act(() => {
+    backButton.dispatchEvent(new MouseEvent("click", {bubbles: true}));
+  });
+  expect(document.querySelector('[data-testid="deleteBoardPopup"]')).not.toBeVisible();
 });

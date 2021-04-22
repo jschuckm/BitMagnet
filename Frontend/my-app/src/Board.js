@@ -685,7 +685,7 @@ class Board extends React.Component {
 
               {/*Prompt to add new member id*/}
               <Dialog open = {this.state.openNewMembersDialog} onClose = {this.handleCloseNewMembersDialog}>
-                  <DialogTitle data-testid="addMemberId">Add Member</DialogTitle>
+                  <DialogTitle data-testid="addMembersPopup">Add Member</DialogTitle>
                   <DialogContent>
                   <TextField data-testid="AddMemberIdTextEntry"onChange={(event) => this.setState({newMemberIdText: event.target.value})} label={"Member name"}/><br></br>
                 </DialogContent>
@@ -693,7 +693,7 @@ class Board extends React.Component {
                   <Button data-testid="submitAddMemberId" onClick={this.addMember} style={{marginRight: '0px'}}>
                     Add
                   </Button>
-                  <Button data-testid="closeCreateTextPopup" onClick={this.handleCloseNewMembersDialog}>
+                  <Button data-testid="closeAddMembersPopup" onClick={this.handleCloseNewMembersDialog}>
                     Back
                   </Button>
                 </DialogActions>  
@@ -701,7 +701,7 @@ class Board extends React.Component {
 
               {/* Dialog for member view  */}
               <Dialog open={this.state.openMemberDialog} onClose={this.handleCloseMembersDialog}>
-                <DialogTitle data-testid="GetMemberList"><u>Board Member List</u></DialogTitle>
+                <DialogTitle data-testid="viewMembersPopup"><u>Board Member List</u></DialogTitle>
                 <DialogContent style={{overflowY: 'scroll', backgroundColor: grey[100], marginLeft: '5px', width: 295, height: 350}}>
                   {this.printMemberList()}
                 </DialogContent>
@@ -709,7 +709,7 @@ class Board extends React.Component {
                   <Button data-testid="addMemberButton" variant='contained' style={{backgroundColor: green[200], marginRight: '105px', display: 'flex'}} onClick={this.handleOpenNewMembersDialog}>
                     Add member
                   </Button>
-                  <Button data-testid="closeMemberList" variant='contained' style = {{marginLeft: '30px', display: 'flex'}} onClick={this.handleCloseMembersDialog}>
+                  <Button data-testid="closeMembersPopup" variant='contained' style = {{marginLeft: '30px', display: 'flex'}} onClick={this.handleCloseMembersDialog}>
                     Back
                   </Button>
                 </DialogActions>
