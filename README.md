@@ -1,4 +1,4 @@
-# g14
+# BitMagnet
 This project was a group project for COMS 319 Construction of User Interfaces in which our team placed 5th overall. This app was developed with a Node.js backend, MySQL database, and React frontend. 
 
 The following is a short demo of the application:
